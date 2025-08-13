@@ -1,0 +1,64 @@
+/* src/style/ImageGallery.css */
+.image-gallery-redesign {
+    display: flex;
+    flex-direction: column-reverse; /* Miniaturas arriba en móvil */
+    gap: 1rem;
+}
+
+.main-image-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.thumbnail-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 miniaturas en móvil */
+    gap: 0.5rem;
+}
+
+.thumbnail-wrapper {
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    aspect-ratio: 1 / 1;
+}
+
+.thumbnail-wrapper.active {
+    border-color: var(--verde-oscuro);
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+/* Media Query para pantallas más grandes */
+@media (min-width: 768px) {
+    .image-gallery-redesign {
+        flex-direction: row; /* Miniaturas a la izquierda */
+        gap: 1.5rem;
+    }
+
+    .thumbnail-list {
+        grid-template-columns: 1fr; /* Una columna de miniaturas */
+        width: 80px;
+        flex-shrink: 0;
+    }
+
+    .main-image-wrapper {
+        flex-grow: 1;
+    }
+}

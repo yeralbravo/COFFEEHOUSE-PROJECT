@@ -1,0 +1,130 @@
+.sidebar {
+    width: 250px;
+    background-color: var(--verde-oscuro);
+    color: #f5eec2;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #4f6f52;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #4f6f52;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f5eec2;
+    color: #1a4d2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+/* --- SECCIÓN MODIFICADA --- */
+.sidebar-nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Esto MANTIENE la funcionalidad de scroll */
+
+    /* Regla para ocultar la barra en Firefox */
+    scrollbar-width: none; 
+    
+    /* Regla para ocultar la barra en Internet Explorer y Edge (versiones antiguas) */
+    -ms-overflow-style: none;
+}
+
+/* Regla para ocultar la barra en navegadores WebKit (Chrome, Safari, etc.) */
+.sidebar-nav::-webkit-scrollbar {
+    display: none;
+}
+/* --- FIN DE LA SECCIÓN MODIFICADA --- */
+
+
+.sidebar-nav a {
+    color: #f5eec2;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+    transition: background-color 0.2s;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    background-color: #4f6f52;
+}
+
+.submenu-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.submenu-toggle {
+    background: none;
+    border: none;
+    color: #f5eec2;
+    padding: 15px 20px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.submenu-toggle:hover {
+    background-color: #4f6f52;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.arrow.open {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    background-color: #123a22;
+    display: flex;
+    flex-direction: column;
+}
+
+.submenu a {
+    padding-left: 40px;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #4f6f52;
+}
+
+.logout-btn {
+    background-color: transparent;
+    border: 1px solid #f5eec2;
+    color: #f5eec2;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.logout-btn:hover {
+    background-color: #f5eec2;
+    color: #1a4d2e;
+}

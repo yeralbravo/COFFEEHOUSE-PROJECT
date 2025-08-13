@@ -1,0 +1,151 @@
+/* src/style/CartPage.css */
+.cart-main-content {
+    background-color: #F0F8FF;
+    padding: 2rem 5%;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.cart-items-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cart-group {
+    background-color: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.cart-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #EFEFEF;
+    margin-bottom: 1rem;
+}
+
+.cart-group-header label {
+    font-weight: bold;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.cart-item:not(:last-child) {
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border: 1px solid #EFEFEF;
+    border-radius: 8px;
+}
+
+.cart-item-details .item-name {
+    font-weight: 600;
+    margin: 0;
+}
+.cart-item-details .item-desc {
+    font-size: 0.9rem;
+    color: #8B8B8B;
+    margin: 0.25rem 0;
+}
+.cart-item-details .item-desc a {
+    color: #3E7B27;
+    text-decoration: none;
+}
+.cart-item-details .item-remove-btn {
+    background: none;
+    border: none;
+    color: #cc3333;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+}
+.cart-item-quantity button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+}
+.cart-item-quantity span {
+    padding: 0 0.5rem;
+    font-weight: 500;
+}
+
+.cart-item-price {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.order-summary-section .summary-card {
+    background-color: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+.summary-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+.summary-row, .summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.summary-total {
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #EFEFEF;
+}
+.checkout-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: #24651C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.checkout-btn:hover {
+    background-color: #3E7B27;
+}
+
+/* ... (todos tus estilos existentes de CartPage.css) ... */
+
+.cart-item.disabled {
+    opacity: 0.5;
+    background-color: #f9f9f9;
+    pointer-events: none; /* Opcional: deshabilita interacciones */
+}

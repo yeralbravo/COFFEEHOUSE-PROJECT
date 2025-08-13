@@ -1,0 +1,205 @@
+.order-detail-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.order-detail-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.order-products-column h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.order-date-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.order-date-header a {
+    color: var(--verde-oscuro);
+    font-weight: 500;
+}
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.product-card-detail {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.product-image-detail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.product-info-detail .status-tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    color: #fff;
+}
+.status-entregado { background-color: #28a745; }
+.status-enviado { background-color: #4a90e2; }
+.status-pendiente { background-color: #f5a623; }
+
+.product-info-detail .delivery-date {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0.5rem 0;
+}
+
+.product-info-detail .product-name-detail {
+    font-weight: 600;
+    margin: 0.25rem 0;
+}
+
+.product-info-detail .product-brand-detail,
+.product-info-detail .product-quantity-detail {
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+    margin: 0.25rem 0;
+}
+
+.product-actions-detail {
+    text-align: right;
+}
+
+.product-price-detail {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-review {
+    background-color: var(--verde-oscuro);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.review-submitted {
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+    font-style: italic;
+}
+
+/* --- MODIFICACIÓN AQUÍ --- */
+.order-summary-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* Se eliminaron 'position: sticky' y 'top: 2rem' */
+}
+
+.summary-card, .info-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.summary-card h3, .info-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.summary-line.total {
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-top: 1px solid #ccc;
+    margin-top: 0.5rem;
+}
+
+.info-card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-icon {
+    color: var(--gris-oscuro);
+    flex-shrink: 0;
+}
+
+.info-card-content p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.page-loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+}
+
+/* ... (tus estilos existentes) ... */
+
+/* --- NUEVOS ESTILOS PARA EL BOTÓN DE CANCELAR --- */
+.btn-cancel-order {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel-order:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+}
+
+.status-tag.status-cancelado {
+    background-color: #6c757d; /* Gris */
+}

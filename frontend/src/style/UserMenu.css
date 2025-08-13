@@ -1,0 +1,49 @@
+/* src/style/UserMenu.css */
+.user-menu-container {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #EFEFEF;
+    width: 220px;
+    z-index: 100;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #000000;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.user-menu-item:hover {
+    background-color: #F0F8FF;
+}
+
+.user-menu-item.logout {
+    color: #cc3333;
+}
+
+/* ... (tus estilos existentes) ... */
+
+/* --- NUEVOS ESTILOS PARA EL BOTÓN DE CIERRE --- */
+.close-dropdown-btn.top-right {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 0.4rem;
+}

@@ -1,0 +1,26 @@
+.client-dashboard .main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem; /* Reducido el padding superior */
+}
+
+.hero-section {
+    text-align: center;
+    font-size: 2rem;
+    color: #ccc;
+    padding: 2rem 0; /* Reducido el padding vertical */
+}
+
+.home-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espacio entre la sección "Populares" y "Te puede interesar" */
+    padding: 1rem 0;
+}
+.home-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espacio entre la sección "Populares" y "Te puede interesar" */
+    padding: 1rem 0;
+}
+

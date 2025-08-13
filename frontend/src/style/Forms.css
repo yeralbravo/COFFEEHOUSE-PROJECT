@@ -1,0 +1,139 @@
+.form-container {
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    width: 100%; /* Ocupa el ancho del contenedor */
+    max-width: 600px; /* Pero con un máximo */
+    border: 1px solid #e8e8e8;
+}
+
+.form-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    width: 100%; /* Para que ocupe el espacio en la fila */
+}
+
+/* --- NUEVO: Contenedor para la fila de nombre/apellido --- */
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    transition: color 0.2s;
+}
+
+.form-group input,
+.form-select {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 3rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; /* Importante para que el padding no afecte el ancho */
+}
+
+.form-group input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #1a4d2e;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+}
+
+.input-with-icon:focus-within .input-icon {
+    color: #1a4d2e;
+}
+
+/* --- NUEVO: Estilos para el botón de mostrar contraseña --- */
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 5px;
+}
+
+.password-toggle-btn:hover {
+    color: #1a4d2e;
+}
+
+.form-button {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(90deg, #24651C, #3E7B27);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1rem;
+}
+
+.form-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(26, 77, 46, 0.3);
+}
+
+/* --- NUEVO: Estilo para los textos de error de validación --- */
+.error-text {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+.success-message, .error-message {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-weight: 500;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.success-message {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}

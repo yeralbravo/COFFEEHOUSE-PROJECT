@@ -1,0 +1,40 @@
+/* src/style/SupplierHeader.css */
+.supplier-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #FFFFFF; /* --blanco */
+    border-bottom: 1px solid #EFEFEF; /* --gris-claro */
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #000000; /* --negro */
+}
+
+.header-logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #24651C; /* --verde-oscuro */
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #8B8B8B; /* --gris-oscuro */
+}

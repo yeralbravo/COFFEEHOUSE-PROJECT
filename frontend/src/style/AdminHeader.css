@@ -1,0 +1,83 @@
+.admin-header-container {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-bottom: 1px solid var(--gris-medio);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.header-left-admin {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-container-admin {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.logo-img-admin {
+    height: 35px;
+}
+
+.logo-text-admin {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--verde-oscuro);
+    font-family: 'Lora', serif;
+}
+
+.user-actions-admin {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-btn-admin {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    padding: 0.25rem;
+}
+
+.hamburger-btn-admin {
+    font-size: 1.8rem;
+}
+
+.user-menu-wrapper-admin {
+    position: relative;
+}
+
+.notification-badge-admin {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: var(--verde-oscuro);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.header-profile-picture {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}

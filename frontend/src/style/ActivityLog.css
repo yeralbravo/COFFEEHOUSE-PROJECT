@@ -1,0 +1,143 @@
+/* Estilos para el contenedor de filtros (sin cambios) */
+.filter-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.filter-input, .filter-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+}
+.filter-input {
+    flex-grow: 1;
+}
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+.no-logs-message {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+
+/* Estilos de Línea de Tiempo Mejorados */
+.log-list {
+    position: relative;
+    padding: 1rem 0 1rem 60px; 
+}
+
+.log-list::before {
+    content: '';
+    position: absolute;
+    left: 41px; 
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e9ecef;
+    z-index: 0;
+}
+
+.log-timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-left: 21px; 
+}
+
+/* --- CAMBIO AQUÍ: Aumentamos el espacio entre tarjetas --- */
+.log-timeline-item + .log-timeline-item {
+    margin-top: 2rem; /* Aumentado de 1.5rem a 2rem */
+}
+
+.log-icon-wrapper {
+    position: absolute;
+    left: -39px; 
+    top: 5px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f9; 
+    border: 2px solid;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.log-icon-wrapper svg {
+    width: 20px;
+    height: 20px;
+}
+
+.log-item-card {
+    flex-grow: 1;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.log-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.log-action-text {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.log-admin-name {
+    font-weight: 600;
+    color: #111;
+}
+
+.log-details {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+    padding-left: 0.5rem;
+    border-left: 3px solid #f1f1f1;
+}
+
+.log-details p {
+    margin: 0 0 8px 0;
+}
+.log-details ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 8px 0 0 0;
+}
+.log-details li {
+    padding: 2px 0;
+}
+
+.log-timestamp {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #888;
+    text-align: right;
+}
+
+/* Colores para el borde e icono de la tarjeta */
+.color-green { border-color: #28a745; color: #28a745; }
+.color-red { border-color: #dc3545; color: #dc3545; }
+.color-blue { border-color: #007bff; color: #007bff; }
+.color-grey { border-color: #6c757d; color: #6c757d; }

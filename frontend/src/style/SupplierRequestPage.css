@@ -1,0 +1,119 @@
+.supplier-request-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.supplier-request-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+}
+
+.form-container-supplier {
+  width: 100%;
+  max-width: 650px;
+}
+
+.supplier-box {
+  background: var(--blanco);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  text-align: center;
+}
+
+.supplier-box h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--negro);
+  font-family: 'Lora', serif;
+}
+
+.supplier-box .form-description {
+  font-size: 1rem;
+  color: var(--gris-oscuro);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.form-fieldset {
+  border: 1px solid var(--gris-medio);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fieldset-legend {
+  padding: 0 0.5rem;
+  margin-left: 1rem;
+  font-weight: 600;
+  color: var(--verde-oscuro);
+}
+
+.supplier-box input,
+.supplier-box textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--gris-medio);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fdfdfd;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Inter', sans-serif;
+}
+
+.supplier-box input:focus,
+.supplier-box textarea:focus {
+  outline: none;
+  border-color: var(--verde-oscuro);
+  background-color: var(--blanco);
+  box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
+}
+
+.supplier-box textarea {
+    resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: var(--verde-oscuro);
+  color: var(--blanco);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: var(--hover);
+  transform: translateY(-2px);
+}
+
+.submit-button:disabled {
+    background-color: var(--gris-medio);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- NUEVO ESTILO PARA EL MENSAJE DE ERROR --- */
+.validation-error-text {
+    color: #dc3545; /* Rojo de error */
+    font-size: 0.85rem;
+    text-align: left;
+    margin-top: 0.25rem;
+}

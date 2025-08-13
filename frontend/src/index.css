@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@700&display=swap');
+
+:root {
+    --negro: #000000;
+    --blanco: #FFFFFF;
+    --verde-oscuro: #24651C;
+    --hover: #3E7B27;
+    --gris-claro: #EFEFEF;
+    --gris-medio: #D9D9D9;
+    --gris-oscuro: #8B8B8B;
+    --azul-claro-fondo: #F0F8FF;
+}
+
+/* 1. Importa ambas fuentes */
+
+/* 2. Aplica la fuente base al body */
+body {
+    font-family: 'Inter', sans-serif;
+    /* ... otros estilos del body ... */
+}
+
+/* 3. Aplica la fuente especial solo a los títulos */
+h1,
+h2,
+h3,
+h4 {
+    font-family: 'Lora', serif;
+}

@@ -1,0 +1,28 @@
+/* src/style/CatalogPage.css */
+.catalog-page {
+    background-color: #F0F8FF;
+}
+
+.catalog-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 5%;
+}
+
+.catalog-main h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.catalog-main p {
+    font-size: 1.1rem;
+    color: #8B8B8B;
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}

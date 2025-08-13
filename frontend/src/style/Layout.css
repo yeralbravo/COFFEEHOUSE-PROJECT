@@ -1,0 +1,14 @@
+/* src/style/Layout.css */
+/* Este archivo define la estructura principal de las páginas con sidebar */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+}
+
+/* El contenido principal que acompaña al Sidebar */
+.admin-layout .main-content {
+  flex-grow: 1; /* Le dice al contenido que ocupe todo el espacio sobrante */
+  background-color: #F0F8FF; /* --azul-claro-fondo */
+  padding: 2rem; /* Añade espacio interno para que el contenido no pegue a los bordes */
+}

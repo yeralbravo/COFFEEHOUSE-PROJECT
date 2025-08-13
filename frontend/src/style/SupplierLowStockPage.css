@@ -1,0 +1,80 @@
+/* src/style/SupplierLowStockPage.css */
+
+.supplier-low-stock-page {
+    padding: 2rem;
+    background-color: var(--gris-claro);
+    min-height: 100%;
+}
+
+/* Estilos para el encabezado de la página */
+.supplier-low-stock-page .admin-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gris-medio);
+    margin-bottom: 2rem;
+}
+
+.supplier-low-stock-page .admin-header h1 {
+    font-size: 2rem;
+    color: var(--negro);
+    margin: 0;
+}
+
+.supplier-low-stock-page .admin-header p {
+    font-size: 1rem;
+    color: var(--gris-oscuro);
+    margin-top: 0.5rem;
+}
+
+/* Contenedor de la tabla */
+.list-container {
+    background-color: var(--blanco);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* Para que los bordes redondeados se apliquen a la tabla */
+}
+
+/* Tabla */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th {
+    background-color: #f8f9fa; /* Un gris muy claro para el encabezado */
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.8rem;
+    color: var(--gris-oscuro);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-table td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--gris-claro);
+    vertical-align: middle;
+}
+
+.user-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* Imagen del producto en la tabla */
+.product-image-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--gris-claro);
+}
+
+/* Etiqueta de Stock */
+.stock-badge.stock-low {
+    background-color: #fffbeb; /* Fondo amarillo pálido */
+    color: #b45309; /* Texto ámbar oscuro */
+    border: 1px solid #fde68a; /* Borde amarillo claro */
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}

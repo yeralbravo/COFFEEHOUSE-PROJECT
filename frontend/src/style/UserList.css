@@ -1,0 +1,131 @@
+/* ... (estilos de .list-container y .user-table sin cambios) ... */
+.list-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.user-table th, .user-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.user-table th {
+    background-color: #f4f4f9;
+    font-weight: 600;
+}
+.user-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+.edit-btn { color: #007bff; }
+.delete-btn { color: #dc3545; }
+.action-btn:hover { background-color: #e9ecef; }
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 500;
+}
+.role-client { background-color: #17a2b8; }
+.role-supplier { background-color: #ffc107; color: #333; }
+.role-admin { background-color: #28a745; }
+
+/* --- NUEVOS ESTILOS PARA LA BARRA DE BÚSQUEDA --- */
+.search-bar-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Espacio para el icono */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1a4d2e;
+    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+}
+
+/* ... (estilos existentes) ... */
+
+/* --- CORRECCIÓN DE COLOR PARA ESTADOS DE PEDIDO --- */
+.role-badge.role-pendiente {
+    background-color: #f5a623; /* Naranja/amarillo */
+    color: #000000; /* Texto negro para contraste */
+}
+.role-badge.role-enviado {
+    background-color: #4a90e2; /* Azul */
+    color: #FFFFFF;
+}
+.role-badge.role-entregado {
+    background-color: #24651C; /* Verde oscuro */
+    color: #FFFFFF;
+}
+.role-badge.role-cancelado {
+    background-color: #dc3545; /* Rojo */
+    color: #FFFFFF;
+}
+
+/* ... (estilos existentes) ... */
+
+/* --- NUEVOS ESTILOS PARA LA PÁGINA DE SOLICITUDES --- */
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background-color: #e9ecef;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.filter-tabs button {
+    background-color: transparent;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-tabs button.active {
+    background-color: #FFFFFF;
+    color: var(--verde-oscuro);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.action-btn.approve-btn {
+    color: #28a745; /* Verde */
+}

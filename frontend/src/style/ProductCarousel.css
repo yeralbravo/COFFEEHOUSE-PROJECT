@@ -1,0 +1,25 @@
+.carousel-section {
+    padding: 1rem 0;
+    max-width: 100%;
+}
+
+.carousel-header {
+    margin-bottom: 1.5rem;
+    padding: 0 5%;
+}
+
+.carousel-title {
+    font-size: 1.5rem;
+    color: #000000;
+    margin: 0;
+}
+
+/* --- ESTILOS CORREGIDOS PARA LA CUADRÍCULA DE PRODUCTOS --- */
+.carousel-container {
+    display: grid;
+    /* Crea columnas automáticas que se ajustan al espacio. 
+       Cada producto tendrá un mínimo de 250px. */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem; /* Espacio entre las tarjetas */
+    padding: 0.5rem 5%; /* Padding lateral para que no pegue a los bordes */
+}

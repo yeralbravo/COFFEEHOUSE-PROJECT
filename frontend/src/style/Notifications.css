@@ -1,0 +1,153 @@
+/* src/style/Notifications.css */
+.notifications-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 350px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #EFEFEF;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.notifications-header {
+    padding: 1rem;
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.notifications-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    align-items: flex-start;
+}
+
+.notification-item:not(:last-child) {
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.notification-item:hover {
+    background-color: #F0F8FF;
+}
+
+.notification-item.read {
+    opacity: 0.7;
+}
+
+.notification-item .notification-icon {
+    font-size: 1.2rem;
+    color: #24651C;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.notification-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.notification-item.empty {
+    text-align: center;
+    color: #8B8B8B;
+    padding: 2rem;
+    cursor: default;
+}
+
+/* --- NUEVOS ESTILOS PARA EL MENÚ DE OPCIONES --- */
+.notification-options {
+    position: relative;
+    margin-left: auto;
+}
+
+.options-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gris-oscuro);
+}
+
+.options-btn:hover {
+    background-color: #EFEFEF;
+    color: var(--negro);
+}
+
+.options-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 101;
+    overflow: hidden;
+}
+
+.options-menu button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    padding: 0.7rem 1rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.options-menu button:hover {
+    background-color: #F0F8FF;
+}
+
+.options-menu button svg {
+    font-size: 1rem;
+}
+
+/* ... (tus estilos existentes) ... */
+
+/* --- NUEVOS ESTILOS PARA EL BOTÓN DE CIERRE --- */
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gris-oscuro);
+}
+
+.close-dropdown-btn:hover {
+    background-color: #EFEFEF;
+    color: var(--negro);
+}

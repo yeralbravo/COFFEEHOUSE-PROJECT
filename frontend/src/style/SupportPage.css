@@ -1,0 +1,137 @@
+.support-page-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    height: calc(100vh - 4rem); /* Altura completa menos el padding */
+    padding: 0;
+    margin: -2rem; /* Anula el padding del .admin-content */
+}
+
+.message-list-panel, .message-detail-panel {
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-list-panel {
+    border-right: 1px solid #e0e0e0;
+}
+
+.panel-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.panel-header h1 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem;
+}
+
+.panel-header p {
+    margin: 0;
+    color: var(--gris-oscuro);
+}
+
+.message-list {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.message-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.message-item:hover {
+    background-color: #f8f9fa;
+}
+
+.message-item.active {
+    background-color: var(--azul-claro-fondo);
+    border-right: 3px solid var(--verde-oscuro);
+}
+
+.message-item.unread .sender-name {
+    font-weight: 700;
+    color: var(--negro);
+}
+
+.sender-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+}
+
+.sender-name {
+    font-weight: 500;
+}
+
+.message-date {
+    font-size: 0.8rem;
+    color: var(--gris-oscuro);
+}
+
+.message-preview {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-detail-panel .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.detail-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.detail-header .sender-email {
+    color: var(--verde-oscuro);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.detail-header .sender-phone {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+}
+
+.message-timestamp {
+    font-size: 0.8rem;
+    color: var(--gris-oscuro);
+    white-space: nowrap;
+}
+
+.message-body {
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    white-space: pre-wrap; /* Respeta saltos de línea y espacios */
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.no-message-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--gris-oscuro);
+    text-align: center;
+}
+
+.no-message-selected svg {
+    margin-bottom: 1rem;
+    color: var(--gris-medio);
+}

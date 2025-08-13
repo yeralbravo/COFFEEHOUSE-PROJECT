@@ -1,0 +1,161 @@
+.profile-page-main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 100px);
+}
+
+.profile-form-container {
+    background-color: #FFFFFF;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 700px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--verde-oscuro);
+}
+
+.avatar-edit-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid var(--gris-medio);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.avatar-edit-button:hover {
+    background-color: var(--gris-claro);
+}
+
+.avatar-edit-button svg {
+    color: var(--verde-oscuro);
+}
+
+/* --- NUEVOS ESTILOS PARA EL BOTÓN DE ELIMINAR --- */
+.avatar-delete-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #dc3545; /* Rojo */
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.avatar-delete-button:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+}
+
+.avatar-delete-button svg {
+    color: #fff;
+    font-size: 0.9rem;
+}
+/* --- FIN DE NUEVOS ESTILOS --- */
+
+
+.profile-name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.profile-email {
+    color: #8B8B8B;
+    margin: 0.25rem 0 0 0;
+}
+
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.profile-form-grid .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-form-grid .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.profile-form-grid label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.profile-form-grid input {
+    padding: 0.8rem;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+}
+
+.profile-form-grid input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gris-claro);
+    padding-top: 1.5rem;
+}
+
+.btn-save-profile {
+    background-color: #24651C;
+    color: #FFFFFF;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-delete-account {
+    background: none;
+    border: none;
+    color: #cc3333;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}

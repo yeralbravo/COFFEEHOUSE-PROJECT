@@ -1,0 +1,111 @@
+/* src/style/ProductCard.css */
+.product-card-client {
+    background-color: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 8px;
+    min-width: 250px;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    scroll-snap-align: start;
+}
+
+.product-card-link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Para que ocupe el espacio y se pueda hacer clic */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card-link-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-card-image-wrapper {
+    width: 100%;
+    background-color: #F0F8FF;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.product-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.product-card-info {
+    padding: 1rem;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.product-card-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000000;
+    margin: 0 0 0.25rem 0;
+}
+
+.product-card-type {
+    font-size: 0.9rem;
+    color: #8B8B8B;
+    margin: 0 0 0.5rem 0;
+}
+
+.product-card-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+}
+
+.product-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 1rem 1rem 1rem;
+}
+
+.product-card-actions .btn {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.product-card-actions .btn-buy {
+    background-color: #24651C;
+    color: #FFFFFF;
+    border: none;
+}
+.product-card-actions .btn-buy:hover {
+    background-color: #3E7B27;
+}
+
+.product-card-actions .btn-add-cart {
+    background-color: #EFEFEF;
+    color: #24651C;
+    border: 1px solid #D9D9D9;
+}
+.product-card-actions .btn-add-cart:hover {
+    background-color: #D9D9D9;
+}
+
+/* Añade o verifica esta clase en src/style/ProductCard.css */
+.product-card-link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    display: block; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card-link-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
