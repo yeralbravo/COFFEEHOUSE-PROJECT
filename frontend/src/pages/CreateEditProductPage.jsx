@@ -21,6 +21,13 @@ const CreateEditProductPage = () => {
     const fileInputRef = useRef(null);
     const [loading, setLoading] = useState(false);
 
+    const formatPrice = (value) => {
+        if (!value) return '';
+        const numericValue = value.toString().replace(/[^0-9]/g, '');
+        if (numericValue === '') return '';
+        return new Intl.NumberFormat('es-CO').format(numericValue);
+    };
+
     useEffect(() => {
         if (isEditing) {
             setLoading(true);
@@ -31,7 +38,7 @@ const CreateEditProductPage = () => {
                         nombre: product.nombre || '',
                         tipo: product.tipo || '',
                         marca: product.marca || '',
-                        precio: product.precio || '',
+                        precio: formatPrice(product.precio) || '',
                         peso_neto: product.peso_neto ?? '',
                         stock: product.stock ?? '',
                         descripcion: product.descripcion || '',
@@ -49,11 +56,17 @@ const CreateEditProductPage = () => {
         }
     }, [productId, isEditing, showErrorAlert]);
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'precio') {
+            setFormData({ ...formData, [name]: formatPrice(value) });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        // ================== AQUÍ ESTÁ EL CAMBIO (1/2) ==================
         if (imageFiles.length + files.length > 4) {
             showErrorAlert('Puedes subir un máximo de 4 imágenes.');
             return;
@@ -80,8 +93,13 @@ const CreateEditProductPage = () => {
         e.preventDefault();
         
         const finalFormData = new FormData();
+        const dataToSend = { ...formData };
 
-        Object.entries(formData).forEach(([key, value]) => {
+        if (dataToSend.precio) {
+            dataToSend.precio = dataToSend.precio.replace(/\./g, '');
+        }
+
+        Object.entries(dataToSend).forEach(([key, value]) => {
             if (value !== null && value !== '') {
                 finalFormData.append(key, value);
             }
@@ -120,7 +138,6 @@ const CreateEditProductPage = () => {
                     <div className="image-uploader" onClick={() => fileInputRef.current.click()}>
                         <FiUploadCloud size={30} />
                         <p>Haz clic para agregar imágenes</p>
-                        {/* ================== AQUÍ ESTÁ EL CAMBIO (2/2) ================== */}
                         <span>Máximo 4 archivos</span>
                     </div>
                     <input type="file" ref={fileInputRef} multiple accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
@@ -143,8 +160,8 @@ const CreateEditProductPage = () => {
                         
                         <input 
                             name="precio" 
-                            type="number"
-                            step="0.01"
+                            type="text"
+                            inputMode="numeric"
                             value={formData.precio} 
                             onChange={handleChange} 
                             placeholder="Precio *" 
@@ -165,7 +182,9 @@ const CreateEditProductPage = () => {
                                 <button type="button" onClick={() => removeCaracteristica(index)}><FiTrash2 /></button>
                             </div>
                         ))}
-                        <button type="button" className="btn-add-feature" onClick={addCaracteristica}><FiPlus /> Agregar característica</button>
+                        <button type="button" className="btn-add-feature" onClick={addCaracteristica}>
+                            <FiPlus /> Agregar característica
+                        </button>
                     </div>
                 </div>
 
