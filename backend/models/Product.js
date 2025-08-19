@@ -1,6 +1,7 @@
 import db from '../config/db.js';
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const deleteImageFiles = (imageUrls) => {
     if (!imageUrls || imageUrls.length === 0) return;
@@ -16,12 +17,12 @@ export const createProduct = async (productData, images) => {
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
+        const productId = uuidv4();
         const { supplier_id, nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca } = productData;
-        const [productResult] = await connection.query(
-            'INSERT INTO products (supplier_id, nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [supplier_id, nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca]
+        await connection.query(
+            'INSERT INTO products (id, supplier_id, nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [productId, supplier_id, nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca]
         );
-        const productId = productResult.insertId;
         if (images && images.length > 0) {
             const imageValues = images.map(img => [productId, img.path.replace(/\\/g, '/')]);
             await connection.query('INSERT INTO product_images (product_id, image_url) VALUES ?', [imageValues]);
@@ -46,20 +47,12 @@ export const updateProductById = async (productId, supplierId, productData, newI
         await connection.beginTransaction();
         const { nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca } = productData;
 
-        // 1. Actualizar los datos de texto del producto
         const [result] = await connection.query(
             'UPDATE products SET nombre = ?, tipo = ?, precio = ?, peso_neto = ?, descripcion = ?, caracteristicas = ?, stock = ?, marca = ? WHERE id = ? AND supplier_id = ?',
             [nombre, tipo, precio, peso_neto, descripcion, caracteristicas, stock, marca, productId, supplierId]
         );
 
-        // 2. Gestionar las imágenes si se subieron nuevas
         if (newImages && newImages.length > 0) {
-            // Eliminar imágenes antiguas de la BD y del sistema de archivos
-            const [oldImages] = await connection.query('SELECT image_url FROM product_images WHERE product_id = ?', [productId]);
-            await connection.query('DELETE FROM product_images WHERE product_id = ?', [productId]);
-            deleteImageFiles(oldImages.map(img => img.image_url));
-
-            // Insertar las nuevas imágenes
             const imageValues = newImages.map(img => [productId, img.path.replace(/\\/g, '/')]);
             await connection.query('INSERT INTO product_images (product_id, image_url) VALUES ?', [imageValues]);
         }
@@ -115,6 +108,7 @@ export const findAllPublicProducts = async () => {
     try {
         const [products] = await db.query(
             `SELECT p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
+             'product' AS itemType, -- <--- LÍNEA MODIFICADA
              GROUP_CONCAT(pi.image_url) as images FROM products p
              LEFT JOIN product_images pi ON p.id = pi.product_id 
              WHERE p.stock > 0
@@ -131,10 +125,10 @@ export const findProductById = async (productId) => {
     try {
         const [products] = await db.query(
             `SELECT 
-                p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
-                GROUP_CONCAT(pi.image_url) as images,
-                AVG(r.rating) as avg_rating,
-                COUNT(r.id) as review_count
+                 p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.peso_neto, p.descripcion, p.caracteristicas,
+                 GROUP_CONCAT(pi.image_url) as images,
+                 AVG(r.rating) as avg_rating,
+                 COUNT(r.id) as review_count
              FROM products p
              LEFT JOIN product_images pi ON p.id = pi.product_id
              LEFT JOIN reviews r ON p.id = r.product_id
@@ -155,9 +149,9 @@ export const findBestSellers = async (limit = 5) => {
     try {
         const [products] = await db.query(
             `SELECT 
-                p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
-                GROUP_CONCAT(pi.image_url) as images, 
-                COUNT(oi.product_id) as sales_count
+                 p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
+                 GROUP_CONCAT(pi.image_url) as images, 
+                 COUNT(oi.product_id) as sales_count
              FROM products p
              LEFT JOIN product_images pi ON p.id = pi.product_id
              JOIN order_items oi ON p.id = oi.product_id

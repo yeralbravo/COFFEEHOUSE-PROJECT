@@ -1,26 +1,24 @@
 import db from '../config/db.js';
 
-/**
- * Obtiene el carrito de un usuario, con los detalles completos de productos e insumos.
- * CORRECCIÓN: Se eliminaron las referencias a 'uuid' y se ajustó la lógica SQL.
- */
 export const getCartByUserId = async (userId) => {
     try {
         const [rows] = await db.query(
             `
             SELECT 
-                ci.id, ci.quantity,
-                ci.product_id, ci.insumo_id,
-                CASE WHEN ci.product_id IS NOT NULL THEN p.id ELSE i.id END AS item_id,
+                ci.id AS cartItemId, -- <--- 1. RENOMBRAMOS EL ID DEL CARRITO
+                ci.quantity,
+                ci.product_id, 
+                ci.insumo_id,
+                CASE WHEN ci.product_id IS NOT NULL THEN p.id ELSE i.id END AS id, -- <--- 2. EL UUID AHORA SE LLAMA 'id'
                 CASE WHEN ci.product_id IS NOT NULL THEN p.nombre ELSE i.nombre END AS nombre,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.precio ELSE i.precio END AS precio,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.stock ELSE i.stock END AS stock,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.tipo ELSE i.categoria END AS tipo,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.marca ELSE i.marca END AS marca,
                 CASE WHEN ci.product_id IS NOT NULL THEN 
-                   (SELECT GROUP_CONCAT(pi.image_url) FROM product_images pi WHERE pi.product_id = p.id)
+                    (SELECT GROUP_CONCAT(pi.image_url) FROM product_images pi WHERE pi.product_id = p.id)
                 ELSE 
-                   (SELECT GROUP_CONCAT(ii.image_url) FROM insumo_images ii WHERE ii.insumo_id = i.id)
+                    (SELECT GROUP_CONCAT(ii.image_url) FROM insumo_images ii WHERE ii.insumo_id = i.id)
                 END AS images
             FROM cart_items ci
             LEFT JOIN products p ON ci.product_id = p.id
@@ -40,9 +38,6 @@ export const getCartByUserId = async (userId) => {
     }
 };
 
-/**
- * Agrega un ítem al carrito de un usuario. Si ya existe, actualiza la cantidad.
- */
 export const addItemToCart = async (userId, itemId, quantity, isProduct) => {
     try {
         const itemTypeColumn = isProduct ? 'product_id' : 'insumo_id';
@@ -70,9 +65,6 @@ export const addItemToCart = async (userId, itemId, quantity, isProduct) => {
     }
 };
 
-/**
- * Actualiza la cantidad de un ítem en el carrito.
- */
 export const updateCartItemQuantity = async (userId, itemId, quantity, isProduct) => {
     try {
         const itemTypeColumn = isProduct ? 'product_id' : 'insumo_id';
@@ -87,9 +79,6 @@ export const updateCartItemQuantity = async (userId, itemId, quantity, isProduct
     }
 };
 
-/**
- * Elimina un ítem del carrito.
- */
 export const removeItemFromCart = async (userId, itemId, isProduct) => {
     try {
         const itemTypeColumn = isProduct ? 'product_id' : 'insumo_id';
@@ -104,9 +93,6 @@ export const removeItemFromCart = async (userId, itemId, isProduct) => {
     }
 };
 
-/**
- * Vacía todo el carrito de un usuario.
- */
 export const clearCartByUserId = async (userId) => {
     try {
         const [result] = await db.query('DELETE FROM cart_items WHERE user_id = ?', [userId]);

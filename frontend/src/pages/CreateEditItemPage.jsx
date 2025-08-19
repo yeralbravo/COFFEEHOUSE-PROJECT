@@ -26,24 +26,11 @@ const CreateEditItemPage = () => {
     const fileInputRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
-
-    const formatPrice = (value) => {
-        if (!value) return '';
-        const numericValue = value.toString().replace(/[^0-9]/g, '');
-        return new Intl.NumberFormat('es-CO').format(numericValue);
-    };
-
-    const handlePriceChange = (e) => {
-        const { name, value } = e.target;
-        const formattedValue = formatPrice(value);
-        setFormData(prev => ({ ...prev, [name]: formattedValue }));
-    };
-
+    
     useEffect(() => {
         if (isEditing && itemId && !hasFetched.current) {
             setLoading(true);
             hasFetched.current = true;
-
             const fetchItem = isProduct ? productService.getProductById(itemId) : insumoService.getInsumoById(itemId);
             
             fetchItem.then(res => {
@@ -51,15 +38,16 @@ const CreateEditItemPage = () => {
                 setFormData({
                     nombre: item.nombre || '',
                     marca: item.marca || '',
-                    precio: formatPrice(item.precio) || '',
-                    stock: item.stock || '',
+                    precio: item.precio || '',
+                    stock: item.stock ?? '',
                     descripcion: item.descripcion || '',
                     tipo: item.tipo || '',
                     categoria: item.categoria || '',
-                    peso_neto: item.peso_neto || '',
+                    peso_neto: item.peso_neto ?? '',
                 });
                 if (item.caracteristicas && typeof item.caracteristicas === 'object') {
-                    setCaracteristicas(Object.entries(item.caracteristicas).map(([key, value]) => ({ key, value })));
+                    const caracteristicasArray = Object.entries(item.caracteristicas).map(([key, value]) => ({ key, value }));
+                    if (caracteristicasArray.length > 0) setCaracteristicas(caracteristicasArray);
                 }
                 if (item.images) {
                     setImagePreviews(item.images.map(img => `http://localhost:5000/${img}`));
@@ -68,11 +56,15 @@ const CreateEditItemPage = () => {
         }
     }, [itemId, isEditing, isProduct, showErrorAlert]);
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        if (imageFiles.length + files.length > 5) {
-            showErrorAlert('Puedes subir un máximo de 5 imágenes.');
+        // ================== AQUÍ ESTÁ EL CAMBIO (1/2) ==================
+        if (imageFiles.length + files.length > 4) {
+            showErrorAlert('Puedes subir un máximo de 4 imágenes.');
             return;
         }
         setImageFiles(prev => [...prev, ...files]);
@@ -94,12 +86,8 @@ const CreateEditItemPage = () => {
         e.preventDefault();
         
         const finalFormData = new FormData();
-        const priceForBackend = parseFloat(formData.precio.replace(/\./g, ''));
-
         Object.entries(formData).forEach(([key, value]) => {
-            if(key === 'precio') {
-                finalFormData.append(key, priceForBackend);
-            } else {
+            if (value !== null && value !== '') {
                 finalFormData.append(key, value);
             }
         });
@@ -113,15 +101,12 @@ const CreateEditItemPage = () => {
 
         try {
             if (isEditing) {
-                if (isProduct) {
-                    await productService.updateProduct(itemId, finalFormData);
-                } else {
-                    await insumoService.updateInsumo(itemId, finalFormData);
-                }
+                const updatePromise = isProduct ? productService.updateProduct(itemId, finalFormData) : insumoService.updateInsumo(itemId, finalFormData);
+                await updatePromise;
                 showSuccessAlert('Ítem actualizado con éxito.');
             } else {
-                const createData = isProduct ? productService.createProduct(finalFormData) : insumoService.createInsumo(finalFormData);
-                await createData;
+                const createPromise = isProduct ? productService.createProduct(finalFormData) : insumoService.createInsumo(finalFormData);
+                await createPromise;
                 showSuccessAlert('Ítem creado con éxito.');
             }
             navigate(isProduct ? '/supplier/products' : '/supplier/insumos');
@@ -130,7 +115,7 @@ const CreateEditItemPage = () => {
         }
     };
 
-    if (loading) return <p>Cargando...</p>;
+    if (loading && isEditing) return <p>Cargando...</p>;
 
     return (
         <div className="add-edit-item-page">
@@ -149,7 +134,8 @@ const CreateEditItemPage = () => {
                     <div className="image-uploader" onClick={() => fileInputRef.current.click()}>
                         <FiUploadCloud size={30} />
                         <p>Haz clic para agregar imágenes</p>
-                        <span>Máximo 5 archivos</span>
+                        {/* ================== AQUÍ ESTÁ EL CAMBIO (2/2) ================== */}
+                        <span>Máximo 4 archivos</span>
                     </div>
                     <input type="file" ref={fileInputRef} multiple accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                     <div className="image-preview-grid">
@@ -175,14 +161,17 @@ const CreateEditItemPage = () => {
                         ) : (
                             <input name="categoria" value={formData.categoria || ''} onChange={handleChange} placeholder="Categoría (ej. Cafeteras) *" required />
                         )}
+                        
                         <input 
                             name="precio" 
-                            type="text" 
+                            type="number"
+                            step="0.01" 
                             value={formData.precio || ''} 
-                            onChange={handlePriceChange} 
+                            onChange={handleChange} 
                             placeholder="Precio *" 
                             required 
                         />
+                        
                         <input name="stock" type="number" value={formData.stock || ''} onChange={handleChange} placeholder="Cantidad de stock *" required />
                     </div>
                     <textarea name="descripcion" value={formData.descripcion || ''} onChange={handleChange} placeholder="Descripción *" required />

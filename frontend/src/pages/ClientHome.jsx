@@ -21,8 +21,12 @@ const ClientHome = () => {
                 if (response.success) {
                     const { popularItems, recentItems } = response.data;
                     setPopularItems(popularItems);
-                    const popularIds = new Set(popularItems.map(p => `${p.item_type}-${p.id}`));
-                    const filteredRecent = recentItems.filter(item => !popularIds.has(`${item.item_type}-${item.id}`));
+                    
+                    // ================== AQUÍ ESTÁ LA CORRECCIÓN ==================
+                    // Cambiamos 'item_type' por 'itemType' para que coincida con la nueva respuesta de la API.
+                    const popularIds = new Set(popularItems.map(p => `${p.itemType}-${p.id}`));
+                    const filteredRecent = recentItems.filter(item => !popularIds.has(`${item.itemType}-${item.id}`));
+                    
                     setInterestItems(filteredRecent.slice(0, 12));
                 } else {
                     setError('No se pudieron cargar los productos.');
@@ -51,7 +55,6 @@ const ClientHome = () => {
     };
 
     return (
-        // Se eliminan ClientHeader y Footer de aquí
         <main>
             <HeroSlider />
             <div className="home-content-wrapper">

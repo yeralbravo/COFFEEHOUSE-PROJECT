@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FiUploadCloud, FiX, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { useAlerts } from '../hooks/useAlerts';
 import * as productService from '../services/productService';
-import '../style/CreateEditProductPage.css'; // Nuevos estilos para la página
+import '../style/CreateEditProductPage.css';
 
 const CreateEditProductPage = () => {
     const { productId } = useParams();
@@ -32,12 +32,13 @@ const CreateEditProductPage = () => {
                         tipo: product.tipo || '',
                         marca: product.marca || '',
                         precio: product.precio || '',
-                        peso_neto: product.peso_neto || '',
-                        stock: product.stock || '',
+                        peso_neto: product.peso_neto ?? '',
+                        stock: product.stock ?? '',
                         descripcion: product.descripcion || '',
                     });
                     if (product.caracteristicas && typeof product.caracteristicas === 'object') {
-                        setCaracteristicas(Object.entries(product.caracteristicas).map(([key, value]) => ({ key, value })));
+                        const caracteristicasArray = Object.entries(product.caracteristicas).map(([key, value]) => ({ key, value }));
+                         if (caracteristicasArray.length > 0) setCaracteristicas(caracteristicasArray);
                     }
                     if (product.images) {
                         setImagePreviews(product.images.map(img => `http://localhost:5000/${img}`));
@@ -52,13 +53,13 @@ const CreateEditProductPage = () => {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        if (imageFiles.length + files.length > 5) {
-            showErrorAlert('Puedes subir un máximo de 5 imágenes.');
+        // ================== AQUÍ ESTÁ EL CAMBIO (1/2) ==================
+        if (imageFiles.length + files.length > 4) {
+            showErrorAlert('Puedes subir un máximo de 4 imágenes.');
             return;
         }
         setImageFiles(prev => [...prev, ...files]);
-        const newPreviews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews(prev => [...prev, ...newPreviews]);
+        setImagePreviews(prev => [...prev, ...files.map(file => URL.createObjectURL(file))]);
     };
 
     const removeImage = (index) => {
@@ -77,8 +78,14 @@ const CreateEditProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const finalFormData = new FormData();
-        Object.entries(formData).forEach(([key, value]) => finalFormData.append(key, value));
+
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value !== null && value !== '') {
+                finalFormData.append(key, value);
+            }
+        });
         
         const caracteristicasObj = caracteristicas.reduce((acc, { key, value }) => {
             if (key) acc[key] = value;
@@ -90,9 +97,7 @@ const CreateEditProductPage = () => {
 
         try {
             if (isEditing) {
-                // Nota: La actualización de imágenes en modo edición requeriría lógica adicional en el backend.
-                // Esta implementación actualiza solo los datos de texto.
-                await productService.updateProduct(productId, formData);
+                await productService.updateProduct(productId, finalFormData);
                 showSuccessAlert('Producto actualizado con éxito.');
             } else {
                 await productService.createProduct(finalFormData);
@@ -110,13 +115,13 @@ const CreateEditProductPage = () => {
         <div className="add-edit-product-page">
             <h1>{isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto'}</h1>
             <form onSubmit={handleSubmit} className="product-form-layout">
-                {/* Columna de Imágenes */}
                 <div className="form-section image-section">
                     <h3>Imágenes del Producto</h3>
                     <div className="image-uploader" onClick={() => fileInputRef.current.click()}>
                         <FiUploadCloud size={30} />
                         <p>Haz clic para agregar imágenes</p>
-                        <span>Máximo 5 archivos</span>
+                        {/* ================== AQUÍ ESTÁ EL CAMBIO (2/2) ================== */}
+                        <span>Máximo 4 archivos</span>
                     </div>
                     <input type="file" ref={fileInputRef} multiple accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                     <div className="image-preview-grid">
@@ -129,14 +134,23 @@ const CreateEditProductPage = () => {
                     </div>
                 </div>
 
-                {/* Columna de Detalles */}
                 <div className="form-section details-section">
                     <h3>Detalles del Producto</h3>
                     <div className="form-grid">
                         <input name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre del producto *" required />
                         <input name="marca" value={formData.marca} onChange={handleChange} placeholder="Marca *" required />
                         <input name="tipo" value={formData.tipo} onChange={handleChange} placeholder="Tipo de café (ej. Grano, Molido) *" required />
-                        <input name="precio" type="number" value={formData.precio} onChange={handleChange} placeholder="Precio *" required />
+                        
+                        <input 
+                            name="precio" 
+                            type="number"
+                            step="0.01"
+                            value={formData.precio} 
+                            onChange={handleChange} 
+                            placeholder="Precio *" 
+                            required 
+                        />
+
                         <input name="stock" type="number" value={formData.stock} onChange={handleChange} placeholder="Cantidad de stock *" required />
                         <input name="peso_neto" type="number" value={formData.peso_neto} onChange={handleChange} placeholder="Peso neto en gramos" />
                     </div>

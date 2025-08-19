@@ -1,104 +1,133 @@
-/* src/style/SupplierProductsPage.css */
+/* ============================================== */
+/* PÁGINA DE GESTIÓN DE PRODUCTOS DEL PROVEEDOR   */
+/* ============================================== */
 
+/* --- Contenedor Principal --- */
+.supplier-products-page {
+    padding: 2.5rem 3rem; 
+}
+
+/* --- Cabecera (Título y Botón Añadir) --- */
 .supplier-products-page .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #EAEAEA;
 }
 
-.supplier-products-page .page-header .page-title {
-  font-size: 2rem;
-  color: #000000; /* --negro */
-  margin: 0;
+.supplier-products-page .page-title {
+    font-size: 2.5rem;
+    color: #000000; /* Color original restaurado */
+    font-weight: 700;
+    margin: 0;
 }
 
-.supplier-products-page .page-header .btn-add-product {
-  background-color: #24651C; /* --verde-oscuro */
-  color: #FFFFFF; /* --blanco */
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.2s ease;
+.supplier-products-page .btn-add-product {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #24651C; /* Color original restaurado */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 0.9rem 1.6rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(36, 101, 28, 0.2);
 }
 
-.supplier-products-page .page-header .btn-add-product:hover {
-  background-color: #3E7B27; /* --hover */
+.supplier-products-page .btn-add-product:hover {
+    background-color: #3E7B27; /* Color original restaurado */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(36, 101, 28, 0.25);
 }
 
+/* --- Contenedor de la Tabla --- */
 .supplier-products-page .product-list-container {
-  background-color: #FFFFFF; /* --blanco */
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    padding: 1rem;
+    overflow-x: auto;
 }
 
+/* --- Tabla de Productos --- */
 .supplier-products-page .product-table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .supplier-products-page .product-table th,
 .supplier-products-page .product-table td {
-  padding: 1rem 0.8rem;
-  text-align: left;
-  border-bottom: 1px solid #EFEFEF; /* --gris-claro */
-  vertical-align: middle;
+    padding: 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #F0F0F0;
+    vertical-align: middle;
+}
+
+.supplier-products-page .product-table tr:last-child td {
+    border-bottom: none;
 }
 
 .supplier-products-page .product-table th {
-  color: #8B8B8B; /* --gris-oscuro */
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
+    color: #8B8B8B; /* Color original restaurado */
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.supplier-products-page .product-table .product-image-thumbnail {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
+/* --- Celdas Específicas de la Tabla --- */
+.supplier-products-page .product-image-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #EAEAEA;
 }
 
-.supplier-products-page .product-table .stock-badge {
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #fff;
+.supplier-products-page .stock-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
 }
 
-.supplier-products-page .product-table .stock-high { background-color: #3E7B27; }
-.supplier-products-page .product-table .stock-low { background-color: #f5a623; }
-.supplier-products-page .product-table .stock-out { background-color: #cc3333; }
+/* Colores originales para el stock restaurados */
+.supplier-products-page .stock-high { background-color: #3E7B27; } 
+.supplier-products-page .stock-low { background-color: #f5a623; } 
+.supplier-products-page .stock-out { background-color: #cc3333; } 
 
-.supplier-products-page .product-table .action-buttons {
+.supplier-products-page .action-buttons {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
+    align-items: center;
 }
 
-.supplier-products-page .product-table .action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.4rem;
-    border-radius: 50%;
+.supplier-products-page .action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
+    background-color: transparent; /* Fondo original restaurado */
+    border: none; /* Borde original restaurado */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.supplier-products-page .product-table .action-btn.edit-btn { color: #3E7B27; }
-.supplier-products-page .product-table .action-btn.delete-btn { color: #cc3333; }
+/* Colores originales para los botones restaurados */
+.supplier-products-page .action-btn.edit-btn { color: #3E7B27; } 
+.supplier-products-page .action-btn.delete-btn { color: #cc3333; }
 
-.supplier-products-page .product-table .action-btn:hover {
-    background-color: #EFEFEF;
+.supplier-products-page .action-btn:hover {
+    background-color: #EFEFEF; /* Color original restaurado */
+    transform: scale(1.1);
 }

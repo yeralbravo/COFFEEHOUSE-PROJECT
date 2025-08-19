@@ -1,15 +1,18 @@
-/* src/style/CreateEditItemPage.css */
-.add-edit-item-page {
+/* Estilos para las páginas de Crear/Editar Ítems */
+
+/* Layout General */
+.add-edit-item-page, .add-edit-product-page {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.add-edit-item-page h1 {
+.add-edit-item-page h1, .add-edit-product-page h1 {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
+/* Selector de tipo de ítem */
 .item-type-selector {
     display: flex;
     gap: 0.5rem;
@@ -34,7 +37,8 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.item-form-layout {
+/* Layout del Formulario */
+.item-form-layout, .product-form-layout {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -54,6 +58,7 @@
     padding-bottom: 0.8rem;
 }
 
+/* Sección de Imágenes */
 .image-uploader {
     border: 2px dashed var(--gris-medio);
     border-radius: 8px;
@@ -81,6 +86,7 @@
     display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 
+/* Sección de Detalles */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -93,6 +99,7 @@
 }
 .details-section textarea { min-height: 100px; resize: vertical; }
 
+/* Características */
 .caracteristicas-container { display: flex; flex-direction: column; gap: 0.8rem; }
 .caracteristica-item { display: flex; gap: 0.8rem; }
 .caracteristica-item input { flex: 1; }
@@ -104,6 +111,7 @@
     display: flex; align-items: center; gap: 0.5rem;
 }
 
+/* Botones de Acción */
 .form-actions {
     grid-column: 1 / -1; display: flex;
     justify-content: flex-end; gap: 1rem; margin-top: 1rem;
@@ -115,9 +123,25 @@
 .btn-cancel { background-color: #fff; color: var(--negro); border-color: var(--gris-medio); }
 .btn-save { background-color: var(--verde-oscuro); color: var(--blanco); border-color: var(--verde-oscuro); }
 
+/* Layout para pantallas grandes */
 @media (min-width: 992px) {
-    .item-form-layout {
+    .item-form-layout, .product-form-layout {
         grid-template-columns: 400px 1fr;
         align-items: flex-start;
     }
+}
+
+/* ================== CÓDIGO AÑADIDO ================== */
+
+/* Oculta las flechas en los campos de tipo número para Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Oculta las flechas en los campos de tipo número para Firefox y navegadores modernos */
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: none; /* Estándar moderno */
 }

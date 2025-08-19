@@ -46,13 +46,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(rateLimit({
-    windowMs: 15 * 60 * 5000, 
-    max: 200, 
-    message: { success: false, error: 'Demasiadas solicitudes, intenta de nuevo más tarde' },
-    standardHeaders: true,
-    legacyHeaders: false,
-}));
+
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
 }));

@@ -31,7 +31,6 @@ const insumoValidation = [
     body('caracteristicas').optional({ checkFalsy: true }).isJSON(),
 ];
 
-// --- RUTAS PÚBLICAS ---
 router.get('/public', async (req, res) => {
     try {
         const insumos = await findAllPublicInsumos();
@@ -64,7 +63,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// --- RUTAS PROTEGIDAS PARA PROVEEDORES ---
 router.post('/',
     [
         verifyToken,
@@ -89,14 +87,13 @@ router.post('/',
     }
 );
 
-// CORRECCIÓN: La ruta de actualización ahora usa el middleware de subida de imágenes
 router.put('/:id',
-    [verifyToken, checkRole(['supplier']), uploadInsumoImages, ...insumoValidation],
+    [verifyToken, checkRole(['supplier']), uploadInsumoImages, param('id').isUUID().withMessage('El ID del insumo debe ser un UUID válido.'), ...insumoValidation], // <--- 1. VALIDAMOS QUE EL ID SEA UUID
     validateRequest,
     async (req, res) => {
         try {
-            // CORRECCIÓN: Ahora pasamos los archivos a la función del modelo
-            const result = await updateInsumoById(parseInt(req.params.id), req.user.id, req.body, req.files);
+            // <--- 2. QUITAMOS parseInt()
+            const result = await updateInsumoById(req.params.id, req.user.id, req.body, req.files);
             if (result.affectedRows === 0) {
                 return res.status(404).json({ success: false, error: 'Insumo no encontrado o sin permiso para editarlo.' });
             }
@@ -107,9 +104,10 @@ router.put('/:id',
     }
 );
 
-router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isInt()], validateRequest, async (req, res) => {
+// <--- 3. CAMBIAMOS isInt() por isUUID() y QUITAMOS parseInt()
+router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID().withMessage('El ID del insumo debe ser un UUID válido.')], validateRequest, async (req, res) => {
     try {
-        const result = await deleteInsumoById(parseInt(req.params.id), req.user.id);
+        const result = await deleteInsumoById(req.params.id, req.user.id);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Insumo no encontrado o sin permiso para eliminarlo.' });
         }

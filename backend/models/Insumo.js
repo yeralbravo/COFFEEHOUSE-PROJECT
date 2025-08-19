@@ -1,6 +1,7 @@
 import db from '../config/db.js';
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const deleteImageFiles = (imageUrls) => {
     if (!imageUrls || imageUrls.length === 0) return;
@@ -16,12 +17,13 @@ export const createInsumo = async (insumoData, images) => {
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
+        const insumoId = uuidv4();
         const { supplier_id, nombre, categoria, marca, precio, stock, descripcion, caracteristicas } = insumoData;
-        const [result] = await connection.query(
-            'INSERT INTO insumos (supplier_id, nombre, categoria, marca, precio, stock, descripcion, caracteristicas) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [supplier_id, nombre, categoria, marca, precio, stock, descripcion, caracteristicas]
+
+        await connection.query(
+            'INSERT INTO insumos (id, supplier_id, nombre, categoria, marca, precio, stock, descripcion, caracteristicas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [insumoId, supplier_id, nombre, categoria, marca, precio, stock, descripcion, caracteristicas]
         );
-        const insumoId = result.insertId;
 
         if (images && images.length > 0) {
             const imageValues = images.map(img => [insumoId, img.path.replace(/\\/g, '/')]);
@@ -50,29 +52,23 @@ export const findInsumosBySupplier = async (supplierId) => {
     return insumos.map(i => ({ ...i, images: i.images ? i.images.split(',') : [] }));
 };
 
-/**
- * FUNCIÓN CORREGIDA: Ahora recibe las imágenes nuevas para procesarlas.
- */
 export const updateInsumoById = async (insumoId, supplierId, insumoData, newImages) => {
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
         const { nombre, categoria, marca, precio, stock, descripcion, caracteristicas } = insumoData;
 
-        // 1. Actualizar los datos de texto del insumo
         const [result] = await connection.query(
             'UPDATE insumos SET nombre = ?, categoria = ?, marca = ?, precio = ?, stock = ?, descripcion = ?, caracteristicas = ? WHERE id = ? AND supplier_id = ?',
             [nombre, categoria, marca, precio, stock, descripcion, caracteristicas, insumoId, supplierId]
         );
 
-        // 2. Gestionar las imágenes si se subieron nuevas
         if (newImages && newImages.length > 0) {
-            // Eliminar imágenes antiguas de la BD y del sistema de archivos
+            // Esta lógica reemplaza las imágenes. Si quieres que las agregue, hay que modificarla.
             const [oldImages] = await connection.query('SELECT image_url FROM insumo_images WHERE insumo_id = ?', [insumoId]);
             await connection.query('DELETE FROM insumo_images WHERE insumo_id = ?', [insumoId]);
             deleteImageFiles(oldImages.map(img => img.image_url));
 
-            // Insertar las nuevas imágenes
             const imageValues = newImages.map(img => [insumoId, img.path.replace(/\\/g, '/')]);
             await connection.query('INSERT INTO insumo_images (insumo_id, image_url) VALUES ?', [imageValues]);
         }
@@ -116,6 +112,7 @@ export const deleteInsumoById = async (insumoId, supplierId) => {
 export const findAllPublicInsumos = async () => {
     const [insumos] = await db.query(
         `SELECT i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
+         'insumo' AS itemType, -- <--- LÍNEA MODIFICADA
          GROUP_CONCAT(ii.image_url) as images FROM insumos i
          LEFT JOIN insumo_images ii ON ii.insumo_id = i.id 
          WHERE i.stock > 0
@@ -128,10 +125,10 @@ export const findInsumoById = async (insumoId) => {
     try {
         const [insumos] = await db.query(
             `SELECT 
-                i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
-                GROUP_CONCAT(ii.image_url) as images,
-                AVG(r.rating) as avg_rating,
-                COUNT(r.id) as review_count
+                 i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
+                 GROUP_CONCAT(ii.image_url) as images,
+                 AVG(r.rating) as avg_rating,
+                 COUNT(r.id) as review_count
              FROM insumos i
              LEFT JOIN insumo_images ii ON i.id = ii.insumo_id
              LEFT JOIN reviews r ON i.id = r.insumo_id

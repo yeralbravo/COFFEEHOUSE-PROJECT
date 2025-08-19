@@ -63,14 +63,13 @@ router.get('/my-products', [verifyToken, checkRole(['supplier'])], async (req, r
     }
 });
 
-// CORRECCIÓN: La ruta de actualización ahora usa el middleware de subida de imágenes
 router.put('/:id',
-    [verifyToken, checkRole(['supplier']), uploadProductImages, ...productValidation],
+    [verifyToken, checkRole(['supplier']), uploadProductImages, param('id').isUUID().withMessage('El ID del producto debe ser un UUID válido.'), ...productValidation], // <--- 1. VALIDAMOS QUE EL ID SEA UUID
     validateRequest,
     async (req, res) => {
         try {
-            // CORRECCIÓN: Ahora pasamos los archivos a la función del modelo
-            const result = await updateProductById(parseInt(req.params.id), req.user.id, req.body, req.files);
+            // <--- 2. QUITAMOS parseInt()
+            const result = await updateProductById(req.params.id, req.user.id, req.body, req.files);
             if (result.affectedRows === 0) {
                 return res.status(404).json({ success: false, error: 'Producto no encontrado o sin permiso para editarlo.' });
             }
@@ -81,9 +80,10 @@ router.put('/:id',
     }
 );
 
-router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isInt()], validateRequest, async (req, res) => {
+// <--- 3. CAMBIAMOS isInt() por isUUID() y QUITAMOS parseInt()
+router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID().withMessage('El ID del producto debe ser un UUID válido.')], validateRequest, async (req, res) => {
     try {
-        const result = await deleteProductById(parseInt(req.params.id), req.user.id);
+        const result = await deleteProductById(req.params.id, req.user.id);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Producto no encontrado o sin permiso para eliminarlo.' });
         }

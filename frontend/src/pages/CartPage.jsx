@@ -89,7 +89,7 @@ const CartPage = () => {
                                         : 'https://placehold.co/100x100/EFEFEF/8B8B8B?text=Sin+Imagen';
 
                                     return (
-                                        <div key={item.id} className={`cart-item ${!selectedBrands.has(brand) ? 'disabled' : ''}`}>
+                                        <div key={item.cartItemId} className={`cart-item ${!selectedBrands.has(brand) ? 'disabled' : ''}`}> {/* Usamos cartItemId para la key, que es único por entrada */}
                                             <img src={imageUrl} alt={item.nombre} className="cart-item-image" />
                                             <div className="cart-item-details">
                                                 <p className="item-name">{item.nombre}</p>
@@ -97,12 +97,15 @@ const CartPage = () => {
                                                     {item.descripcion ? `${item.descripcion.substring(0, 30)}...` : 'Descripción no disponible.'}
                                                     <Link to={linkUrl}> Ver más</Link>
                                                 </p>
-                                                <button onClick={() => removeFromCart(item.item_id, item.isProduct)} className="item-remove-btn">Eliminar</button>
+                                                {/* ========= CORRECCIÓN 1 ========= */}
+                                                <button onClick={() => removeFromCart(item.id, item.isProduct)} className="item-remove-btn">Eliminar</button>
                                             </div>
                                             <div className="cart-item-quantity">
-                                                <button onClick={() => updateQuantity(item.item_id, item.quantity - 1, item.isProduct)}>-</button>
+                                                {/* ========= CORRECCIÓN 2 ========= */}
+                                                <button onClick={() => updateQuantity(item.id, item.quantity - 1, item.isProduct)}>-</button>
                                                 <span>{item.quantity}</span>
-                                                <button onClick={() => updateQuantity(item.item_id, item.quantity + 1, item.isProduct)}>+</button>
+                                                {/* ========= CORRECCIÓN 3 ========= */}
+                                                <button onClick={() => updateQuantity(item.id, item.quantity + 1, item.isProduct)}>+</button>
                                             </div>
                                             <p className="cart-item-price">${new Intl.NumberFormat('es-CO').format(item.precio * item.quantity)}</p>
                                         </div>
