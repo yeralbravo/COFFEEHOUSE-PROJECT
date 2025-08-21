@@ -7,7 +7,7 @@ import * as insumoService from '../services/insumoService';
 import '../style/CreateEditItemPage.css';
 
 const CreateEditItemPage = () => {
-    const { itemType: paramType, itemId } = useParams(); // <--- CORRECCIÓN AQUÍ
+    const { itemType: paramType, itemId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const { showSuccessAlert, showErrorAlert } = useAlerts();
@@ -27,18 +27,10 @@ const CreateEditItemPage = () => {
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
     
-    const formatPrice = (value) => {
-        if (!value) return '';
-        const numericValue = value.toString().replace(/[^0-9]/g, '');
-        if (numericValue === '') return '';
-        return new Intl.NumberFormat('es-CO').format(numericValue);
-    };
-
     useEffect(() => {
         if (isEditing && itemId && !hasFetched.current) {
             setLoading(true);
             hasFetched.current = true;
-
             const fetchItem = isProduct ? productService.getProductById(itemId) : insumoService.getInsumoById(itemId);
             
             fetchItem.then(res => {
@@ -46,7 +38,7 @@ const CreateEditItemPage = () => {
                 setFormData({
                     nombre: item.nombre || '',
                     marca: item.marca || '',
-                    precio: formatPrice(item.precio) || '',
+                    precio: item.precio || '',
                     stock: item.stock ?? '',
                     descripcion: item.descripcion || '',
                     tipo: item.tipo || '',
@@ -65,16 +57,12 @@ const CreateEditItemPage = () => {
     }, [itemId, isEditing, isProduct, showErrorAlert]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'precio') {
-            setFormData({ ...formData, [name]: formatPrice(value) });
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
+        // ================== AQUÍ ESTÁ EL CAMBIO (1/2) ==================
         if (imageFiles.length + files.length > 4) {
             showErrorAlert('Puedes subir un máximo de 4 imágenes.');
             return;
@@ -98,13 +86,7 @@ const CreateEditItemPage = () => {
         e.preventDefault();
         
         const finalFormData = new FormData();
-        const dataToSend = { ...formData };
-
-        if (dataToSend.precio) {
-            dataToSend.precio = dataToSend.precio.replace(/\./g, '');
-        }
-
-        Object.entries(dataToSend).forEach(([key, value]) => {
+        Object.entries(formData).forEach(([key, value]) => {
             if (value !== null && value !== '') {
                 finalFormData.append(key, value);
             }
@@ -152,6 +134,7 @@ const CreateEditItemPage = () => {
                     <div className="image-uploader" onClick={() => fileInputRef.current.click()}>
                         <FiUploadCloud size={30} />
                         <p>Haz clic para agregar imágenes</p>
+                        {/* ================== AQUÍ ESTÁ EL CAMBIO (2/2) ================== */}
                         <span>Máximo 4 archivos</span>
                     </div>
                     <input type="file" ref={fileInputRef} multiple accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
@@ -181,8 +164,8 @@ const CreateEditItemPage = () => {
                         
                         <input 
                             name="precio" 
-                            type="text"
-                            inputMode="numeric"
+                            type="number"
+                            step="0.01" 
                             value={formData.precio || ''} 
                             onChange={handleChange} 
                             placeholder="Precio *" 
