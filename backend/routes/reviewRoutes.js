@@ -13,11 +13,14 @@ router.post('/',
         body('rating').isInt({ min: 1, max: 5 }),
         body('comment').optional().trim().isLength({ max: 500 }),
         body('type').isIn(['product', 'insumo']),
-        body('itemId').isInt()
+        // ================== AQUÍ ESTÁ LA CORRECCIÓN ==================
+        // Cambiamos isInt() por isUUID() para que acepte el nuevo formato de ID.
+        body('itemId').isUUID()
     ],
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            // Este es el bloque que te está dando el error 400
             return res.status(400).json({ success: false, errors: errors.array() });
         }
 
@@ -25,7 +28,6 @@ router.post('/',
         const { orderItemId, rating, comment, type, itemId } = req.body;
 
         try {
-            // Verificar que el usuario puede calificar este item
             const canReview = await canUserReview(userId, orderItemId);
             if (!canReview) {
                 return res.status(403).json({ success: false, error: 'No puedes calificar este producto hasta que el pedido sea entregado.' });
