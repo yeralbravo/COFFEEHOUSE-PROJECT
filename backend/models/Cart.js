@@ -43,9 +43,33 @@ export const getCartByUserId = async (userId) => {
     }
 };
 
-export const addItemToCart = async (userId, itemId, quantity, isProduct) => {
+export const addItemToCart = async (userId, itemId, quantity) => {
     try {
-        const itemTypeColumn = isProduct ? 'product_id' : 'insumo_id';
+        let itemTypeColumn = null;
+
+        // Buscar en products
+        const [productExists] = await db.query(
+            `SELECT id FROM products WHERE id = ?`,
+            [itemId]
+        );
+
+        if (productExists.length > 0) {
+            itemTypeColumn = "product_id";
+        } else {
+            // Si no existe en products, buscar en insumos
+            const [insumoExists] = await db.query(
+                `SELECT id FROM insumos WHERE id = ?`,
+                [itemId]
+            );
+
+            if (insumoExists.length > 0) {
+                itemTypeColumn = "insumo_id";
+            } else {
+                throw new Error(`El item con id ${itemId} no existe ni en products ni en insumos`);
+            }
+        }
+
+        // Revisar si ya existe en el carrito
         const [existingItem] = await db.query(
             `SELECT * FROM cart_items WHERE user_id = ? AND ${itemTypeColumn} = ?`,
             [userId, itemId]
@@ -53,22 +77,26 @@ export const addItemToCart = async (userId, itemId, quantity, isProduct) => {
 
         if (existingItem.length > 0) {
             const [result] = await db.query(
-                `UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND ${itemTypeColumn} = ?`,
+                `UPDATE cart_items 
+                 SET quantity = quantity + ? 
+                 WHERE user_id = ? AND ${itemTypeColumn} = ?`,
                 [quantity, userId, itemId]
             );
-            return result;
+            return { message: "Cantidad actualizada en el carrito", result };
         } else {
             const [result] = await db.query(
-                `INSERT INTO cart_items (user_id, ${itemTypeColumn}, quantity) VALUES (?, ?, ?)`,
+                `INSERT INTO cart_items (user_id, ${itemTypeColumn}, quantity) 
+                 VALUES (?, ?, ?)`,
                 [userId, itemId, quantity]
             );
-            return result;
+            return { message: "Ítem agregado al carrito", result };
         }
     } catch (error) {
-        console.error("Error al agregar ítem al carrito:", error);
+        console.error("Error al agregar ítem al carrito:", error.message);
         throw error;
     }
 };
+
 
 export const updateCartItemQuantity = async (userId, itemId, quantity, isProduct) => {
     try {
