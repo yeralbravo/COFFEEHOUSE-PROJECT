@@ -5,15 +5,20 @@ export const getCartByUserId = async (userId) => {
         const [rows] = await db.query(
             `
             SELECT 
-                ci.id AS cartItemId, -- <--- 1. RENOMBRAMOS EL ID DEL CARRITO
+                ci.id AS cartItemId,
                 ci.quantity,
                 ci.product_id, 
                 ci.insumo_id,
-                CASE WHEN ci.product_id IS NOT NULL THEN p.id ELSE i.id END AS id, -- <--- 2. EL UUID AHORA SE LLAMA 'id'
+                CASE WHEN ci.product_id IS NOT NULL THEN p.id ELSE i.id END AS id,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.nombre ELSE i.nombre END AS nombre,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.precio ELSE i.precio END AS precio,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.stock ELSE i.stock END AS stock,
-                CASE WHEN ci.product_id IS NOT NULL THEN p.tipo ELSE i.categoria END AS tipo,
+                
+                -- ================== CORRECCIÓN ==================
+                -- Seleccionamos 'tipo' y 'categoria' en sus propias columnas para no mezclarlas.
+                p.tipo,
+                i.categoria,
+                
                 CASE WHEN ci.product_id IS NOT NULL THEN p.marca ELSE i.marca END AS marca,
                 CASE WHEN ci.product_id IS NOT NULL THEN 
                     (SELECT GROUP_CONCAT(pi.image_url) FROM product_images pi WHERE pi.product_id = p.id)
@@ -30,7 +35,7 @@ export const getCartByUserId = async (userId) => {
         return rows.map(row => ({
             ...row,
             images: row.images ? row.images.split(',') : [],
-            isProduct: !!row.product_id
+            isProduct: !!row.product_id // Este flag es ahora nuestra fuente de verdad
         }));
     } catch (error) {
         console.error("Error al obtener el carrito por ID de usuario:", error);

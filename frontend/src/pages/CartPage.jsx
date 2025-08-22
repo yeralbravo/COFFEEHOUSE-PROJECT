@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAlerts } from '../hooks/useAlerts'; // Asegúrate de importar tu hook de alertas
 import '../style/CartPage.css';
 
 const CartPage = () => {
     const { cartItems, updateQuantity, removeFromCart, loading } = useCart();
     const navigate = useNavigate();
+    const { showErrorAlert } = useAlerts(); // Y de usarlo
     const API_BASE_URL = 'http://localhost:5000';
 
     const [selectedBrands, setSelectedBrands] = useState(new Set());
@@ -19,9 +21,17 @@ const CartPage = () => {
         return acc;
     }, {});
 
+    // ================== 1. LÍNEA AÑADIDA ==================
+    // Contamos cuántas marcas (grupos) diferentes hay en el carrito.
+    const brandCount = Object.keys(groupedItems).length;
+
     useEffect(() => {
+        // Inicializa la selección marcando todos los checkboxes
         setSelectedBrands(new Set(Object.keys(groupedItems)));
-    }, [cartItems]);
+    // ================== 2. LÍNEA MODIFICADA ==================
+    // Ahora, este efecto solo se ejecuta si el número de marcas cambia,
+    // no cuando solo cambia la cantidad de un producto.
+    }, [brandCount]);
 
     const handleBrandSelection = (brand) => {
         const newSelection = new Set(selectedBrands);
@@ -35,8 +45,9 @@ const CartPage = () => {
 
     const handleCheckout = () => {
         const itemsForCheckout = cartItems.filter(item => selectedBrands.has(item.marca || 'Otros Productos'));
+        
         if (itemsForCheckout.length === 0) {
-            alert("Por favor, selecciona al menos un producto para continuar.");
+            showErrorAlert("Por favor, selecciona al menos un producto para continuar.");
             return;
         }
         
@@ -89,7 +100,7 @@ const CartPage = () => {
                                         : 'https://placehold.co/100x100/EFEFEF/8B8B8B?text=Sin+Imagen';
 
                                     return (
-                                        <div key={item.cartItemId} className={`cart-item ${!selectedBrands.has(brand) ? 'disabled' : ''}`}> {/* Usamos cartItemId para la key, que es único por entrada */}
+                                        <div key={item.cartItemId} className={`cart-item ${!selectedBrands.has(brand) ? 'disabled' : ''}`}>
                                             <img src={imageUrl} alt={item.nombre} className="cart-item-image" />
                                             <div className="cart-item-details">
                                                 <p className="item-name">{item.nombre}</p>
@@ -97,14 +108,11 @@ const CartPage = () => {
                                                     {item.descripcion ? `${item.descripcion.substring(0, 30)}...` : 'Descripción no disponible.'}
                                                     <Link to={linkUrl}> Ver más</Link>
                                                 </p>
-                                                {/* ========= CORRECCIÓN 1 ========= */}
                                                 <button onClick={() => removeFromCart(item.id, item.isProduct)} className="item-remove-btn">Eliminar</button>
                                             </div>
                                             <div className="cart-item-quantity">
-                                                {/* ========= CORRECCIÓN 2 ========= */}
                                                 <button onClick={() => updateQuantity(item.id, item.quantity - 1, item.isProduct)}>-</button>
                                                 <span>{item.quantity}</span>
-                                                {/* ========= CORRECCIÓN 3 ========= */}
                                                 <button onClick={() => updateQuantity(item.id, item.quantity + 1, item.isProduct)}>+</button>
                                             </div>
                                             <p className="cart-item-price">${new Intl.NumberFormat('es-CO').format(item.precio * item.quantity)}</p>

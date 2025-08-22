@@ -11,7 +11,6 @@ import ClientHome from './pages/ClientHome';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
-import PaymentPage from './pages/PaymentPage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import CafePage from './pages/CafePage';
@@ -23,6 +22,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import SupplierRequestPage from './pages/SupplierRequestPage';
+// import PaymentSuccessPage from './pages/PaymentSuccessPage'; // <-- LÍNEA ELIMINADA
 
 // Layout de Admin
 import AdminLayout from './components/admin/AdminLayout';
@@ -36,14 +36,13 @@ import SuppliersPage from './pages/SuppliersPage';
 import AdminsPage from './pages/AdminsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import SupportPage from './pages/SupportPage';
-import SupplierRequestsPage from './pages/SupplierRequestsPage'; // <-- AÑADIR ESTA LÍNEA
+import SupplierRequestsPage from './pages/SupplierRequestsPage';
 
-// --- NUEVAS PÁGINAS DE ESTADÍSTICAS ---
+// Páginas de Estadísticas de Admin
 import AdminSalesStatsPage from './pages/AdminSalesStatsPage';
 import AdminProductStatsPage from './pages/AdminProductStatsPage';
 import AdminUserStatsPage from './pages/AdminUserStatsPage';
 import AdminOrderStatsPage from './pages/AdminOrderStatsPage';
-
 
 // Páginas de Proveedor
 import SupplierDashboardPage from './pages/SupplierDashboardPage';
@@ -55,7 +54,6 @@ import SupplierSalesReportPage from './pages/SupplierSalesReportPage';
 import SupplierProductStatsPage from './pages/SupplierProductStatsPage';
 import SupplierOrderStatsPage from './pages/SupplierOrderStatsPage';
 import SupplierLowStockPage from './pages/SupplierLowStockPage'; 
-
 
 function App() {
   return (
@@ -76,15 +74,17 @@ function App() {
           <Route path="/insumos" element={<InsumosPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout/shipping" element={<CheckoutPage />} />
-          <Route path="/checkout/payment" element={<PaymentPage />} />
           <Route path='/mis-pedidos' element={<MyOrdersPage />} />
           <Route path='/order/:orderId' element={<OrderDetailPage />} />
-          <Route path="/order-success" element={<h1 style={{textAlign: 'center', margin: '2rem'}}>¡Gracias por tu compra!</h1>} />
           <Route path="/product/:productId" element={<ProductDetailPage />} />
           <Route path="/insumo/:insumoId" element={<InsumoDetailPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/change-password' element={<ChangePasswordPage />} />
+          
+          {/* <Route path="/payment/success" element={<PaymentSuccessPage />} /> */} {/* <-- RUTA ELIMINADA */}
+          <Route path="/payment/failure" element={<h1 style={{textAlign: 'center', margin: '2rem'}}>Pago Fallido</h1>} />
+          <Route path="/payment/pending" element={<h1 style={{textAlign: 'center', margin: '2rem'}}>Pago Pendiente</h1>} />
           
           {/* Rutas exclusivas del panel de proveedor */}
           <Route path='/supplier/dashboard' element={<SupplierDashboardPage />} />
@@ -112,12 +112,11 @@ function App() {
           <Route path="support" element={<SupportPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
-          {/* --- NUEVAS RUTAS DE ESTADÍSTICAS --- */}
           <Route path="stats/sales" element={<AdminSalesStatsPage />} />
           <Route path="stats/products" element={<AdminProductStatsPage />} />
           <Route path="stats/users" element={<AdminUserStatsPage />} />
           <Route path="stats/orders" element={<AdminOrderStatsPage />} />
-          <Route path="supplier-requests" element={<SupplierRequestsPage />} /> {/* <-- AÑADIR ESTA LÍNEA */}
+          <Route path="supplier-requests" element={<SupplierRequestsPage />} />
         </Route>
 
       </Routes>

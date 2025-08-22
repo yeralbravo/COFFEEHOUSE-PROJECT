@@ -38,25 +38,26 @@ export const CartProvider = ({ children }) => {
         fetchCart();
     }, [fetchCart]);
 
-    const addToCart = async (product, quantity = 1) => {
+    // Parámetro corregido de 'product' a 'item' para consistencia
+    const addToCart = async (item, quantity = 1) => {
         if (!user) {
             showErrorAlert("Debes iniciar sesión para agregar productos al carrito.");
             return false;
         }
         
-        if (typeof product.stock !== 'number') {
+        if (typeof item.stock !== 'number') {
             showErrorAlert("El producto no tiene información de stock válida. Inténtalo de nuevo.");
             return false;
         }
 
-        if (product.stock < quantity) {
-            showErrorAlert(`¡Stock insuficiente! Solo quedan ${product.stock} unidades de "${product.nombre}".`);
+        if (item.stock < quantity) {
+            showErrorAlert(`¡Stock insuficiente! Solo quedan ${item.stock} unidades de "${item.nombre}".`);
             return false;
         }
 
         try {
-            const isProduct = !!product.tipo;
-            await addItem(product.id, quantity, isProduct);
+            const isProduct = !!item.tipo;
+            await addItem(item.id, quantity, isProduct);
             await fetchCart();
             return true;
         } catch (error) {
@@ -71,8 +72,9 @@ export const CartProvider = ({ children }) => {
             return;
         }
         
+        // Lógica modificada para no eliminar en cero
         if (newQuantity <= 0) {
-            await removeFromCart(itemId, isProduct);
+            showErrorAlert("La cantidad mínima es 1. Para eliminar, usa el botón 'Eliminar'.");
             return;
         }
 
@@ -133,3 +135,6 @@ export const CartProvider = ({ children }) => {
         </CartContext.Provider>
     );
 };
+
+// Aseguramos que el export default esté presente si es necesario en tu estructura
+export default CartContext;

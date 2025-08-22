@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAlerts } from '../hooks/useAlerts';
 import { createOrder } from '../services/orderService';
+import { createPaymentOrder } from '../services/paymentService';
 import '../style/CheckoutPage.css';
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    
-    const buyNowData = location.state?.fromBuyNow ? location.state : null;
+    const { showErrorAlert, showSuccessAlert } = useAlerts();
     const cartContext = useCart();
 
-    const cartItems = buyNowData ? buyNowData.cartItems : cartContext.cartItems;
-    const cartTotal = buyNowData ? buyNowData.cartTotal : cartContext.cartTotal;
-    const itemCount = buyNowData ? buyNowData.itemCount : cartContext.itemCount;
+    // ================== AQUÍ ESTÁ LA CORRECCIÓN ==================
+    // 1. Verificamos si la página anterior nos envió datos específicos (los items seleccionados).
+    const passedState = location.state;
+
+    // 2. Usamos los datos pasados si existen; de lo contrario, usamos los datos del carrito completo.
+    // Esto asegura que si venimos del carrito con una selección, se respete.
+    const cartItems = passedState?.cartItems || cartContext.cartItems;
+    const cartTotal = passedState?.cartTotal || cartContext.cartTotal;
     
     const [paymentMethod, setPaymentMethod] = useState('online');
+    const [isProcessing, setIsProcessing] = useState(false);
     const [shippingInfo, setShippingInfo] = useState({
         nombre: '', apellido: '', telefono: '', correo: '', 
         direccion: '', departamento: '', ciudad: '', nota: ''
@@ -27,35 +34,50 @@ const CheckoutPage = () => {
 
     const handleContinue = async (e) => {
         e.preventDefault();
+        setIsProcessing(true);
         
         const requiredFields = ['nombre', 'apellido', 'telefono', 'correo', 'direccion', 'departamento', 'ciudad'];
         const missingField = requiredFields.find(field => !shippingInfo[field]);
         if (missingField) {
-            alert(`Por favor, completa el campo "${missingField}".`);
+            showErrorAlert(`Por favor, completa el campo "${missingField}".`);
+            setIsProcessing(false);
             return;
         }
 
-        if (paymentMethod === 'online') {
-            navigate('/checkout/payment', { 
-                state: { shippingInfo, cartItems, cartTotal, itemCount, fromBuyNow: !!buyNowData }
-            });
-        } else {
-            try {
-                const orderData = {
-                    cartItems,
-                    shippingAddress: shippingInfo,
-                    paymentMethod: 'contra_entrega',
-                    totalAmount: cartTotal
-                };
-                await createOrder(orderData);
-                alert('¡Pedido creado con éxito!');
-                if (!buyNowData) {
+        const orderPayload = {
+            cartItems,
+            shippingAddress: shippingInfo,
+            paymentMethod: paymentMethod === 'online' ? 'mercado_pago' : 'contra_entrega',
+            totalAmount: cartTotal
+        };
+
+        try {
+            const newOrderResponse = await createOrder(orderPayload);
+            const newOrderId = newOrderResponse.data.id;
+
+            if (paymentMethod === 'online') {
+                const paymentResponse = await createPaymentOrder({ cartItems, orderId: newOrderId });
+                if (paymentResponse.success && paymentResponse.payment_url) {
+                    // 3. Limpiamos solo los items que se compraron.
+                    // Para simplificar, si se compró desde el carrito, lo vaciamos.
+                    if (passedState) {
+                        cartContext.clearCart();
+                    }
+                    window.open(paymentResponse.payment_url, '_blank');
+                    navigate('/mis-pedidos'); 
+                } else {
+                    throw new Error('No se pudo generar el link de pago.');
+                }
+            } else {
+                showSuccessAlert('¡Pedido creado con éxito!');
+                if (passedState) {
                     cartContext.clearCart();
                 }
                 navigate('/mis-pedidos');
-            } catch (error) {
-                alert(`Error al crear la orden: ${error.message}`);
             }
+        } catch (error) {
+            showErrorAlert(`Error al procesar la orden: ${error.message}`);
+            setIsProcessing(false);
         }
     };
 
@@ -78,7 +100,6 @@ const CheckoutPage = () => {
                         </div>
                     </section>
                 </div>
-
                 <div className="summary-column">
                     <section className="form-section">
                         <h3>Tu pedido</h3>
@@ -100,11 +121,13 @@ const CheckoutPage = () => {
                             </label>
                             <label className="radio-label">
                                 <input type="radio" name="payment" value="online" defaultChecked onChange={e => setPaymentMethod(e.target.value)} />
-                                Pago en línea (Simulado)
+                                Pago en línea con Mercado Pago
                             </label>
                         </div>
                         <div className="form-actions">
-                            <button type="submit" className="btn-primary">Continuar</button>
+                            <button type="submit" className="btn-primary" disabled={isProcessing}>
+                                {isProcessing ? 'Procesando...' : 'Continuar'}
+                            </button>
                             <button type="button" className="btn-secondary" onClick={() => navigate('/cart')}>Cancelar</button>
                         </div>
                     </section>

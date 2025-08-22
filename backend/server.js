@@ -22,6 +22,7 @@ import supplierRequestRoutes from './routes/supplierRequestRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js'; // <-- 1. LÍNEA AÑADIDA
 
 dotenv.config();
 
@@ -69,7 +70,8 @@ app.use('/api/supplier', supplierRoutes);
 app.use('/api/supplier-requests', supplierRequestRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/cart', cartRoutes); // Asegúrate de que esta línea esté presente
+app.use('/api/cart', cartRoutes);
+app.use('/api/payment', paymentRoutes); // <-- 2. LÍNEA AÑADIDA
 
 // Middleware para rutas no encontradas (404)
 app.use((req, res, next) => {
