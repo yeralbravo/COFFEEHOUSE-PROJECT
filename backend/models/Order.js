@@ -5,18 +5,11 @@ export const cancelOrder = async (orderId, userId) => {
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
-
-        const [orders] = await connection.query(
-            'SELECT * FROM orders WHERE id = ? AND user_id = ? AND status = "Pendiente"',
-            [orderId, userId]
-        );
-
+        const [orders] = await connection.query('SELECT * FROM orders WHERE id = ? AND user_id = ? AND status = "Pendiente"', [orderId, userId]);
         if (orders.length === 0) {
             throw new Error('El pedido no se puede cancelar o no te pertenece.');
         }
-
         const [items] = await connection.query('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
-
         for (const item of items) {
             if (item.product_id) {
                 await connection.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.quantity, item.product_id]);
@@ -24,9 +17,7 @@ export const cancelOrder = async (orderId, userId) => {
                 await connection.query('UPDATE insumos SET stock = stock + ? WHERE id = ?', [item.quantity, item.insumo_id]);
             }
         }
-
         await connection.query('UPDATE orders SET status = "Cancelado" WHERE id = ?', [orderId]);
-
         await connection.commit();
         return { success: true, message: 'Pedido cancelado correctamente.' };
     } catch (error) {
@@ -42,13 +33,9 @@ export const createOrder = async (userId, cartItems, shippingAddress, paymentMet
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
-
         const stockChecks = [];
         for (const item of cartItems) {
-            // ================== CORRECCIÓN 1 ==================
-            // Usamos item.isProduct en lugar de item.tipo para determinar la tabla
             const tableToQuery = item.isProduct ? 'products' : 'insumos';
-            
             const [rows] = await connection.query(`SELECT stock, nombre, supplier_id FROM ${tableToQuery} WHERE id = ? FOR UPDATE`, [item.id]);
             if (rows.length === 0) {
                 throw new Error(`El ítem "${item.nombre}" ya no se encuentra disponible.`);
@@ -58,39 +45,25 @@ export const createOrder = async (userId, cartItems, shippingAddress, paymentMet
             }
             stockChecks.push({ ...item, oldStock: rows[0].stock, supplier_id: rows[0].supplier_id });
         }
-
         const [orderResult] = await connection.query('INSERT INTO orders (user_id, total_amount, shipping_address, payment_method) VALUES (?, ?, ?, ?)', [userId, totalAmount, JSON.stringify(shippingAddress), paymentMethod]);
         const orderId = orderResult.insertId;
-
         const supplierIdsWithNewOrders = new Set();
         for (const item of cartItems) {
-            // ================== CORRECCIÓN 2 ==================
             const tableToUpdate = item.isProduct ? 'products' : 'insumos';
-            
-            await connection.query(
-                'INSERT INTO order_items (order_id, product_id, insumo_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?, ?)',
-                // Usamos item.isProduct para decidir en qué columna insertar el ID
-                [orderId, item.isProduct ? item.id : null, item.isProduct ? null : item.id, item.quantity, item.precio]
-            );
-            
+            await connection.query('INSERT INTO order_items (order_id, product_id, insumo_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?, ?)', [orderId, item.isProduct ? item.id : null, item.isProduct ? null : item.id, item.quantity, item.precio]);
             await connection.query(`UPDATE ${tableToUpdate} SET stock = stock - ? WHERE id = ?`, [item.quantity, item.id]);
-            
             const itemWithStock = stockChecks.find(i => i.id === item.id);
             const newStock = itemWithStock.oldStock - item.quantity;
-            
             if (newStock <= 10) {
                 const message = `¡Stock bajo o agotado! Tu ítem "${item.nombre}" ahora tiene ${newStock} unidades.`;
                 await createNotification(itemWithStock.supplier_id, message, '/supplier/stats/low-stock');
             }
-
             supplierIdsWithNewOrders.add(itemWithStock.supplier_id);
         }
-        
         for (const supplierId of supplierIdsWithNewOrders) {
             const message = `¡Nuevo pedido recibido! Tienes nuevos ítems para preparar en el pedido #${orderId}.`;
             await createNotification(supplierId, message, '/supplier/orders');
         }
-
         await connection.commit();
         return { success: true, orderId: orderId };
     } catch (error) {
@@ -102,37 +75,58 @@ export const createOrder = async (userId, cartItems, shippingAddress, paymentMet
     }
 };
 
+// ================== FUNCIÓN MODIFICADA ==================
 export const findOrdersByUserId = async (userId, filters = {}) => {
+    // Se establece el idioma de la sesión a español para los nombres de los meses.
+    await db.query("SET lc_time_names = 'es_ES'");
+
     let query = `SELECT o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, DATE_FORMAT(o.created_at, '%d de %M de %Y') as date, o.updated_at FROM orders o`;
     const conditions = ['o.user_id = ?'];
     const params = [userId];
+
     if (filters.status && filters.status !== '') {
         conditions.push('o.status = ?');
         params.push(filters.status);
     }
-    if (filters.startDate) {
-        conditions.push('o.created_at >= ?');
-        params.push(`${filters.startDate} 00:00:00`);
+
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Si se proporciona solo una fecha, filtramos por ese día exacto.
+    if (filters.startDate && !filters.endDate) {
+        conditions.push('DATE(o.created_at) = ?');
+        params.push(filters.startDate);
+    } 
+    // Si se proporcionan ambas fechas, filtramos por el rango.
+    else {
+        if (filters.startDate) {
+            conditions.push('o.created_at >= ?');
+            params.push(`${filters.startDate} 00:00:00`);
+        }
+        if (filters.endDate) {
+            conditions.push('o.created_at <= ?');
+            params.push(`${filters.endDate} 23:59:59`);
+        }
     }
-    if (filters.endDate) {
-        conditions.push('o.created_at <= ?');
-        params.push(`${filters.endDate} 23:59:59`);
-    }
+
     query += ' WHERE ' + conditions.join(' AND ');
     query += ' ORDER BY o.created_at DESC';
+    
     const [orders] = await db.query(query, params);
+
     if (orders.length === 0) {
         return [];
     }
+
     const orderIds = orders.map(o => o.id);
     const itemsQuery = `SELECT oi.order_id, IFNULL(p.nombre, i.nombre) as name, oi.quantity, IFNULL(p.marca, i.marca) as marca, IFNULL((SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1), (SELECT image_url FROM insumo_images WHERE insumo_id = i.id LIMIT 1)) as image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id WHERE oi.order_id IN (?)`;
     const [items] = await db.query(itemsQuery, [orderIds]);
+
     const ordersWithItems = orders.map(order => {
         return {
             ...order,
             items: items.filter(item => item.order_id === order.id)
         };
     });
+
     return ordersWithItems;
 };
 
@@ -155,6 +149,7 @@ export const findOrderById = async (orderId, userId) => {
 };
 
 export const findAllOrders = async (filters = {}) => {
+    await db.query("SET lc_time_names = 'es_ES'");
     let query = `SELECT o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, u.nombre as user_name, u.apellido as user_lastname, DATE_FORMAT(o.created_at, '%d de %M de %Y') as date, o.created_at FROM orders o JOIN users u ON o.user_id = u.id`;
     const conditions = [];
     const params = [];
@@ -174,6 +169,7 @@ export const updateOrderStatus = async (orderId, updateData) => {
 };
 
 export const findOrdersBySupplierId = async (supplierId, filters = {}) => {
+    await db.query("SET lc_time_names = 'es_ES'");
     const orderIdsQuery = `SELECT DISTINCT oi.order_id FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id WHERE p.supplier_id = ? OR i.supplier_id = ?`;
     const [orderIdRows] = await db.query(orderIdsQuery, [supplierId, supplierId]);
     if (orderIdRows.length === 0) {

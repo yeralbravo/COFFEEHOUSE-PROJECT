@@ -63,7 +63,6 @@ const MyOrdersPage = () => {
                     className="filter-input" 
                     aria-label="Fecha de inicio"
                 />
-                
             </div>
 
             <div className="orders-list">
@@ -75,7 +74,6 @@ const MyOrdersPage = () => {
                             <h2 className="date-header">{date}</h2>
                             <div className="orders-in-group">
                                 {ordersOnDate.map(order => (
-                                    // Comprobación de seguridad: solo renderizar si hay items
                                     (order.items && order.items.length > 0) 
                                         ? <OrderCard key={order.id} order={order} />
                                         : null
