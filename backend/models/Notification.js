@@ -1,39 +1,34 @@
 import db from '../config/db.js';
-import { findAllAdminIds } from './User.js'; // Importamos la nueva función
+import { findAllAdminIds } from './User.js';
 
-/**
- * Crea una nueva notificación para un usuario.
- */
 export const createNotification = async (userId, message, linkUrl = null) => {
-  try {
-    await db.query(
-      'INSERT INTO notifications (user_id, message, link_url) VALUES (?, ?, ?)',
-      [userId, message, linkUrl]
-    );
-  } catch (error) {
-    console.error('Error al crear la notificación:', error);
-  }
+    try {
+        await db.query(
+            'INSERT INTO notifications (user_id, message, link_url) VALUES (?, ?, ?)',
+            [userId, message, linkUrl]
+        );
+    } catch (error) {
+        console.error('Error al crear la notificación:', error);
+    }
 };
 
-/**
- * Obtiene las notificaciones de un usuario.
- */
 export const findNotificationsByUserId = async (userId) => {
-  try {
-    const [notifications] = await db.query(
-      'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20',
-      [userId]
-    );
-    return notifications;
-  } catch (error) {
-    console.error('Error al obtener notificaciones:', error);
-    throw error;
-  }
+    try {
+        // Establece el idioma a español para los nombres de los meses
+        await db.query("SET lc_time_names = 'es_ES'");
+
+        // Selecciona la fecha original y la fecha ya formateada
+        const [notifications] = await db.query(
+            'SELECT id, message, link_url, is_read, created_at, DATE_FORMAT(created_at, "%d de %M de %Y") as formatted_date FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20',
+            [userId]
+        );
+        return notifications;
+    } catch (error) {
+        console.error('Error al obtener notificaciones:', error);
+        throw error;
+    }
 };
 
-/**
- * Marca todas las notificaciones no leídas de un usuario como leídas.
- */
 export const markAllNotificationsAsRead = async (userId) => {
     try {
         const [result] = await db.query(
@@ -47,9 +42,6 @@ export const markAllNotificationsAsRead = async (userId) => {
     }
 };
 
-/**
- * Elimina una notificación por su ID.
- */
 export const deleteNotificationById = async (notificationId, userId) => {
     try {
         const [result] = await db.query(
@@ -63,11 +55,6 @@ export const deleteNotificationById = async (notificationId, userId) => {
     }
 };
 
-/**
- * Crea una notificación para todos los administradores.
- * @param {string} message - El mensaje de la notificación.
- * @param {string|null} linkUrl - Un enlace opcional.
- */
 export const createNotificationForAllAdmins = async (message, linkUrl = null) => {
     try {
         const adminIds = await findAllAdminIds();
