@@ -61,7 +61,6 @@
     color: var(--verde-oscuro);
 }
 
-/* --- NUEVOS ESTILOS PARA EL BOTÓN DE ELIMINAR --- */
 .avatar-delete-button {
     position: absolute;
     top: 0;
@@ -87,8 +86,6 @@
     color: #fff;
     font-size: 0.9rem;
 }
-/* --- FIN DE NUEVOS ESTILOS --- */
-
 
 .profile-name {
     font-weight: 600;
@@ -107,30 +104,211 @@
     gap: 1.5rem;
 }
 
-.profile-form-grid .form-group {
+.form-group {
     display: flex;
     flex-direction: column;
 }
 
-.profile-form-grid .form-group.full-width {
-    grid-column: 1 / -1;
-}
-
-.profile-form-grid label {
+.form-group label {
     margin-bottom: 0.5rem;
     font-weight: 500;
+    font-size: 0.9rem;
 }
 
-.profile-form-grid input {
+.form-group input {
     padding: 0.8rem;
     border: 1px solid #D9D9D9;
     border-radius: 6px;
+    font-size: 1rem;
 }
 
-.profile-form-grid input:disabled {
+input:disabled {
     background-color: #f8f9fa;
     cursor: not-allowed;
 }
+
+/* ================== ESTILOS PARA DIRECCIONES ================== */
+
+.profile-addresses-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.addresses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.addresses-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Estilos base compartidos por ambos botones */
+.btn-add-address, .btn-cancel-address {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Estilo específico para "Añadir Dirección" */
+.btn-add-address {
+    background-color: var(--verde-oscuro);
+    color: #fff;
+    border: 1px solid var(--verde-oscuro);
+}
+
+.btn-add-address:hover {
+    background-color: #3E7B27;
+    border-color: #3E7B27;
+}
+
+/* --- ESTILO CORREGIDO PARA "CANCELAR" --- */
+.btn-cancel-address {
+    background-color: transparent;
+    color: #cc3333;
+    border: 1px solid #cc3333;
+}
+
+.btn-cancel-address:hover {
+    background-color: #cc3333;
+    color: #fff;
+}
+
+.address-form {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.address-form h4 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.address-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.address-form .full-width {
+    grid-column: 1 / -1;
+}
+
+.address-form input, .address-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.address-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.btn-save-address {
+    background-color: var(--verde-oscuro);
+    color: #fff;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+.addresses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.address-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #f8f9fa;
+    padding: 1.25rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+}
+
+.address-icon {
+    font-size: 1.5rem;
+    color: var(--verde-oscuro);
+    flex-shrink: 0;
+}
+
+.address-details {
+    flex-grow: 1;
+}
+
+.address-details p, .address-details strong {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.address-details strong {
+    font-weight: 600;
+}
+
+.address-details p {
+    color: #6c757d;
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.address-edit-btn {
+    background: #e9f5e7;
+    color: var(--verde-oscuro);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.address-delete-btn {
+    background: #fce8e8;
+    color: #cc3333;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.no-addresses-message {
+    color: #8B8B8B;
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* ================== FIN DE ESTILOS PARA DIRECCIONES ================== */
 
 .profile-actions {
     margin-top: 2rem;
