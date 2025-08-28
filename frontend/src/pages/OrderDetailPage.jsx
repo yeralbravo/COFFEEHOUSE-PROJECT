@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getOrderById, cancelOrder } from '../services/orderService'; // Importar cancelOrder
-import { useAlerts } from '../hooks/useAlerts'; // Importar useAlerts
+import { getOrderById, cancelOrder } from '../services/orderService';
+import { useAlerts } from '../hooks/useAlerts';
 import ReviewModal from '../components/client/ReviewModal';
 import { FiArrowLeft, FiTruck, FiMail, FiPhone } from 'react-icons/fi';
 import '../style/OrderDetailPage.css';
@@ -12,7 +12,7 @@ const OrderDetailPage = () => {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [itemToReview, setItemToReview] = useState(null);
-    const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts(); // Instanciar alertas
+    const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
     const API_BASE_URL = 'http://localhost:5000';
 
     const fetchOrder = useCallback(async () => {
@@ -38,7 +38,6 @@ const OrderDetailPage = () => {
         fetchOrder();
     };
 
-    // --- NUEVA FUNCIÓN PARA CANCELAR ---
     const handleCancelOrder = () => {
         showConfirmDialog({
             title: '¿Estás seguro?',
@@ -48,7 +47,7 @@ const OrderDetailPage = () => {
                 try {
                     const response = await cancelOrder(orderId);
                     showSuccessAlert(response.message);
-                    fetchOrder(); // Recargar los datos del pedido para ver el nuevo estado
+                    fetchOrder();
                 } catch (error) {
                     showErrorAlert(error.message);
                 }
@@ -60,7 +59,6 @@ const OrderDetailPage = () => {
     if (!order) return <div className="page-loading">Pedido no encontrado.</div>;
 
     const { shipping_address: address } = order;
-    const shippingCost = 12000;
 
     return (
         <>
@@ -114,10 +112,13 @@ const OrderDetailPage = () => {
                         <div className="summary-card">
                             <h3>Detalle de la compra</h3>
                             <div className="summary-line"><span>Productos ({order.items.length})</span><span>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</span></div>
-                            <div className="summary-line"><span>Envío</span><span>${new Intl.NumberFormat('es-CO').format(shippingCost)}</span></div>
-                            <div className="summary-line total"><span>Total</span><span>${new Intl.NumberFormat('es-CO').format(order.total_amount + shippingCost)}</span></div>
+                            {/* La línea de "Envío" ha sido eliminada */}
+                            <div className="summary-line total">
+                                <span>Total</span>
+                                {/* El total ahora es solo el total de los productos */}
+                                <span>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</span>
+                            </div>
                             
-                            {/* --- NUEVO BOTÓN DE CANCELAR --- */}
                             {order.status === 'Pendiente' && (
                                 <button onClick={handleCancelOrder} className="btn-cancel-order">
                                     Cancelar Pedido
