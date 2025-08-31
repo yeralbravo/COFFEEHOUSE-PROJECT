@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getLowStockItems } from '../services/supplierService';
 import '../style/UserList.css';
 import '../style/AdminPanel.css';
-import '../style/SupplierLowStockPage.css'; // <-- NUEVO ESTILO IMPORTADO
+import '../style/SupplierLowStockPage.css';
 
 const SupplierLowStockPage = () => {
     const [items, setItems] = useState([]);
@@ -29,7 +29,8 @@ const SupplierLowStockPage = () => {
         <div className="supplier-low-stock-page">
             <header className="admin-header">
                 <h1>Productos con Bajo Stock</h1>
-                <p>Estos son los ítems con 10 o menos unidades disponibles.</p>
+                {/* ✅ CAMBIO EN EL TEXTO */}
+                <p>Estos son los ítems con 5 o menos unidades disponibles.</p>
             </header>
 
             {loading ? <p>Cargando productos...</p> : (

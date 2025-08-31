@@ -11,9 +11,13 @@ const StatCard = ({ icon, title, value, link, linkText }) => {
                 <p className="stat-card-title">{title}</p>
             </div>
             <p className="stat-card-value">{value}</p>
-            <Link to={link} className="stat-card-link">
-                {linkText} <FiArrowRight />
-            </Link>
+            
+            {/* El enlace y la flecha ahora solo aparecen si 'link' y 'linkText' existen */}
+            {link && linkText && (
+                <Link to={link} className="stat-card-link">
+                    {linkText} <FiArrowRight />
+                </Link>
+            )}
         </div>
     );
 };

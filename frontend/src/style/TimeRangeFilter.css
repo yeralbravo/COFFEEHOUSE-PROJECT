@@ -1,0 +1,31 @@
+/* src/style/TimeRangeFilter.css */
+
+.time-filters {
+    display: flex;
+    gap: 0.5rem;
+    background-color: #f0f0f0;
+    padding: 0.3rem;
+    border-radius: 8px;
+}
+
+.time-filters button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.2s ease-in-out;
+}
+
+.time-filters button:hover {
+    background-color: #e0e0e0;
+}
+
+.time-filters button.active {
+    background-color: #ffffff;
+    color: #24651C;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
