@@ -1,14 +1,32 @@
 /* src/style/TimeRangeFilter.css */
 
-.time-filters {
+/* MODIFICADO: ¡Este es el cambio principal! El contenedor ahora es una tarjeta. */
+.time-filters-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    /* --- NUEVO: Estilo de Tarjeta de Dashboard --- */
+    background-color: #ffffff; /* Fondo blanco como las otras tarjetas */
+    padding: 0.75rem;          /* Espacio interior para que los elementos respiren */
+    border-radius: 12px;       /* Bordes redondeados consistentes con tu UI */
+    border: 1px solid #e9ecef; /* Un borde muy sutil, igual que tus cards */
+    /* La sombra es la clave para eliminar la sensación plana */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+}
+
+/* El grupo de botones ahora es una "píldora" dentro de la tarjeta */
+.time-range-buttons {
     display: flex;
     gap: 0.5rem;
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Mantenemos este fondo para dar contraste */
     padding: 0.3rem;
     border-radius: 8px;
 }
 
-.time-filters button {
+/* Los botones se mantienen con tu estilo original, que funciona perfecto aquí */
+.time-range-buttons button {
     padding: 0.5rem 1rem;
     border: none;
     background-color: transparent;
@@ -19,13 +37,42 @@
     transition: all 0.2s ease-in-out;
 }
 
-.time-filters button:hover {
+.time-range-buttons button:hover {
     background-color: #e0e0e0;
 }
 
-.time-filters button.active {
+/* Tu estilo activo original se ve genial dentro de la píldora gris */
+.time-range-buttons button.active {
     background-color: #ffffff;
-    color: #24651C;
+    color: #24651C; /* El color verde de tu marca */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-weight: 600;
+}
+
+
+/* MODIFICADO: El input de fecha ahora tiene un estilo más limpio y definido */
+.date-filter-input {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    color: #333;
+    background-color: #ffffff;
+    border: 1px solid #ced4da; /* Borde estándar para inputs */
+    transition: all 0.2s ease-in-out;
+}
+
+/* NUEVO: Un estado de foco claro que usa el color de tu marca */
+.date-filter-input:focus {
+    outline: none;
+    border-color: #24651C;
+    box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.2);
+}
+
+.date-filter-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.date-filter-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }

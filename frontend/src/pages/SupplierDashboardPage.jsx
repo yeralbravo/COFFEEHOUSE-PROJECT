@@ -4,6 +4,7 @@ import { getDashboardData } from '../services/supplierService';
 
 // Componentes reutilizables
 import StatCard from '../components/supplier/StatCard';
+// CORREGIDO: Ruta de importación para TimeRangeFilter
 import TimeRangeFilter from '../components/TimeRangeFilter';
 
 // Gráficas
@@ -17,10 +18,33 @@ import '../style/SupplierDashboard.css';
 // Registramos solo los componentes necesarios para las gráficas de barras
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
+
+// --- LÓGICA DE FECHAS ---
+const formatDate = (date) => date.toISOString().split('T')[0];
+
+const getWeekRange = () => {
+    const today = new Date();
+    const dayOfWeek = (today.getDay() + 6) % 7;
+    
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - dayOfWeek);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    return {
+        start: formatDate(monday),
+        end: formatDate(sunday),
+    };
+};
+// --- FIN DE LÓGICA DE FECHAS ---
+
+
 const SupplierDashboardPage = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [range, setRange] = useState('month');
+    const [selectedDate, setSelectedDate] = useState('');
 
     const timeRangeLabels = {
         day: 'Hoy',
@@ -33,18 +57,54 @@ const SupplierDashboardPage = () => {
         const fetchStats = async () => {
             try {
                 setLoading(true);
-                const response = await getDashboardData(range);
+                
+                let apiParams = {};
+                const today = new Date();
+
+                if (selectedDate) {
+                    apiParams = { startDate: selectedDate, endDate: selectedDate };
+                } else {
+                    let startDate;
+                    const endDate = new Date(today); 
+
+                    switch (range) {
+                        case 'week':
+                            const weekRange = getWeekRange();
+                            startDate = new Date(weekRange.start);
+                            endDate.setTime(new Date(weekRange.end).getTime());
+                            break;
+                        case 'month':
+                            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                            break;
+                        case 'year':
+                            startDate = new Date(today.getFullYear(), 0, 1);
+                            break;
+                        case 'day':
+                        default:
+                            startDate = new Date(new Date().setHours(0, 0, 0, 0));
+                            break;
+                    }
+                    apiParams = { 
+                        startDate: formatDate(startDate), 
+                        endDate: formatDate(endDate) 
+                    };
+                }
+                
+                console.log("Enviando a la API:", apiParams);
+                const response = await getDashboardData(apiParams);
+                
                 if (response.success) {
                     setStats(response.data);
                 }
             } catch (error) {
-                console.error(`Error al cargar datos para el rango '${range}':`, error);
+                console.error(`Error al cargar datos:`, error);
             } finally {
                 setLoading(false);
             }
         };
         fetchStats();
-    }, [range]);
+    }, [range, selectedDate]);
+
 
     // Datos para la gráfica de barras de ventas
     const salesBarChartData = {
@@ -115,6 +175,8 @@ const SupplierDashboardPage = () => {
                 <TimeRangeFilter
                     currentRange={range}
                     onRangeChange={setRange}
+                    selectedDate={selectedDate}
+                    onDateChange={setSelectedDate} 
                 />
             </header>
 
@@ -123,7 +185,13 @@ const SupplierDashboardPage = () => {
                     <div className="stats-grid">
                         <StatCard icon={<FiPackage />} title="Total de Productos" value={stats.summary.totalProducts} />
                         
-                        <StatCard icon={<FiDollarSign />} title={`Ventas de ${timeRangeLabels[range]}`} value={`$${new Intl.NumberFormat('es-CO').format(stats.summary.totalSales)}`} link="/supplier/stats/sales" linkText="Ver reporte de ventas" />
+                        <StatCard 
+                            icon={<FiDollarSign />} 
+                            title={`Ventas de ${selectedDate ? 'la fecha seleccionada' : timeRangeLabels[range]}`} 
+                            value={`$${new Intl.NumberFormat('es-CO').format(stats.summary.totalSales)}`} 
+                            link="/supplier/stats/sales" 
+                            linkText="Ver reporte de ventas" 
+                        />
                         <StatCard icon={<FiList />} title="Pedidos Pendientes" value={stats.summary.pendingOrders} link="/supplier/orders" linkText="Gestionar pedidos" />
                         <StatCard icon={<FiAlertTriangle />} title="Productos con Bajo Stock" value={stats.summary.lowStockCount} link="/supplier/stats/low-stock" linkText="Ver inventario" />
                     </div>

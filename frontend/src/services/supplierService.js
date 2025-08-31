@@ -17,33 +17,35 @@ api.interceptors.request.use((config) => {
 
 /**
  * Obtiene los datos del dashboard para el proveedor.
- * @param {string} range - 'day', 'week', 'month', 'year'.
+ * @param {object} params - Un objeto que DEBE contener startDate y endDate.
  */
-export const getDashboardData = async (range) => {
+export const getDashboardData = async (params) => {
     try {
-        const response = await api.get(`/stats?range=${range}`);
+        // Construimos la URL con los parámetros que SÍ existen
+        const url = `/stats?startDate=${params.startDate}&endDate=${params.endDate}`;
+
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.error || 'Error al obtener los datos del dashboard');
+        // Capturamos el error específico del backend para mostrarlo en la consola
+        const errorMessage = error.response?.data?.error || 'Error al obtener los datos del dashboard';
+        throw new Error(errorMessage);
     }
 };
 
-// ... (después de getDashboardData)
-
 /**
  * Obtiene los datos del reporte de ventas para el proveedor.
- * @param {string} range - 'day', 'week', 'month', 'year'.
+ * @param {object} params - Un objeto que DEBE contener startDate y endDate.
  */
-export const getSalesReport = async (range) => {
+export const getSalesReport = async (params) => {
     try {
-        const response = await api.get(`/sales-report?range=${range}`);
+        const url = `/sales-report?startDate=${params.startDate}&endDate=${params.endDate}`;
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener el reporte de ventas');
     }
 };
-
-// ... (después de getSalesReport)
 
 /**
  * Obtiene las estadísticas de productos para el proveedor.
@@ -57,22 +59,19 @@ export const getProductStats = async () => {
     }
 };
 
-// ... (después de getProductStats)
-
 /**
  * Obtiene las estadísticas de pedidos para el proveedor.
- * @param {string} range - 'day', 'week', 'month', 'year'.
+ * @param {object} params - Un objeto que DEBE contener startDate y endDate.
  */
-export const getOrderStats = async (range) => {
+export const getOrderStats = async (params) => {
     try {
-        const response = await api.get(`/order-stats?range=${range}`);
+        const url = `/order-stats?startDate=${params.startDate}&endDate=${params.endDate}`;
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener las estadísticas de pedidos');
     }
 };
-
-// ... (después de getOrderStats)
 
 /**
  * Obtiene los ítems con bajo stock para el proveedor.

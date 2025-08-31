@@ -10,11 +10,20 @@ import {
 
 const router = express.Router();
 
+// --- RUTA DE ESTADÍSTICAS DEL DASHBOARD ---
 router.get('/stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        const { range } = req.query;
-        const stats = await getSupplierDashboardStats(supplierId, range);
+        // MODIFICADO: Leemos los nuevos parámetros de fecha de la URL
+        const { startDate, endDate } = req.query;
+
+        // Validación para asegurar que las fechas se envíen
+        if (!startDate || !endDate) {
+            return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
+        }
+        
+        // MODIFICADO: Pasamos un objeto con las fechas al modelo en lugar de 'range'
+        const stats = await getSupplierDashboardStats(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         console.error("Error al obtener estadísticas del proveedor:", error);
@@ -22,11 +31,19 @@ router.get('/stats', [verifyToken, checkRole(['supplier'])], async (req, res) =>
     }
 });
 
+// --- RUTA DEL REPORTE DE VENTAS ---
 router.get('/sales-report', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        const { range } = req.query;
-        const report = await getSupplierSalesReport(supplierId, range);
+        // MODIFICADO: Leemos los nuevos parámetros de fecha
+        const { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
+        }
+        
+        // MODIFICADO: Pasamos el objeto de fechas al modelo
+        const report = await getSupplierSalesReport(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: report });
     } catch (error) {
         console.error("Error al obtener el reporte de ventas:", error);
@@ -34,6 +51,7 @@ router.get('/sales-report', [verifyToken, checkRole(['supplier'])], async (req, 
     }
 });
 
+// --- RUTA DE ESTADÍSTICAS DE PRODUCTOS (Sin cambios, no usa filtro de fecha) ---
 router.get('/product-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
@@ -45,11 +63,19 @@ router.get('/product-stats', [verifyToken, checkRole(['supplier'])], async (req,
     }
 });
 
+// --- RUTA DE ESTADÍSTICAS DE PEDIDOS ---
 router.get('/order-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        const { range } = req.query;
-        const stats = await getSupplierOrderStats(supplierId, range);
+        // MODIFICADO: Leemos los nuevos parámetros de fecha
+        const { startDate, endDate } = req.query;
+        
+        if (!startDate || !endDate) {
+            return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
+        }
+
+        // MODIFICADO: Pasamos el objeto de fechas al modelo
+        const stats = await getSupplierOrderStats(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         console.error("Error al obtener estadísticas de pedidos:", error);
@@ -57,6 +83,7 @@ router.get('/order-stats', [verifyToken, checkRole(['supplier'])], async (req, r
     }
 });
 
+// --- RUTA DE ÍTEMS CON BAJO STOCK (Sin cambios, no usa filtro de fecha) ---
 router.get('/low-stock-items', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;

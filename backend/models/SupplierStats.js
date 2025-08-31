@@ -1,41 +1,11 @@
 import db from '../config/db.js';
 
-const getDateRange = (range) => {
-    const now = new Date();
-    let startDate;
-
-    switch (range) {
-        case 'day':
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            break;
-        case 'week':
-            const dayOfWeek = now.getDay();
-            const firstDayOfWeek = new Date(now);
-            firstDayOfWeek.setDate(now.getDate() - dayOfWeek);
-            startDate = new Date(firstDayOfWeek.getFullYear(), firstDayOfWeek.getMonth(), firstDayOfWeek.getDate());
-            break;
-        case 'month':
-            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-            break;
-        case 'year':
-            startDate = new Date(now.getFullYear(), 0, 1);
-            break;
-        default:
-            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-            break;
-    }
-
-    return {
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: now.toISOString().split('T')[0]
-    };
-};
-
-export const getSupplierDashboardStats = async (supplierId, range = 'month') => {
-    const { startDate, endDate } = getDateRange(range);
+export const getSupplierDashboardStats = async (supplierId, dateRange) => {
+    const { startDate, endDate } = dateRange;
     const endDateWithTime = `${endDate} 23:59:59`;
     const startDateWithTime = `${startDate} 00:00:00`;
     
+    // MODIFICADO: La subconsulta de 'pending_orders' ya NO incluye el filtro de fecha.
     const summaryQuery = `
         SELECT 
             (SELECT COUNT(*) FROM products WHERE supplier_id = ?) AS total_products,
@@ -49,11 +19,16 @@ export const getSupplierDashboardStats = async (supplierId, range = 'month') => 
                 WHERE o.status = 'Pendiente' AND 
                       (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
                        oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
+                -- Se eliminó la línea "AND o.created_at BETWEEN ? AND ?" de esta subconsulta.
             ) AS pending_orders
     `;
-    const [summaryResult] = await db.query(summaryQuery, [supplierId, supplierId, supplierId, supplierId, supplierId, supplierId]);
+    // MODIFICADO: Se eliminaron los dos últimos parámetros de fecha que correspondían a la subconsulta anterior.
+    const [summaryResult] = await db.query(summaryQuery, [
+        supplierId, supplierId, supplierId, supplierId, supplierId, supplierId
+    ]);
     const summaryData = summaryResult[0];
 
+    // --- El resto de las consultas SÍ usan el filtro de fecha ---
     const salesDataQuery = `
         SELECT 
             DATE(o.created_at) as date, 
@@ -103,11 +78,11 @@ export const getSupplierDashboardStats = async (supplierId, range = 'month') => 
     };
 };
 
-export const getSupplierSalesReport = async (supplierId, range = 'month') => {
-    const { startDate, endDate } = getDateRange(range);
+export const getSupplierSalesReport = async (supplierId, dateRange) => {
+    const { startDate, endDate } = dateRange;
     const [report] = await db.query( `SELECT COALESCE(SUM(oi.quantity * oi.price_at_purchase), 0) AS totalRevenue, COUNT(DISTINCT o.id) AS totalOrders, COALESCE(SUM(oi.quantity), 0) AS productsSold FROM orders o JOIN order_items oi ON o.id = oi.order_id WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?)) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
     const [salesData] = await db.query( `SELECT DATE(o.created_at) as date, SUM(oi.quantity * oi.price_at_purchase) as total FROM order_items oi JOIN orders o ON oi.order_id = o.id WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?)) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado' GROUP BY DATE(o.created_at) ORDER BY date ASC`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
-    const [topProducts] = await db.query( `SELECT IFNULL(p.nombre, i.nombre) as name, SUM(oi.quantity) as quantity_sold, SUM(oi.quantity * oi.price_at_purchase) as revenue FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id JOIN orders o ON oi.order_id = o.id WHERE (p.supplier_id = ? OR i.supplier_id = ?) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado' GROUP BY name ORDER BY revenue DESC LIMIT 5`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
+    const [topProducts] = await db.query( `SELECT IFNULL(p.nombre, i.nombre) as name, SUM(oi.quantity) as quantity_sold, SUM(oi.quantity * oi.price_at_purchase) as revenue FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id JOIN orders o ON oi.order_id = o.id WHERE (p.supplier_id = ? OR i.supplier_id = ?) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado' GROUP BY name HAVING name IS NOT NULL ORDER BY revenue DESC LIMIT 5`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
     const summary = report[0];
     summary.averageOrderValue = summary.totalOrders > 0 ? summary.totalRevenue / summary.totalOrders : 0;
     return { summary, salesData, topProducts };
@@ -135,8 +110,8 @@ export const getSupplierProductStats = async (supplierId) => {
     };
 };
 
-export const getSupplierOrderStats = async (supplierId, range = 'month') => {
-    const { startDate, endDate } = getDateRange(range);
+export const getSupplierOrderStats = async (supplierId, dateRange) => {
+    const { startDate, endDate } = dateRange;
     const supplierOrdersSubquery = `
         SELECT DISTINCT o.id 
         FROM orders o
@@ -156,7 +131,7 @@ export const getSupplierOrderStats = async (supplierId, range = 'month') => {
         FROM orders
         WHERE id IN (${supplierOrdersSubquery})
         `,
-        [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`, supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`]
+        [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`]
     );
     const [statusDistribution] = await db.query(
         `
