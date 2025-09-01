@@ -5,7 +5,9 @@ import {
     getSupplierSalesReport, 
     getSupplierProductStats, 
     getSupplierOrderStats,
-    getLowStockItems 
+    getLowStockItems,
+    // NUEVO: Importamos la nueva función del modelo
+    getSupplierOrderDetails 
 } from '../models/SupplierStats.js';
 
 const router = express.Router();
@@ -14,15 +16,12 @@ const router = express.Router();
 router.get('/stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        // MODIFICADO: Leemos los nuevos parámetros de fecha de la URL
         const { startDate, endDate } = req.query;
 
-        // Validación para asegurar que las fechas se envíen
         if (!startDate || !endDate) {
             return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
         }
         
-        // MODIFICADO: Pasamos un objeto con las fechas al modelo en lugar de 'range'
         const stats = await getSupplierDashboardStats(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
@@ -35,14 +34,12 @@ router.get('/stats', [verifyToken, checkRole(['supplier'])], async (req, res) =>
 router.get('/sales-report', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        // MODIFICADO: Leemos los nuevos parámetros de fecha
         const { startDate, endDate } = req.query;
 
         if (!startDate || !endDate) {
             return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
         }
         
-        // MODIFICADO: Pasamos el objeto de fechas al modelo
         const report = await getSupplierSalesReport(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: report });
     } catch (error) {
@@ -67,18 +64,35 @@ router.get('/product-stats', [verifyToken, checkRole(['supplier'])], async (req,
 router.get('/order-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        // MODIFICADO: Leemos los nuevos parámetros de fecha
         const { startDate, endDate } = req.query;
         
         if (!startDate || !endDate) {
             return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
         }
 
-        // MODIFICADO: Pasamos el objeto de fechas al modelo
         const stats = await getSupplierOrderStats(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         console.error("Error al obtener estadísticas de pedidos:", error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor.' });
+    }
+});
+
+// --- NUEVA RUTA: Obtener detalles de un pedido específico ---
+router.get('/orders/:id/details', [verifyToken, checkRole(['supplier'])], async (req, res) => {
+    try {
+        const { id } = req.params;
+        const supplierId = req.user.id;
+        
+        const orderDetails = await getSupplierOrderDetails(id, supplierId);
+
+        if (!orderDetails) {
+            return res.status(404).json({ success: false, error: 'Pedido no encontrado o no pertenece a este proveedor.' });
+        }
+
+        res.status(200).json({ success: true, data: orderDetails });
+    } catch (error) {
+        console.error("Error al obtener detalles del pedido:", error);
         res.status(500).json({ success: false, error: 'Error interno del servidor.' });
     }
 });

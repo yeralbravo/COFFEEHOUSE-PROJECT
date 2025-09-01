@@ -5,7 +5,6 @@ export const getSupplierDashboardStats = async (supplierId, dateRange) => {
     const endDateWithTime = `${endDate} 23:59:59`;
     const startDateWithTime = `${startDate} 00:00:00`;
     
-    // MODIFICADO: La subconsulta de 'pending_orders' ya NO incluye el filtro de fecha.
     const summaryQuery = `
         SELECT 
             (SELECT COUNT(*) FROM products WHERE supplier_id = ?) AS total_products,
@@ -19,16 +18,13 @@ export const getSupplierDashboardStats = async (supplierId, dateRange) => {
                 WHERE o.status = 'Pendiente' AND 
                       (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
                        oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
-                -- Se eliminó la línea "AND o.created_at BETWEEN ? AND ?" de esta subconsulta.
             ) AS pending_orders
     `;
-    // MODIFICADO: Se eliminaron los dos últimos parámetros de fecha que correspondían a la subconsulta anterior.
     const [summaryResult] = await db.query(summaryQuery, [
         supplierId, supplierId, supplierId, supplierId, supplierId, supplierId
     ]);
     const summaryData = summaryResult[0];
 
-    // --- El resto de las consultas SÍ usan el filtro de fecha ---
     const salesDataQuery = `
         SELECT 
             DATE(o.created_at) as date, 
@@ -77,6 +73,58 @@ export const getSupplierDashboardStats = async (supplierId, dateRange) => {
         topProducts 
     };
 };
+
+/**
+ * NUEVA FUNCIÓN: Obtiene los detalles completos de un pedido para un proveedor.
+ * @param {number} orderId - El ID del pedido.
+ * @param {number} supplierId - El ID del proveedor que solicita.
+ */
+export const getSupplierOrderDetails = async (orderId, supplierId) => {
+    const orderQuery = `
+        SELECT 
+            o.id,
+            o.created_at as date,
+            o.total_amount,
+            o.status,
+            u.nombre as user_name,
+            u.apellido as user_lastname,
+            u.email as user_email,
+            a.address as user_address,
+            a.city as user_city,
+            a.department as user_department
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        LEFT JOIN addresses a ON o.address_id = a.id
+        WHERE o.id = ?
+    `;
+    const [orderResult] = await db.query(orderQuery, [orderId]);
+
+    if (orderResult.length === 0) {
+        return null;
+    }
+
+    const itemsQuery = `
+        SELECT 
+            oi.quantity,
+            oi.price_at_purchase,
+            COALESCE(p.nombre, i.nombre) as name
+        FROM order_items oi
+        LEFT JOIN products p ON oi.product_id = p.id
+        LEFT JOIN insumos i ON oi.insumo_id = i.id
+        WHERE oi.order_id = ? AND (p.supplier_id = ? OR i.supplier_id = ?)
+    `;
+    const [itemsResult] = await db.query(itemsQuery, [orderId, supplierId, supplierId]);
+    
+    if(itemsResult.length === 0) {
+        return null;
+    }
+    
+    return {
+        ...orderResult[0],
+        items: itemsResult
+    };
+};
+
 
 export const getSupplierSalesReport = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
