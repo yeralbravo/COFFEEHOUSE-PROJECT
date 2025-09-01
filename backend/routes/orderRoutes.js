@@ -9,7 +9,9 @@ import {
     findOrdersBySupplierId,
     deleteOrderById,
     updateOrderStatusBySupplier,
-    cancelOrder
+    cancelOrder,
+    // NUEVO: Importamos la nueva función del modelo
+    findSupplierOrderDetails
 } from '../models/Order.js';
 import { createNotification } from '../models/Notification.js';
 
@@ -101,6 +103,26 @@ router.get('/supplier/my-orders', [verifyToken, checkRole(['supplier'])], async 
     }
 });
 
+// --- NUEVA RUTA: Obtener detalles de un pedido específico para el proveedor ---
+router.get('/supplier/details/:orderId', [verifyToken, checkRole(['supplier'])], async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const supplierId = req.user.id;
+        
+        const orderDetails = await findSupplierOrderDetails(orderId, supplierId);
+
+        if (!orderDetails) {
+            return res.status(404).json({ success: false, error: 'Pedido no encontrado o no pertenece a este proveedor.' });
+        }
+
+        res.status(200).json({ success: true, data: orderDetails });
+    } catch (error) {
+        console.error("Error al obtener detalles del pedido:", error);
+        res.status(500).json({ success: false, error: 'Error interno del servidor.' });
+    }
+});
+
+
 router.put('/supplier/:orderId', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -122,6 +144,12 @@ router.put('/supplier/:orderId', [verifyToken, checkRole(['supplier'])], async (
 router.delete('/:orderId', [verifyToken, checkRole(['admin', 'supplier'])], async (req, res) => {
     try {
         const { orderId } = req.params;
+        
+        // CORRECCIÓN DE SEGURIDAD: Los proveedores no deben poder eliminar pedidos.
+        if(req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, error: 'No tienes permiso para realizar esta acción.' });
+        }
+
         const result = await deleteOrderById(orderId);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Pedido no encontrado.' });
