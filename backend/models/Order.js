@@ -75,7 +75,9 @@ export const createOrder = async (userId, cartItems, shippingAddress, paymentMet
     }
 };
 
+// ================== FUNCIÓN MODIFICADA ==================
 export const findOrdersByUserId = async (userId, filters = {}) => {
+    // Se establece el idioma de la sesión a español para los nombres de los meses.
     await db.query("SET lc_time_names = 'es_ES'");
 
     let query = `SELECT o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, DATE_FORMAT(o.created_at, '%d de %M de %Y') as date, o.updated_at FROM orders o`;
@@ -87,10 +89,13 @@ export const findOrdersByUserId = async (userId, filters = {}) => {
         params.push(filters.status);
     }
 
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Si se proporciona solo una fecha, filtramos por ese día exacto.
     if (filters.startDate && !filters.endDate) {
         conditions.push('DATE(o.created_at) = ?');
         params.push(filters.startDate);
     } 
+    // Si se proporcionan ambas fechas, filtramos por el rango.
     else {
         if (filters.startDate) {
             conditions.push('o.created_at >= ?');
@@ -165,52 +170,29 @@ export const updateOrderStatus = async (orderId, updateData) => {
 
 export const findOrdersBySupplierId = async (supplierId, filters = {}) => {
     await db.query("SET lc_time_names = 'es_ES'");
-    
-    const orderIdsQuery = `
-        SELECT DISTINCT oi.order_id 
-        FROM order_items oi 
-        LEFT JOIN products p ON oi.product_id = p.id 
-        LEFT JOIN insumos i ON oi.insumo_id = i.id 
-        WHERE p.supplier_id = ? OR i.supplier_id = ?
-    `;
+    const orderIdsQuery = `SELECT DISTINCT oi.order_id FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id WHERE p.supplier_id = ? OR i.supplier_id = ?`;
     const [orderIdRows] = await db.query(orderIdsQuery, [supplierId, supplierId]);
-
     if (orderIdRows.length === 0) {
         return [];
     }
     const orderIds = orderIdRows.map(row => row.order_id);
-
-    // CORRECCIÓN DEFINITIVA: Se busca la clave 'direccion' en el JSON.
-    let query = `
-        SELECT 
-            o.id, 
-            o.total_amount, 
-            o.status, 
-            o.shipping_company, 
-            o.tracking_number, 
-            u.nombre AS user_name, 
-            u.apellido AS user_lastname, 
-            o.created_at AS date,
-            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.direccion')) AS address
-        FROM orders o 
-        JOIN users u ON o.user_id = u.id
-    `;
-    
+    let query = `SELECT o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, u.nombre AS user_name, u.apellido AS user_lastname, DATE_FORMAT(o.created_at, '%d de %M de %Y') AS date FROM orders o JOIN users u ON o.user_id = u.id`;
     const conditions = ['o.id IN (?)'];
     const params = [orderIds];
-
     if (filters.status && filters.status !== '') {
         conditions.push('o.status = ?');
         params.push(filters.status);
     }
     if (filters.startDate) {
-        conditions.push('DATE(o.created_at) = ?');
-        params.push(filters.startDate);
+        conditions.push('o.created_at >= ?');
+        params.push(`${filters.startDate} 00:00:00`);
     }
-    
+    if (filters.endDate) {
+        conditions.push('o.created_at <= ?');
+        params.push(`${filters.endDate} 23:59:59`);
+    }
     query += ' WHERE ' + conditions.join(' AND ');
     query += ' ORDER BY o.created_at DESC';
-    
     const [orders] = await db.query(query, params);
     return orders;
 };
@@ -238,52 +220,4 @@ export const updateOrderStatusBySupplier = async (orderId, supplierId, updateDat
     } finally {
         connection.release();
     }
-};
-
-export const findSupplierOrderDetails = async (orderId, supplierId) => {
-    // CORRECCIÓN DEFINITIVA: Se buscan las claves 'direccion', 'ciudad' y 'departamento' en el JSON.
-    const orderQuery = `
-        SELECT 
-            o.id,
-            o.created_at as date,
-            o.total_amount,
-            o.status,
-            u.nombre as user_name,
-            u.apellido as user_lastname,
-            u.correo as user_email,
-            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.direccion')) AS user_address,
-            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.ciudad')) AS user_city,
-            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.departamento')) AS user_department
-        FROM orders o
-        JOIN users u ON o.user_id = u.id
-        WHERE o.id = ?
-    `;
-    const [orderResult] = await db.query(orderQuery, [orderId]);
-
-    if (orderResult.length === 0) {
-        return null;
-    }
-    
-    const orderDetails = orderResult[0];
-
-    const itemsQuery = `
-        SELECT 
-            oi.quantity,
-            oi.price_at_purchase,
-            COALESCE(p.nombre, i.nombre) as name
-        FROM order_items oi
-        LEFT JOIN products p ON oi.product_id = p.id
-        LEFT JOIN insumos i ON oi.insumo_id = i.id
-        WHERE oi.order_id = ? AND (p.supplier_id = ? OR i.supplier_id = ?)
-    `;
-    const [itemsResult] = await db.query(itemsQuery, [orderId, supplierId, supplierId]);
-    
-    if(itemsResult.length === 0) {
-        return null;
-    }
-    
-    return {
-        ...orderDetails,
-        items: itemsResult
-    };
 };

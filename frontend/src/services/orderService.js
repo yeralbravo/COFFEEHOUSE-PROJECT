@@ -92,19 +92,6 @@ export const getSupplierOrders = async (filters = {}) => {
     }
 };
 
-/**
- * NUEVA FUNCIÓN: Obtiene los detalles completos de un pedido para el proveedor.
- * @param {number} orderId - El ID del pedido.
- */
-export const getSupplierOrderDetails = async (orderId) => {
-    try {
-        const response = await api.get(`/supplier/details/${orderId}`);
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response?.data?.error || 'Error al obtener los detalles del pedido');
-    }
-};
-
 export const deleteOrder = async (orderId) => {
     try {
         const response = await api.delete(`/${orderId}`);
