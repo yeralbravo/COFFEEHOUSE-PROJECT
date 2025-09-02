@@ -47,19 +47,7 @@ router.get('/my-insumos', [verifyToken, checkRole(['supplier'])], async (req, re
         res.status(200).json({ success: true, data: insumos });
     } catch (error) {
         console.error("Error al obtener mis insumos:", error);
-        res.status(500).json({ success: false, error: '❌ Error al obtener los insumos del proveedor.' });
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const insumo = await findInsumoById(req.params.id);
-        if (!insumo) {
-            return res.status(404).json({ success: false, error: 'Insumo no encontrado.' });
-        }
-        res.status(200).json({ success: true, data: insumo });
-    } catch (error) {
-        res.status(500).json({ success: false, error: 'Error al obtener el insumo.' });
+        res.status(500).json({ success: false, error: 'Error al obtener los insumos del proveedor.' });
     }
 });
 
@@ -79,41 +67,52 @@ router.post('/',
                 caracteristicas: req.body.caracteristicas || null
             };
             const newInsumo = await createInsumo(insumoData, req.files);
-            res.status(201).json({ success: true, message: '✅ Insumo creado exitosamente', data: newInsumo });
+            res.status(201).json({ success: true, message: 'Insumo creado exitosamente', data: newInsumo });
         } catch (error) {
             console.error("Error al crear insumo:", error);
-            res.status(500).json({ success: false, error: '❌ Error interno al crear el insumo.' });
+            res.status(500).json({ success: false, error: 'Error interno al crear el insumo.' });
         }
     }
 );
 
 router.put('/:id',
-    [verifyToken, checkRole(['supplier']), uploadInsumoImages, param('id').isUUID().withMessage('El ID del insumo debe ser un UUID válido.'), ...insumoValidation], // <--- 1. VALIDAMOS QUE EL ID SEA UUID
+    [verifyToken, checkRole(['supplier']), uploadInsumoImages, param('id').isUUID().withMessage('El ID del insumo debe ser un UUID válido.'), ...insumoValidation],
     validateRequest,
     async (req, res) => {
         try {
-            // <--- 2. QUITAMOS parseInt()
             const result = await updateInsumoById(req.params.id, req.user.id, req.body, req.files);
             if (result.affectedRows === 0) {
                 return res.status(404).json({ success: false, error: 'Insumo no encontrado o sin permiso para editarlo.' });
             }
-            res.status(200).json({ success: true, message: '✅ Insumo actualizado correctamente.' });
+            res.status(200).json({ success: true, message: 'Insumo actualizado correctamente.' });
         } catch (error) {
-            res.status(500).json({ success: false, error: '❌ Error interno al actualizar el insumo.' });
+            res.status(500).json({ success: false, error: 'Error interno al actualizar el insumo.' });
         }
     }
 );
 
-// <--- 3. CAMBIAMOS isInt() por isUUID() y QUITAMOS parseInt()
 router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID().withMessage('El ID del insumo debe ser un UUID válido.')], validateRequest, async (req, res) => {
     try {
         const result = await deleteInsumoById(req.params.id, req.user.id);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Insumo no encontrado o sin permiso para eliminarlo.' });
         }
-        res.status(200).json({ success: true, message: '🗑️ Insumo eliminado correctamente.' });
+        res.status(200).json({ success: true, message: 'Insumo eliminado correctamente.' });
     } catch (error) {
-        res.status(500).json({ success: false, error: '❌ Error interno al eliminar el insumo.' });
+        res.status(500).json({ success: false, error: 'Error interno al eliminar el insumo.' });
+    }
+});
+
+// Esta ruta debe ir al final para no interferir con rutas como /public o /my-insumos
+router.get('/:id', async (req, res) => {
+    try {
+        const insumo = await findInsumoById(req.params.id);
+        if (!insumo) {
+            return res.status(404).json({ success: false, error: 'Insumo no encontrado.' });
+        }
+        res.status(200).json({ success: true, data: insumo });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error al obtener el insumo.' });
     }
 });
 

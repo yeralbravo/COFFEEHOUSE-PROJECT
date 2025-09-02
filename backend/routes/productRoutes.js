@@ -36,7 +36,7 @@ router.get('/public', async (req, res) => {
         const products = await findAllPublicProducts();
         res.status(200).json({ success: true, data: products });
     } catch (error) {
-        res.status(500).json({ success: false, error: '❌ Error al obtener los productos públicos.' });
+        res.status(500).json({ success: false, error: 'Error al obtener los productos públicos.' });
     }
 });
 
@@ -47,9 +47,9 @@ router.post('/',
         try {
             const productData = { supplier_id: req.user.id, ...req.body };
             const newProduct = await createProduct(productData, req.files);
-            res.status(201).json({ success: true, message: '✅ Producto creado exitosamente', data: newProduct });
+            res.status(201).json({ success: true, message: 'Producto creado exitosamente', data: newProduct });
         } catch (error) {
-            res.status(500).json({ success: false, error: '❌ Error interno al crear el producto.' });
+            res.status(500).json({ success: false, error: 'Error interno al crear el producto.' });
         }
     }
 );
@@ -59,40 +59,39 @@ router.get('/my-products', [verifyToken, checkRole(['supplier'])], async (req, r
         const products = await findProductsBySupplier(req.user.id);
         res.status(200).json({ success: true, data: products });
     } catch (error) {
-        res.status(500).json({ success: false, error: '❌ Error al obtener los productos del proveedor.' });
+        res.status(500).json({ success: false, error: 'Error al obtener los productos del proveedor.' });
     }
 });
 
 router.put('/:id',
-    [verifyToken, checkRole(['supplier']), uploadProductImages, param('id').isUUID().withMessage('El ID del producto debe ser un UUID válido.'), ...productValidation], // <--- 1. VALIDAMOS QUE EL ID SEA UUID
+    [verifyToken, checkRole(['supplier']), uploadProductImages, param('id').isUUID().withMessage('El ID del producto debe ser un UUID válido.'), ...productValidation],
     validateRequest,
     async (req, res) => {
         try {
-            // <--- 2. QUITAMOS parseInt()
             const result = await updateProductById(req.params.id, req.user.id, req.body, req.files);
             if (result.affectedRows === 0) {
                 return res.status(404).json({ success: false, error: 'Producto no encontrado o sin permiso para editarlo.' });
             }
-            res.status(200).json({ success: true, message: '✅ Producto actualizado correctamente.' });
+            res.status(200).json({ success: true, message: 'Producto actualizado correctamente.' });
         } catch (error) {
-            res.status(500).json({ success: false, error: '❌ Error interno al actualizar el producto.' });
+            res.status(500).json({ success: false, error: 'Error interno al actualizar el producto.' });
         }
     }
 );
 
-// <--- 3. CAMBIAMOS isInt() por isUUID() y QUITAMOS parseInt()
 router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID().withMessage('El ID del producto debe ser un UUID válido.')], validateRequest, async (req, res) => {
     try {
         const result = await deleteProductById(req.params.id, req.user.id);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Producto no encontrado o sin permiso para eliminarlo.' });
         }
-        res.status(200).json({ success: true, message: '🗑️ Producto eliminado correctamente.' });
+        res.status(200).json({ success: true, message: 'Producto eliminado correctamente.' });
     } catch (error) {
-        res.status(500).json({ success: false, error: '❌ Error interno al eliminar el producto.' });
+        res.status(500).json({ success: false, error: 'Error interno al eliminar el producto.' });
     }
 });
 
+// CORREGIDO: Esta ruta estaba incompleta. Ahora funciona igual que la de insumos.
 router.get('/:id', async (req, res) => {
     try {
         const product = await findProductById(req.params.id);
