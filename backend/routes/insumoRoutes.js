@@ -41,9 +41,11 @@ router.get('/public', async (req, res) => {
     }
 });
 
+// --- RUTA MODIFICADA ---
 router.get('/my-insumos', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
-        const insumos = await findInsumosBySupplier(req.user.id);
+        const { search } = req.query; // Leemos el parámetro 'search' de la URL
+        const insumos = await findInsumosBySupplier(req.user.id, search);
         res.status(200).json({ success: true, data: insumos });
     } catch (error) {
         console.error("Error al obtener mis insumos:", error);
@@ -103,7 +105,6 @@ router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID(
     }
 });
 
-// Esta ruta debe ir al final para no interferir con rutas como /public o /my-insumos
 router.get('/:id', async (req, res) => {
     try {
         const insumo = await findInsumoById(req.params.id);

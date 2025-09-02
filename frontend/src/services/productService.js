@@ -16,9 +16,14 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const getSupplierProducts = async () => {
+// --- FUNCIÓN MODIFICADA ---
+export const getSupplierProducts = async (searchTerm) => {
     try {
-        const response = await api.get('/my-products');
+        const params = new URLSearchParams();
+        if (searchTerm) {
+            params.append('search', searchTerm);
+        }
+        const response = await api.get(`/my-products?${params.toString()}`);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener los productos');
@@ -36,7 +41,6 @@ export const createProduct = async (formData) => {
     }
 };
 
-// CORRECCIÓN: La función de actualización ahora puede manejar un FormData.
 export const updateProduct = async (productId, formData) => {
     try {
         const response = await api.put(`/${productId}`, formData, {
@@ -62,7 +66,7 @@ export const getPublicProducts = async () => {
         const response = await axios.get(`${API_URL}/public`);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.error || 'Error al obtener los productos');
+        throw new Error(error.response?.data?.error || 'Error al obtener los productos públicos');
     }
 };
 
@@ -71,6 +75,6 @@ export const getProductById = async (productId) => {
         const response = await api.get(`/${productId}`);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.error || 'Error al obtener el producto');
+        throw new Error(error.response?.data?.error || 'Error al obtener el detalle del producto');
     }
 };

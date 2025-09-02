@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiSearch } from 'react-icons/fi';
 import { useAlerts } from '../hooks/useAlerts';
 import * as insumoService from '../services/insumoService';
 import '../style/SupplierProductsPage.css';
@@ -11,21 +11,37 @@ const SupplierInsumosPage = () => {
     const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
     const navigate = useNavigate();
 
-    const fetchInsumos = async () => {
+    // --- ESTADOS PARA LA BÚSQUEDA ---
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+    // Efecto para debounce
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 300);
+
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [searchTerm]);
+
+    // --- FUNCIÓN DE BÚSQUEDA ACTUALIZADA ---
+    const fetchInsumos = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await insumoService.getSupplierInsumos();
+            const response = await insumoService.getSupplierInsumos(debouncedSearchTerm);
             setInsumos(response.data);
         } catch (error) {
             showErrorAlert(error.message);
         } finally {
             setLoading(false);
         }
-    };
+    }, [debouncedSearchTerm, showErrorAlert]);
 
     useEffect(() => {
         fetchInsumos();
-    }, []);
+    }, [fetchInsumos]);
 
     const handleDelete = (insumoId) => {
         showConfirmDialog({ title: '¿Estás seguro?', text: 'Este insumo se eliminará permanentemente.' })
@@ -50,6 +66,18 @@ const SupplierInsumosPage = () => {
                     <FiPlus /> Añadir Insumo
                 </button>
             </header>
+
+            {/* --- BARRA DE BÚSQUEDA AÑADIDA --- */}
+            <div className="search-bar-container">
+                <FiSearch className="search-icon" />
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Buscar por nombre de insumo..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
             
             <div className="product-list-container">
                 {loading ? <p>Cargando...</p> : (
@@ -64,7 +92,7 @@ const SupplierInsumosPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {insumos.map(insumo => (
+                            {insumos.length > 0 ? insumos.map(insumo => (
                                 <tr key={insumo.id}>
                                     <td><img src={insumo.images.length > 0 ? `http://localhost:5000/${insumo.images[0]}` : 'https://placehold.co/60x60'} alt={insumo.nombre} className="product-image-thumbnail" /></td>
                                     <td>{insumo.nombre}</td>
@@ -81,7 +109,11 @@ const SupplierInsumosPage = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            )) : (
+                                <tr>
+                                    <td colSpan="5" className="no-results-cell">No se encontraron insumos con ese nombre.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 )}

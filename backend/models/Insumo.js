@@ -42,13 +42,24 @@ export const createInsumo = async (insumoData, images) => {
     }
 };
 
-export const findInsumosBySupplier = async (supplierId) => {
-    const [insumos] = await db.query(
-        `SELECT i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
-         (SELECT GROUP_CONCAT(ii.image_url) FROM insumo_images ii WHERE ii.insumo_id = i.id) as images
-         FROM insumos i WHERE i.supplier_id = ? GROUP BY i.id ORDER BY i.created_at DESC`,
-        [supplierId]
-    );
+// --- FUNCIÓN MODIFICADA PARA ACEPTAR BÚSQUEDA ---
+export const findInsumosBySupplier = async (supplierId, searchTerm = '') => {
+    let query = `
+        SELECT i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
+        (SELECT GROUP_CONCAT(ii.image_url) FROM insumo_images ii WHERE ii.insumo_id = i.id) as images
+        FROM insumos i 
+        WHERE i.supplier_id = ?`;
+
+    const params = [supplierId];
+
+    if (searchTerm) {
+        query += ` AND i.nombre LIKE ?`;
+        params.push(`%${searchTerm}%`);
+    }
+
+    query += ` GROUP BY i.id ORDER BY i.created_at DESC`;
+    
+    const [insumos] = await db.query(query, params);
     return insumos.map(i => ({ ...i, images: i.images ? i.images.split(',') : [] }));
 };
 
@@ -64,7 +75,6 @@ export const updateInsumoById = async (insumoId, supplierId, insumoData, newImag
         );
 
         if (newImages && newImages.length > 0) {
-            // Esta lógica reemplaza las imágenes. Si quieres que las agregue, hay que modificarla.
             const [oldImages] = await connection.query('SELECT image_url FROM insumo_images WHERE insumo_id = ?', [insumoId]);
             await connection.query('DELETE FROM insumo_images WHERE insumo_id = ?', [insumoId]);
             deleteImageFiles(oldImages.map(img => img.image_url));
@@ -112,7 +122,7 @@ export const deleteInsumoById = async (insumoId, supplierId) => {
 export const findAllPublicInsumos = async () => {
     const [insumos] = await db.query(
         `SELECT i.id, i.nombre, i.categoria, i.marca, i.precio, i.stock, i.descripcion, i.caracteristicas, 
-         'insumo' AS itemType, -- <--- LÍNEA MODIFICADA
+         'insumo' AS item_type,
          GROUP_CONCAT(ii.image_url) as images FROM insumos i
          LEFT JOIN insumo_images ii ON ii.insumo_id = i.id 
          WHERE i.stock > 0

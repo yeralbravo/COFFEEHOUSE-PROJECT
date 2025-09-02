@@ -131,3 +131,40 @@
     background-color: #EFEFEF; /* Color original restaurado */
     transform: scale(1.1);
 }
+
+/* --- ESTILOS PARA LA BARRA DE BÚSQUEDA --- */
+.search-bar-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gris-oscuro);
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem; /* Espacio para el ícono a la izquierda */
+    border: 1px solid var(--gris-medio);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--hover);
+    box-shadow: 0 0 0 3px rgba(62, 123, 39, 0.1);
+}
+
+/* --- ESTILO PARA MENSAJE DE "NO HAY RESULTADOS" --- */
+.no-results-cell {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gris-oscuro);
+    font-style: italic;
+}

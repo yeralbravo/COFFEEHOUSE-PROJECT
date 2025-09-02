@@ -54,9 +54,11 @@ router.post('/',
     }
 );
 
+// --- RUTA MODIFICADA ---
 router.get('/my-products', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
-        const products = await findProductsBySupplier(req.user.id);
+        const { search } = req.query; // Leemos el parámetro 'search' de la URL
+        const products = await findProductsBySupplier(req.user.id, search);
         res.status(200).json({ success: true, data: products });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al obtener los productos del proveedor.' });
@@ -91,7 +93,6 @@ router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID(
     }
 });
 
-// CORREGIDO: Esta ruta estaba incompleta. Ahora funciona igual que la de insumos.
 router.get('/:id', async (req, res) => {
     try {
         const product = await findProductById(req.params.id);

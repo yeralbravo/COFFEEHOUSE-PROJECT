@@ -68,14 +68,25 @@ export const updateProductById = async (productId, supplierId, productData, newI
     }
 };
 
-export const findProductsBySupplier = async (supplierId) => {
+// --- FUNCIÓN MODIFICADA PARA ACEPTAR BÚSQUEDA ---
+export const findProductsBySupplier = async (supplierId, searchTerm = '') => {
     try {
-        const [products] = await db.query(
-            `SELECT p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
-             (SELECT GROUP_CONCAT(pi.image_url) FROM product_images pi WHERE pi.product_id = p.id) as images
-             FROM products p WHERE p.supplier_id = ? GROUP BY p.id ORDER BY p.created_at DESC`,
-            [supplierId]
-        );
+        let query = `
+            SELECT p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
+            (SELECT GROUP_CONCAT(pi.image_url) FROM product_images pi WHERE pi.product_id = p.id) as images
+            FROM products p 
+            WHERE p.supplier_id = ?`;
+        
+        const params = [supplierId];
+
+        if (searchTerm) {
+            query += ` AND p.nombre LIKE ?`;
+            params.push(`%${searchTerm}%`);
+        }
+        
+        query += ` GROUP BY p.id ORDER BY p.created_at DESC`;
+
+        const [products] = await db.query(query, params);
         return products.map(p => ({...p, images: p.images ? p.images.split(',') : [] }));
     } catch (error) {
         console.error("Error en findProductsBySupplier:", error);
@@ -108,7 +119,7 @@ export const findAllPublicProducts = async () => {
     try {
         const [products] = await db.query(
             `SELECT p.id, p.nombre, p.tipo, p.marca, p.precio, p.stock, p.descripcion, p.caracteristicas,
-             'product' AS itemType, -- <--- LÍNEA MODIFICADA
+             'product' AS item_type,
              GROUP_CONCAT(pi.image_url) as images FROM products p
              LEFT JOIN product_images pi ON p.id = pi.product_id 
              WHERE p.stock > 0

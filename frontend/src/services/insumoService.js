@@ -16,9 +16,14 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const getSupplierInsumos = async () => {
+// --- FUNCIÓN MODIFICADA ---
+export const getSupplierInsumos = async (searchTerm) => {
     try {
-        const response = await api.get('/my-insumos');
+        const params = new URLSearchParams();
+        if (searchTerm) {
+            params.append('search', searchTerm);
+        }
+        const response = await api.get(`/my-insumos?${params.toString()}`);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener los insumos');
@@ -36,7 +41,6 @@ export const createInsumo = async (formData) => {
     }
 };
 
-// CORRECCIÓN: La función de actualización ahora puede manejar un FormData.
 export const updateInsumo = async (insumoId, formData) => {
     try {
         const response = await api.put(`/${insumoId}`, formData, {
