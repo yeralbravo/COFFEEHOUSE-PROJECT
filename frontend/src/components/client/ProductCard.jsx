@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAlerts } from '../../hooks/useAlerts';
 import '../../style/ProductCard.css';
@@ -7,15 +7,16 @@ import '../../style/ProductCard.css';
 const ProductCard = ({ item }) => {
     const { addToCart } = useCart();
     const { showSuccessAlert } = useAlerts();
-    const navigate = useNavigate(); // 2. Hook para la navegación
+    const navigate = useNavigate();
     const API_BASE_URL = 'http://localhost:5000';
     
     if (!item) {
         return null;
     }
 
-    const isCoffee = item.hasOwnProperty('tipo');
-    const linkUrl = isCoffee ? `/product/${item.id}` : `/insumo/${item.id}`;
+    // Usamos item.item_type que viene del backend. Es más confiable.
+    const isProduct = item.item_type === 'product';
+    const linkUrl = isProduct ? `/product/${item.id}` : `/insumo/${item.id}`;
     
     const imageUrl = item.images && item.images.length > 0
         ? `${API_BASE_URL}/${item.images[0]}`
@@ -23,27 +24,36 @@ const ProductCard = ({ item }) => {
 
     const handleAddToCart = async (e) => {
         e.preventDefault();
-        e.stopPropagation(); // Evita que el Link se active al hacer clic
-        const wasAdded = await addToCart(item); 
+        e.stopPropagation(); 
+        
+        // Creamos un objeto 'item' completo para el carrito
+        const itemForCart = {
+            ...item,
+            isProduct: isProduct // Aseguramos que el flag esté presente
+        };
+        
+        const wasAdded = await addToCart(itemForCart); 
         if (wasAdded) {
             showSuccessAlert(`${item.nombre} ha sido añadido al carrito!`);
         }
     };
 
-    // 3. Nueva función para el botón "Comprar"
     const handleBuyNow = (e) => {
         e.preventDefault();
-        e.stopPropagation(); // Evita que el Link se active
+        e.stopPropagation();
 
-        // Preparamos un objeto con solo este producto para enviarlo a la página de checkout
+        // Creamos el objeto del ítem para el checkout, asegurando que incluya el flag 'isProduct'
         const itemForCheckout = {
-            cartItems: [{ ...item, quantity: 1 }], // Lo ponemos en un array como espera la pág. de checkout
+            cartItems: [{ 
+                ...item, 
+                quantity: 1,
+                isProduct: isProduct // <-- ¡LA CORRECCIÓN CLAVE!
+            }],
             cartTotal: item.precio,
             itemCount: 1,
-            fromBuyNow: true // Una bandera para indicar que es una compra directa
+            fromBuyNow: true
         };
 
-        // Navegamos a la página de envío, pasándole los datos del producto
         navigate('/checkout/shipping', { state: itemForCheckout });
     };
 
@@ -55,11 +65,11 @@ const ProductCard = ({ item }) => {
                 </div>
                 <div className="product-card-info">
                     <h3 className="product-card-name">{item.nombre}</h3>
-                    <p className="product-card-type">{isCoffee ? item.tipo : item.categoria}</p>
+                    {/* Usamos 'tipo' para productos y 'categoria' para insumos */}
+                    <p className="product-card-type">{isProduct ? item.tipo : item.categoria}</p>
                     <p className="product-card-price">${new Intl.NumberFormat('es-CO').format(item.precio)}</p>
                 </div>
                 <div className="product-card-actions">
-                    {/* 4. Asignamos la nueva función al botón */}
                     <button onClick={handleBuyNow} className="btn btn-buy">Comprar</button>
                     <button onClick={handleAddToCart} className="btn btn-add-cart">Añadir al carrito</button>
                 </div>

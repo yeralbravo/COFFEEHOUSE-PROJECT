@@ -41,16 +41,22 @@ const InsumoDetailPage = () => {
         if (!insumo) return;
         
         const singleItemCart = {
-            cartItems: [{ ...insumo, quantity: 1 }],
+            cartItems: [{ 
+                ...insumo, 
+                quantity: 1,
+                isProduct: false // <-- ¡LA CORRECCIÓN CLAVE!
+            }],
             cartTotal: insumo.precio,
-            itemCount: 1
+            itemCount: 1,
+            fromBuyNow: true
         };
 
-        navigate('/checkout/shipping', { state: { fromBuyNow: true, ...singleItemCart } });
+        navigate('/checkout/shipping', { state: singleItemCart });
     };
 
-    const handleAddToCart = () => {
-        const wasAdded = addToCart(insumo);
+    const handleAddToCart = async () => {
+        // Añadimos 'isProduct: false' para consistencia
+        const wasAdded = await addToCart({ ...insumo, isProduct: false });
         if (wasAdded) {
             showSuccessAlert(`${insumo.nombre} ha sido añadido al carrito.`);
         }

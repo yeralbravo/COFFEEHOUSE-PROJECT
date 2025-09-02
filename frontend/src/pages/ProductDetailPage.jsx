@@ -41,16 +41,22 @@ const ProductDetailPage = () => {
         if (!product) return;
         
         const singleItemCart = {
-            cartItems: [{ ...product, quantity: 1 }],
+            cartItems: [{ 
+                ...product, 
+                quantity: 1,
+                isProduct: true // <-- ¡LA CORRECCIÓN CLAVE!
+            }],
             cartTotal: product.precio,
-            itemCount: 1
+            itemCount: 1,
+            fromBuyNow: true
         };
 
-        navigate('/checkout/shipping', { state: { fromBuyNow: true, ...singleItemCart } });
+        navigate('/checkout/shipping', { state: singleItemCart });
     };
 
-    const handleAddToCart = () => {
-        const wasAdded = addToCart(product);
+    const handleAddToCart = async () => {
+        // Añadimos 'isProduct: true' para consistencia
+        const wasAdded = await addToCart({ ...product, isProduct: true });
         if (wasAdded) {
             showSuccessAlert(`${product.nombre} ha sido añadido al carrito.`);
         }
