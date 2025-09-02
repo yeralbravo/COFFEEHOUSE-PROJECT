@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiPackage, FiDollarSign, FiList, FiAlertTriangle } from 'react-icons/fi';
 import { getDashboardData } from '../services/supplierService';
-
-// Componentes reutilizables
 import StatCard from '../components/supplier/StatCard';
-// CORREGIDO: Ruta de importación para TimeRangeFilter
 import TimeRangeFilter from '../components/TimeRangeFilter';
-
-// Gráficas
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-// Estilos
 import '../style/SupplierDashboard.css';
 
-// Registramos solo los componentes necesarios para las gráficas de barras
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
-
-// --- LÓGICA DE FECHAS ---
-const formatDate = (date) => date.toISOString().split('T')[0];
+// ================== FUNCIÓN DE FECHAS CORREGIDA ==================
+// Esta función formatea una fecha a 'YYYY-MM-DD' sin ser afectada por la zona horaria.
+const formatDateSafe = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 const getWeekRange = () => {
     const today = new Date();
-    const dayOfWeek = (today.getDay() + 6) % 7;
+    const dayOfWeek = (today.getDay() === 0) ? 6 : today.getDay() - 1; // Lunes = 0, Domingo = 6
     
     const monday = new Date(today);
     monday.setDate(today.getDate() - dayOfWeek);
@@ -33,17 +30,17 @@ const getWeekRange = () => {
     sunday.setDate(monday.getDate() + 6);
 
     return {
-        start: formatDate(monday),
-        end: formatDate(sunday),
+        start: formatDateSafe(monday),
+        end: formatDateSafe(sunday),
     };
 };
-// --- FIN DE LÓGICA DE FECHAS ---
+// ================== FIN DE LA CORRECCIÓN DE FECHAS ==================
 
 
 const SupplierDashboardPage = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [range, setRange] = useState('month');
+    const [range, setRange] = useState('week'); // Inicia en 'Esta Semana'
     const [selectedDate, setSelectedDate] = useState('');
 
     const timeRangeLabels = {
@@ -53,62 +50,61 @@ const SupplierDashboardPage = () => {
         year: 'Este Año'
     };
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                setLoading(true);
-                
-                let apiParams = {};
-                const today = new Date();
+    const fetchStats = useCallback(async () => {
+        setLoading(true);
+        let apiParams = {};
+        const today = new Date();
 
-                if (selectedDate) {
-                    apiParams = { startDate: selectedDate, endDate: selectedDate };
-                } else {
-                    let startDate;
-                    const endDate = new Date(today); 
-
-                    switch (range) {
-                        case 'week':
-                            const weekRange = getWeekRange();
-                            startDate = new Date(weekRange.start);
-                            endDate.setTime(new Date(weekRange.end).getTime());
-                            break;
-                        case 'month':
-                            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                            break;
-                        case 'year':
-                            startDate = new Date(today.getFullYear(), 0, 1);
-                            break;
-                        case 'day':
-                        default:
-                            startDate = new Date(new Date().setHours(0, 0, 0, 0));
-                            break;
-                    }
+        if (selectedDate) {
+            apiParams = { startDate: selectedDate, endDate: selectedDate };
+        } else {
+            switch (range) {
+                case 'week':
+                    const weekRange = getWeekRange();
+                    apiParams = { startDate: weekRange.start, endDate: weekRange.end };
+                    break;
+                case 'month':
                     apiParams = { 
-                        startDate: formatDate(startDate), 
-                        endDate: formatDate(endDate) 
+                        startDate: formatDateSafe(new Date(today.getFullYear(), today.getMonth(), 1)),
+                        endDate: formatDateSafe(today)
                     };
-                }
-                
-                console.log("Enviando a la API:", apiParams);
-                const response = await getDashboardData(apiParams);
-                
-                if (response.success) {
-                    setStats(response.data);
-                }
-            } catch (error) {
-                console.error(`Error al cargar datos:`, error);
-            } finally {
-                setLoading(false);
+                    break;
+                case 'year':
+                    apiParams = {
+                        startDate: formatDateSafe(new Date(today.getFullYear(), 0, 1)),
+                        endDate: formatDateSafe(today)
+                    };
+                    break;
+                case 'day':
+                default:
+                    apiParams = {
+                        startDate: formatDateSafe(today),
+                        endDate: formatDateSafe(today)
+                    };
+                    break;
             }
-        };
-        fetchStats();
+        }
+        
+        try {
+            const response = await getDashboardData(apiParams);
+            if (response.success) {
+                setStats(response.data);
+            }
+        } catch (error) {
+            console.error(`Error al cargar datos:`, error);
+        } finally {
+            setLoading(false);
+        }
     }, [range, selectedDate]);
+
+    useEffect(() => {
+        fetchStats();
+    }, [fetchStats]);
 
 
     // Datos para la gráfica de barras de ventas
     const salesBarChartData = {
-        labels: stats?.salesData.map(d => new Date(d.date).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })) || [],
+        labels: stats?.salesData.map(d => new Date(d.date).toLocaleDateString('es-CO', { timeZone: 'UTC', month: 'short', day: 'numeric' })) || [],
         datasets: [{
             label: 'Ventas',
             data: stats?.salesData.map(d => d.total) || [],
@@ -211,9 +207,15 @@ const SupplierDashboardPage = () => {
                         </div>
                         <div className="chart-card">
                             <h3>Productos más vendidos</h3>
-                            <div className="chart-container">
-                                <Bar options={topProductsChartOptions} data={topProductsChartData} />
-                            </div>
+                            {stats?.topProducts && stats.topProducts.length > 0 ? (
+                                <div className="chart-container">
+                                    <Bar options={topProductsChartOptions} data={topProductsChartData} />
+                                </div>
+                            ) : (
+                                <div className="no-data-message">
+                                    <p>No hay productos vendidos en este período.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </>

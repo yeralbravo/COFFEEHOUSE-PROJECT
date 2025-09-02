@@ -4,9 +4,14 @@ import db from '../config/db.js';
 const getDateRangeQuery = (range, dateColumn) => {
     switch (range) {
         case 'day':
-            return ` AND ${dateColumn} >= CURDATE()`;
+            return ` AND DATE(${dateColumn}) = CURDATE()`;
+        
+        // ================== AQUÍ ESTÁ LA CORRECCIÓN ==================
+        // Usamos YEARWEEK con el modo 1, que considera el Lunes como el primer día de la semana.
+        // Esto filtra todos los registros cuya semana y año coinciden con la fecha actual.
         case 'week':
-            return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)`;
+            return ` AND YEARWEEK(${dateColumn}, 1) = YEARWEEK(CURDATE(), 1)`;
+
         case 'month':
             return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
         case 'year':
