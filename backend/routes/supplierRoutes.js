@@ -5,10 +5,12 @@ import {
     getSupplierSalesReport, 
     getSupplierProductStats, 
     getSupplierOrderStats,
-    getLowStockItems,
-    // NUEVO: Importamos la nueva función del modelo
-    getSupplierOrderDetails 
+    getLowStockItems
 } from '../models/SupplierStats.js';
+
+// --- ¡CORRECCIÓN CLAVE! ---
+// 1. Se importa la función 'findSupplierOrderDetails' desde el archivo correcto: 'Order.js'
+import { findSupplierOrderDetails } from '../models/Order.js';
 
 const router = express.Router();
 
@@ -48,7 +50,7 @@ router.get('/sales-report', [verifyToken, checkRole(['supplier'])], async (req, 
     }
 });
 
-// --- RUTA DE ESTADÍSTICAS DE PRODUCTOS (Sin cambios, no usa filtro de fecha) ---
+// --- RUTA DE ESTADÍSTICAS DE PRODUCTOS ---
 router.get('/product-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
@@ -78,13 +80,14 @@ router.get('/order-stats', [verifyToken, checkRole(['supplier'])], async (req, r
     }
 });
 
-// --- NUEVA RUTA: Obtener detalles de un pedido específico ---
+// --- RUTA DE DETALLES DE UN PEDIDO ESPECÍFICO ---
 router.get('/orders/:id/details', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const { id } = req.params;
         const supplierId = req.user.id;
         
-        const orderDetails = await getSupplierOrderDetails(id, supplierId);
+        // 2. Se usa el nombre correcto de la función importada
+        const orderDetails = await findSupplierOrderDetails(id, supplierId);
 
         if (!orderDetails) {
             return res.status(404).json({ success: false, error: 'Pedido no encontrado o no pertenece a este proveedor.' });
@@ -97,7 +100,7 @@ router.get('/orders/:id/details', [verifyToken, checkRole(['supplier'])], async 
     }
 });
 
-// --- RUTA DE ÍTEMS CON BAJO STOCK (Sin cambios, no usa filtro de fecha) ---
+// --- RUTA DE ÍTEMS CON BAJO STOCK ---
 router.get('/low-stock-items', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;

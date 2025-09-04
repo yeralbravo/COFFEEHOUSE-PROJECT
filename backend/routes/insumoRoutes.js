@@ -25,7 +25,8 @@ const insumoValidation = [
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.'),
     body('categoria').trim().notEmpty().withMessage('La categoría es obligatoria.'),
     body('marca').trim().optional(),
-    body('precio').isDecimal({ decimal_digits: '1,2' }).withMessage('El precio debe ser un número válido.'),
+    // --- ¡CORRECCIÓN CLAVE AQUÍ! ---
+    body('precio').isFloat({ gt: 0 }).withMessage('El precio debe ser un número mayor que cero.'),
     body('stock').isInt({ min: 0 }).withMessage('El stock debe ser un número entero no negativo.'),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
     body('caracteristicas').optional({ checkFalsy: true }).isJSON(),
@@ -41,7 +42,6 @@ router.get('/public', async (req, res) => {
     }
 });
 
-// --- RUTA MODIFICADA ---
 router.get('/my-insumos', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const { search } = req.query; // Leemos el parámetro 'search' de la URL

@@ -74,67 +74,69 @@ export const getSupplierDashboardStats = async (supplierId, dateRange) => {
     };
 };
 
-/**
- * NUEVA FUNCIÓN: Obtiene los detalles completos de un pedido para un proveedor.
- * @param {number} orderId - El ID del pedido.
- * @param {number} supplierId - El ID del proveedor que solicita.
- */
-export const getSupplierOrderDetails = async (orderId, supplierId) => {
-    const orderQuery = `
-        SELECT 
-            o.id,
-            o.created_at as date,
-            o.total_amount,
-            o.status,
-            u.nombre as user_name,
-            u.apellido as user_lastname,
-            u.email as user_email,
-            a.address as user_address,
-            a.city as user_city,
-            a.department as user_department
-        FROM orders o
-        JOIN users u ON o.user_id = u.id
-        LEFT JOIN addresses a ON o.address_id = a.id
-        WHERE o.id = ?
-    `;
-    const [orderResult] = await db.query(orderQuery, [orderId]);
-
-    if (orderResult.length === 0) {
-        return null;
-    }
-
-    const itemsQuery = `
-        SELECT 
-            oi.quantity,
-            oi.price_at_purchase,
-            COALESCE(p.nombre, i.nombre) as name
-        FROM order_items oi
-        LEFT JOIN products p ON oi.product_id = p.id
-        LEFT JOIN insumos i ON oi.insumo_id = i.id
-        WHERE oi.order_id = ? AND (p.supplier_id = ? OR i.supplier_id = ?)
-    `;
-    const [itemsResult] = await db.query(itemsQuery, [orderId, supplierId, supplierId]);
-    
-    if(itemsResult.length === 0) {
-        return null;
-    }
-    
-    return {
-        ...orderResult[0],
-        items: itemsResult
-    };
-};
-
-
+// ================== FUNCIÓN MODIFICADA ==================
 export const getSupplierSalesReport = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
-    const [report] = await db.query( `SELECT COALESCE(SUM(oi.quantity * oi.price_at_purchase), 0) AS totalRevenue, COUNT(DISTINCT o.id) AS totalOrders, COALESCE(SUM(oi.quantity), 0) AS productsSold FROM orders o JOIN order_items oi ON o.id = oi.order_id WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?)) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
-    const [salesData] = await db.query( `SELECT DATE(o.created_at) as date, SUM(oi.quantity * oi.price_at_purchase) as total FROM order_items oi JOIN orders o ON oi.order_id = o.id WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?)) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado' GROUP BY DATE(o.created_at) ORDER BY date ASC`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
-    const [topProducts] = await db.query( `SELECT IFNULL(p.nombre, i.nombre) as name, SUM(oi.quantity) as quantity_sold, SUM(oi.quantity * oi.price_at_purchase) as revenue FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id JOIN orders o ON oi.order_id = o.id WHERE (p.supplier_id = ? OR i.supplier_id = ?) AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado' GROUP BY name HAVING name IS NOT NULL ORDER BY revenue DESC LIMIT 5`, [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`] );
-    const summary = report[0];
-    summary.averageOrderValue = summary.totalOrders > 0 ? summary.totalRevenue / summary.totalOrders : 0;
-    return { summary, salesData, topProducts };
+    const startDateWithTime = `${startDate} 00:00:00`;
+    const endDateWithTime = `${endDate} 23:59:59`;
+
+    const [summaryResult] = await db.query(
+        `SELECT 
+            COALESCE(SUM(oi.quantity * oi.price_at_purchase), 0) AS totalRevenue, 
+            COUNT(DISTINCT o.id) AS totalOrders, 
+            COALESCE(SUM(oi.quantity), 0) AS productsSold 
+         FROM orders o 
+         JOIN order_items oi ON o.id = oi.order_id 
+         WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?)) 
+         AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'`,
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
+    );
+    const summary = summaryResult[0];
+    // --- ¡CÁLCULO AÑADIDO! ---
+    // Calculamos el promedio de ítems dividiendo el total de productos vendidos entre el total de órdenes.
+    summary.averageItemsPerOrder = summary.totalOrders > 0 ? (summary.productsSold / summary.totalOrders) : 0;
+
+    const [revenueByTypeResult] = await db.query(
+        `SELECT 
+            SUM(CASE WHEN oi.product_id IS NOT NULL THEN oi.quantity * oi.price_at_purchase ELSE 0 END) as cafeRevenue,
+            SUM(CASE WHEN oi.insumo_id IS NOT NULL THEN oi.quantity * oi.price_at_purchase ELSE 0 END) as insumoRevenue
+         FROM order_items oi
+         JOIN orders o ON oi.order_id = o.id
+         WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
+         AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'`,
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
+    );
+    const revenueByType = revenueByTypeResult[0];
+
+    const [revenueByCategory] = await db.query(
+        `SELECT 
+            category, 
+            SUM(revenue) as totalRevenue
+         FROM (
+            SELECT 
+                p.tipo as category, 
+                oi.quantity * oi.price_at_purchase as revenue
+            FROM order_items oi
+            JOIN products p ON oi.product_id = p.id
+            JOIN orders o ON oi.order_id = o.id
+            WHERE p.supplier_id = ? AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'
+            UNION ALL
+            SELECT 
+                i.categoria as category, 
+                oi.quantity * oi.price_at_purchase as revenue
+            FROM order_items oi
+            JOIN insumos i ON oi.insumo_id = i.id
+            JOIN orders o ON oi.order_id = o.id
+            WHERE i.supplier_id = ? AND o.created_at BETWEEN ? AND ? AND o.status != 'Cancelado'
+         ) as sales_by_category
+         GROUP BY category
+         ORDER BY totalRevenue DESC`,
+        [supplierId, startDateWithTime, endDateWithTime, supplierId, startDateWithTime, endDateWithTime]
+    );
+    
+    return { summary, revenueByType, revenueByCategory };
 };
+// ================== FIN DE LA MODIFICACIÓN ==================
 
 export const getSupplierProductStats = async (supplierId) => {
     const [stats] = await db.query(
@@ -160,18 +162,20 @@ export const getSupplierProductStats = async (supplierId) => {
 
 export const getSupplierOrderStats = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
+    const startDateWithTime = `${startDate} 00:00:00`;
+    const endDateWithTime = `${endDate} 23:59:59`;
+
     const supplierOrdersSubquery = `
         SELECT DISTINCT o.id 
         FROM orders o
         JOIN order_items oi ON o.id = oi.order_id
-        LEFT JOIN products p ON oi.product_id = p.id
-        LEFT JOIN insumos i ON oi.insumo_id = i.id
-        WHERE (p.supplier_id = ? OR i.supplier_id = ?)
+        WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
+               oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
         AND o.created_at BETWEEN ? AND ?
     `;
+
     const [summary] = await db.query(
-        `
-        SELECT
+        `SELECT
             COUNT(*) AS total_orders,
             SUM(CASE WHEN status = 'Pendiente' THEN 1 ELSE 0 END) AS pending_count,
             SUM(CASE WHEN status = 'Enviado' THEN 1 ELSE 0 END) AS shipped_count,
@@ -179,27 +183,27 @@ export const getSupplierOrderStats = async (supplierId, dateRange) => {
         FROM orders
         WHERE id IN (${supplierOrdersSubquery})
         `,
-        [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`]
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
     );
+    
     const [statusDistribution] = await db.query(
-        `
-        SELECT status, COUNT(*) as count
+        `SELECT status, COUNT(*) as count
         FROM orders
         WHERE id IN (${supplierOrdersSubquery})
         GROUP BY status
         `,
-        [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`]
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
     );
+
     const [recentOrders] = await db.query(
-        `
-        SELECT o.id, u.nombre as user_name, o.total_amount, o.status, DATE_FORMAT(o.created_at, '%d/%m/%Y') as date
+        `SELECT o.id, u.nombre as user_name, o.total_amount, o.status, DATE_FORMAT(o.created_at, '%d/%m/%Y') as date
         FROM orders o
         JOIN users u ON o.user_id = u.id
         WHERE o.id IN (${supplierOrdersSubquery})
         ORDER BY o.created_at DESC
         LIMIT 10
         `,
-        [supplierId, supplierId, `${startDate} 00:00:00`, `${endDate} 23:59:59`]
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
     );
 
     return {
@@ -216,8 +220,7 @@ export const getSupplierOrderStats = async (supplierId, dateRange) => {
 
 export const getLowStockItems = async (supplierId) => {
     const [items] = await db.query(
-        `
-        (SELECT 
+        `(SELECT 
             id, nombre, stock, 'Café' as type,
             (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image
         FROM products p

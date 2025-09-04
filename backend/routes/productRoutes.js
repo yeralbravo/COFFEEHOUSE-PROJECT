@@ -25,7 +25,8 @@ const productValidation = [
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.'),
     body('tipo').trim().notEmpty().withMessage('El tipo es obligatorio.'),
     body('marca').trim().notEmpty().withMessage('La marca es obligatoria.'),
-    body('precio').isDecimal({ decimal_digits: '1,2' }).withMessage('El precio debe ser un número válido.'),
+    // --- ¡CORRECCIÓN CLAVE AQUÍ! ---
+    body('precio').isFloat({ gt: 0 }).withMessage('El precio debe ser un número mayor que cero.'),
     body('stock').isInt({ min: 0 }).withMessage('El stock debe ser un número entero no negativo.'),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
     body('caracteristicas').optional({ checkFalsy: true }).isJSON(),
@@ -54,7 +55,6 @@ router.post('/',
     }
 );
 
-// --- RUTA MODIFICADA ---
 router.get('/my-products', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const { search } = req.query; // Leemos el parámetro 'search' de la URL
