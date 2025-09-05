@@ -74,7 +74,6 @@ export const getSupplierDashboardStats = async (supplierId, dateRange) => {
     };
 };
 
-// ================== FUNCIÓN MODIFICADA ==================
 export const getSupplierSalesReport = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
     const startDateWithTime = `${startDate} 00:00:00`;
@@ -92,8 +91,6 @@ export const getSupplierSalesReport = async (supplierId, dateRange) => {
         [supplierId, supplierId, startDateWithTime, endDateWithTime]
     );
     const summary = summaryResult[0];
-    // --- ¡CÁLCULO AÑADIDO! ---
-    // Calculamos el promedio de ítems dividiendo el total de productos vendidos entre el total de órdenes.
     summary.averageItemsPerOrder = summary.totalOrders > 0 ? (summary.productsSold / summary.totalOrders) : 0;
 
     const [revenueByTypeResult] = await db.query(
@@ -136,29 +133,78 @@ export const getSupplierSalesReport = async (supplierId, dateRange) => {
     
     return { summary, revenueByType, revenueByCategory };
 };
-// ================== FIN DE LA MODIFICACIÓN ==================
 
-export const getSupplierProductStats = async (supplierId) => {
-    const [stats] = await db.query(
-        `
-        SELECT
-            (SELECT COUNT(*) FROM products WHERE supplier_id = ?) AS product_count,
-            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ?) AS insumo_count,
-            (SELECT COUNT(*) FROM products WHERE supplier_id = ? AND stock <= 5) + 
-            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ? AND stock <= 5) AS low_stock_count,
+// ================== FUNCIÓN CORREGIDA Y MEJORADA ==================
+export const getSupplierProductStats = async (supplierId, dateRange) => {
+    const { startDate, endDate } = dateRange;
+    const startDateWithTime = `${startDate} 00:00:00`;
+    const endDateWithTime = `${endDate} 23:59:59`;
+
+    // 1. KPIs de inventario (no usan el filtro de fecha, esto es correcto)
+    const [kpisResult] = await db.query(
+        `SELECT
+            (SELECT COUNT(*) FROM products WHERE supplier_id = ?) AS total_products,
+            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ?) AS total_insumos,
+            (SELECT COUNT(*) FROM products WHERE supplier_id = ? AND stock > 0 AND stock <= 5) + 
+            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ? AND stock > 0 AND stock <= 5) AS low_stock,
             (SELECT COUNT(*) FROM products WHERE supplier_id = ? AND stock = 0) + 
-            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ? AND stock = 0) AS out_of_stock_count
+            (SELECT COUNT(*) FROM insumos WHERE supplier_id = ? AND stock = 0) AS out_of_stock
         `,
         [supplierId, supplierId, supplierId, supplierId, supplierId, supplierId]
     );
+    const kpis = kpisResult[0];
 
-    return {
-        totalProducts: parseInt(stats[0].product_count),
-        totalInsumos: parseInt(stats[0].insumo_count),
-        lowStock: parseInt(stats[0].low_stock_count),
-        outOfStock: parseInt(stats[0].out_of_stock_count)
-    };
+    // 2. Gráfica: Top 5 productos más vistos (CORREGIDO para usar el rango de tiempo completo)
+    const [topViewedProducts] = await db.query(
+        `SELECT 
+            IFNULL(p.nombre, i.nombre) as name,
+            SUM(v.view_count) as total_views
+         FROM views v
+         LEFT JOIN products p ON v.product_id = p.id
+         LEFT JOIN insumos i ON v.insumo_id = i.id
+         WHERE (p.supplier_id = ? OR i.supplier_id = ?)
+         AND v.view_date BETWEEN ? AND ?
+         GROUP BY name
+         HAVING name IS NOT NULL
+         ORDER BY total_views DESC
+         LIMIT 5`,
+        // Se usan las variables con hora para asegurar que se incluye todo el día final
+        [supplierId, supplierId, startDateWithTime, endDateWithTime]
+    );
+
+    // 3. Gráfica: Top 5 productos mejor calificados (MEJORADO con desempate por número de reseñas)
+    const [topRatedProducts] = await db.query(
+        `SELECT 
+            name, 
+            avg_rating
+        FROM (
+            SELECT 
+                p.nombre as name, 
+                AVG(r.rating) as avg_rating,
+                COUNT(r.id) as review_count
+            FROM reviews r
+            JOIN products p ON r.product_id = p.id
+            WHERE p.supplier_id = ? AND r.created_at BETWEEN ? AND ?
+            GROUP BY p.nombre
+            UNION ALL
+            SELECT 
+                i.nombre as name, 
+                AVG(r.rating) as avg_rating,
+                COUNT(r.id) as review_count
+            FROM reviews r
+            JOIN insumos i ON r.insumo_id = i.id
+            WHERE i.supplier_id = ? AND r.created_at BETWEEN ? AND ?
+            GROUP BY i.nombre
+        ) as combined_reviews
+        WHERE avg_rating IS NOT NULL
+        ORDER BY avg_rating DESC, review_count DESC
+        LIMIT 5`,
+        [supplierId, startDateWithTime, endDateWithTime, supplierId, startDateWithTime, endDateWithTime]
+    );
+
+    return { kpis, topViewedProducts, topRatedProducts };
 };
+// ================== FIN DE LA MODIFICACIÓN ==================
 
 export const getSupplierOrderStats = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;

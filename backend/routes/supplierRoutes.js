@@ -7,9 +7,6 @@ import {
     getSupplierOrderStats,
     getLowStockItems
 } from '../models/SupplierStats.js';
-
-// --- ¡CORRECCIÓN CLAVE! ---
-// 1. Se importa la función 'findSupplierOrderDetails' desde el archivo correcto: 'Order.js'
 import { findSupplierOrderDetails } from '../models/Order.js';
 
 const router = express.Router();
@@ -50,17 +47,26 @@ router.get('/sales-report', [verifyToken, checkRole(['supplier'])], async (req, 
     }
 });
 
+// ================== RUTA ACTUALIZADA ==================
 // --- RUTA DE ESTADÍSTICAS DE PRODUCTOS ---
 router.get('/product-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const supplierId = req.user.id;
-        const stats = await getSupplierProductStats(supplierId);
+        // Leemos las fechas que ahora envía el frontend
+        const { startDate, endDate } = req.query;
+        if (!startDate || !endDate) {
+            return res.status(400).json({ success: false, error: 'Se requieren parámetros startDate y endDate.' });
+        }
+        // Pasamos las fechas a la función del modelo
+        const stats = await getSupplierProductStats(supplierId, { startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         console.error("Error al obtener estadísticas de productos:", error);
         res.status(500).json({ success: false, error: 'Error interno del servidor.' });
     }
 });
+// ================== FIN DE LA MODIFICACIÓN ==================
+
 
 // --- RUTA DE ESTADÍSTICAS DE PEDIDOS ---
 router.get('/order-stats', [verifyToken, checkRole(['supplier'])], async (req, res) => {
@@ -86,7 +92,6 @@ router.get('/orders/:id/details', [verifyToken, checkRole(['supplier'])], async 
         const { id } = req.params;
         const supplierId = req.user.id;
         
-        // 2. Se usa el nombre correcto de la función importada
         const orderDetails = await findSupplierOrderDetails(id, supplierId);
 
         if (!orderDetails) {

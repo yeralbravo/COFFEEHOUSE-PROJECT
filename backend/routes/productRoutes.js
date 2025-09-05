@@ -10,6 +10,8 @@ import {
     findAllPublicProducts,
     findProductById
 } from '../models/Product.js';
+// 1. Importamos la nueva función para registrar vistas
+import { recordView } from '../models/View.js';
 
 const router = express.Router();
 
@@ -25,7 +27,6 @@ const productValidation = [
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.'),
     body('tipo').trim().notEmpty().withMessage('El tipo es obligatorio.'),
     body('marca').trim().notEmpty().withMessage('La marca es obligatoria.'),
-    // --- ¡CORRECCIÓN CLAVE AQUÍ! ---
     body('precio').isFloat({ gt: 0 }).withMessage('El precio debe ser un número mayor que cero.'),
     body('stock').isInt({ min: 0 }).withMessage('El stock debe ser un número entero no negativo.'),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
@@ -57,7 +58,7 @@ router.post('/',
 
 router.get('/my-products', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
-        const { search } = req.query; // Leemos el parámetro 'search' de la URL
+        const { search } = req.query;
         const products = await findProductsBySupplier(req.user.id, search);
         res.status(200).json({ success: true, data: products });
     } catch (error) {
@@ -93,12 +94,18 @@ router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID(
     }
 });
 
+// --- RUTA MODIFICADA ---
 router.get('/:id', async (req, res) => {
     try {
         const product = await findProductById(req.params.id);
         if (!product) {
             return res.status(404).json({ success: false, error: 'Producto no encontrado.' });
         }
+        
+        // 2. Registramos la visita ANTES de enviar la respuesta
+        // No usamos 'await' para no retrasar la carga de la página
+        recordView({ productId: req.params.id });
+
         res.status(200).json({ success: true, data: product });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al obtener el producto.' });

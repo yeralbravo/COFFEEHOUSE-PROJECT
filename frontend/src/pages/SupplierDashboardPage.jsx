@@ -179,8 +179,7 @@ const SupplierDashboardPage = () => {
             {loading ? <p>Cargando dashboard...</p> : stats && (
                 <>
                     <div className="stats-grid">
-                        <StatCard icon={<FiPackage />} title="Total de Productos" value={stats.summary.totalProducts} />
-                        
+            
                         <StatCard 
                             icon={<FiDollarSign />} 
                             title={`Ventas de ${selectedDate ? 'la fecha seleccionada' : timeRangeLabels[range]}`} 
@@ -188,8 +187,11 @@ const SupplierDashboardPage = () => {
                             link="/supplier/stats/sales" 
                             linkText="Ver reporte de ventas" 
                         />
+
                         <StatCard icon={<FiList />} title="Pedidos Pendientes" value={stats.summary.pendingOrders} link="/supplier/orders" linkText="Gestionar pedidos" />
                         <StatCard icon={<FiAlertTriangle />} title="Productos con Bajo Stock" value={stats.summary.lowStockCount} link="/supplier/stats/low-stock" linkText="Ver inventario" />
+                        <StatCard icon={<FiPackage />} title="Total de Productos" value={stats.summary.totalProducts} />
+
                     </div>
 
                     <div className="charts-grid">

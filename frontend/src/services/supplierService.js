@@ -47,17 +47,22 @@ export const getSalesReport = async (params) => {
     }
 };
 
+// ================== FUNCIÓN ACTUALIZADA ==================
 /**
  * Obtiene las estadísticas de productos para el proveedor.
+ * @param {object} params - Un objeto que DEBE contener startDate y endDate.
  */
-export const getProductStats = async () => {
+export const getProductStats = async (params) => {
     try {
-        const response = await api.get('/product-stats');
+        // Ahora la función envía las fechas al backend
+        const url = `/product-stats?startDate=${params.startDate}&endDate=${params.endDate}`;
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener las estadísticas de productos');
     }
 };
+// ================== FIN DE LA MODIFICACIÓN ==================
 
 /**
  * Obtiene las estadísticas de pedidos para el proveedor.

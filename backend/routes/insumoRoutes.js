@@ -10,6 +10,8 @@ import {
     findAllPublicInsumos,
     findInsumoById
 } from '../models/Insumo.js';
+// 1. Importamos la nueva función para registrar vistas
+import { recordView } from '../models/View.js';
 
 const router = express.Router();
 
@@ -25,7 +27,6 @@ const insumoValidation = [
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.'),
     body('categoria').trim().notEmpty().withMessage('La categoría es obligatoria.'),
     body('marca').trim().optional(),
-    // --- ¡CORRECCIÓN CLAVE AQUÍ! ---
     body('precio').isFloat({ gt: 0 }).withMessage('El precio debe ser un número mayor que cero.'),
     body('stock').isInt({ min: 0 }).withMessage('El stock debe ser un número entero no negativo.'),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
@@ -44,7 +45,7 @@ router.get('/public', async (req, res) => {
 
 router.get('/my-insumos', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
-        const { search } = req.query; // Leemos el parámetro 'search' de la URL
+        const { search } = req.query;
         const insumos = await findInsumosBySupplier(req.user.id, search);
         res.status(200).json({ success: true, data: insumos });
     } catch (error) {
@@ -105,12 +106,17 @@ router.delete('/:id', [verifyToken, checkRole(['supplier']), param('id').isUUID(
     }
 });
 
+// --- RUTA MODIFICADA ---
 router.get('/:id', async (req, res) => {
     try {
         const insumo = await findInsumoById(req.params.id);
         if (!insumo) {
             return res.status(404).json({ success: false, error: 'Insumo no encontrado.' });
         }
+
+        // 2. Registramos la visita ANTES de enviar la respuesta
+        recordView({ insumoId: req.params.id });
+
         res.status(200).json({ success: true, data: insumo });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al obtener el insumo.' });
