@@ -134,13 +134,11 @@ export const getSupplierSalesReport = async (supplierId, dateRange) => {
     return { summary, revenueByType, revenueByCategory };
 };
 
-// ================== FUNCIÓN CORREGIDA Y MEJORADA ==================
 export const getSupplierProductStats = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
     const startDateWithTime = `${startDate} 00:00:00`;
     const endDateWithTime = `${endDate} 23:59:59`;
 
-    // 1. KPIs de inventario (no usan el filtro de fecha, esto es correcto)
     const [kpisResult] = await db.query(
         `SELECT
             (SELECT COUNT(*) FROM products WHERE supplier_id = ?) AS total_products,
@@ -154,7 +152,6 @@ export const getSupplierProductStats = async (supplierId, dateRange) => {
     );
     const kpis = kpisResult[0];
 
-    // 2. Gráfica: Top 5 productos más vistos (CORREGIDO para usar el rango de tiempo completo)
     const [topViewedProducts] = await db.query(
         `SELECT 
             IFNULL(p.nombre, i.nombre) as name,
@@ -168,11 +165,9 @@ export const getSupplierProductStats = async (supplierId, dateRange) => {
          HAVING name IS NOT NULL
          ORDER BY total_views DESC
          LIMIT 5`,
-        // Se usan las variables con hora para asegurar que se incluye todo el día final
         [supplierId, supplierId, startDateWithTime, endDateWithTime]
     );
 
-    // 3. Gráfica: Top 5 productos mejor calificados (MEJORADO con desempate por número de reseñas)
     const [topRatedProducts] = await db.query(
         `SELECT 
             name, 
@@ -204,63 +199,88 @@ export const getSupplierProductStats = async (supplierId, dateRange) => {
 
     return { kpis, topViewedProducts, topRatedProducts };
 };
-// ================== FIN DE LA MODIFICACIÓN ==================
 
+// --- FUNCIÓN CORREGIDA ---
 export const getSupplierOrderStats = async (supplierId, dateRange) => {
     const { startDate, endDate } = dateRange;
     const startDateWithTime = `${startDate} 00:00:00`;
     const endDateWithTime = `${endDate} 23:59:59`;
 
-    const supplierOrdersSubquery = `
-        SELECT DISTINCT o.id 
+    // Query 1: Obtiene pedidos TOTALES y PENDIENTES basados en la FECHA DE CREACIÓN.
+    const createdStatsQuery = `
+        SELECT
+            COUNT(DISTINCT o.id) AS total_orders,
+            SUM(CASE WHEN o.status = 'Pendiente' THEN 1 ELSE 0 END) AS pending_count
         FROM orders o
         JOIN order_items oi ON o.id = oi.order_id
         WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
                oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
-        AND o.created_at BETWEEN ? AND ?
+          AND o.created_at BETWEEN ? AND ?
+    `;
+    const [createdStats] = await db.query(createdStatsQuery, [supplierId, supplierId, startDateWithTime, endDateWithTime]);
+
+    // Query 2: Obtiene pedidos ENVIADOS y ENTREGADOS basados en la FECHA DE ACTUALIZACIÓN.
+    const updatedStatsQuery = `
+        SELECT
+            SUM(CASE WHEN o.status = 'Enviado' THEN 1 ELSE 0 END) AS shipped_count,
+            SUM(CASE WHEN o.status = 'Entregado' THEN 1 ELSE 0 END) AS delivered_count
+        FROM orders o
+        JOIN order_items oi ON o.id = oi.order_id
+        WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
+               oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
+          AND o.updated_at BETWEEN ? AND ?
+    `;
+    const [updatedStats] = await db.query(updatedStatsQuery, [supplierId, supplierId, startDateWithTime, endDateWithTime]);
+    
+    // El resto de las consultas siguen basándose en la fecha de creación, lo cual es correcto para "recientes" y "tipos de cliente".
+    const baseQueryForRest = `
+        WITH SupplierOrderIDs AS (
+            SELECT DISTINCT o.id
+            FROM orders o
+            JOIN order_items oi ON o.id = oi.order_id
+            WHERE (oi.product_id IN (SELECT id FROM products WHERE supplier_id = ?) OR 
+                   oi.insumo_id IN (SELECT id FROM insumos WHERE supplier_id = ?))
+              AND o.created_at BETWEEN ? AND ?
+        )
     `;
 
-    const [summary] = await db.query(
-        `SELECT
-            COUNT(*) AS total_orders,
-            SUM(CASE WHEN status = 'Pendiente' THEN 1 ELSE 0 END) AS pending_count,
-            SUM(CASE WHEN status = 'Enviado' THEN 1 ELSE 0 END) AS shipped_count,
-            SUM(CASE WHEN status = 'Entregado' THEN 1 ELSE 0 END) AS delivered_count
-        FROM orders
-        WHERE id IN (${supplierOrdersSubquery})
-        `,
-        [supplierId, supplierId, startDateWithTime, endDateWithTime]
-    );
-    
-    const [statusDistribution] = await db.query(
-        `SELECT status, COUNT(*) as count
-        FROM orders
-        WHERE id IN (${supplierOrdersSubquery})
-        GROUP BY status
-        `,
-        [supplierId, supplierId, startDateWithTime, endDateWithTime]
-    );
-
-    const [recentOrders] = await db.query(
-        `SELECT o.id, u.nombre as user_name, o.total_amount, o.status, DATE_FORMAT(o.created_at, '%d/%m/%Y') as date
+    const recentOrdersQuery = `
+        ${baseQueryForRest}
+        SELECT o.id, u.nombre as user_name, o.total_amount, o.status, DATE_FORMAT(o.created_at, '%d/%m/%Y') as date
         FROM orders o
         JOIN users u ON o.user_id = u.id
-        WHERE o.id IN (${supplierOrdersSubquery})
+        WHERE o.id IN (SELECT id FROM SupplierOrderIDs)
         ORDER BY o.created_at DESC
-        LIMIT 10
-        `,
-        [supplierId, supplierId, startDateWithTime, endDateWithTime]
-    );
+        LIMIT 5
+    `;
+    const [recentOrders] = await db.query(recentOrdersQuery, [supplierId, supplierId, startDateWithTime, endDateWithTime]);
 
+    const customerTypeQuery = `
+        ${baseQueryForRest}
+        , FirstOrderPerUser AS (
+            SELECT user_id, MIN(id) as first_order_id
+            FROM orders
+            GROUP BY user_id
+        )
+        SELECT
+            SUM(CASE WHEN o.id = fopu.first_order_id THEN 1 ELSE 0 END) AS new_customer_orders,
+            SUM(CASE WHEN o.id != fopu.first_order_id THEN 1 ELSE 0 END) AS returning_customer_orders
+        FROM orders o
+        JOIN FirstOrderPerUser fopu ON o.user_id = fopu.user_id
+        WHERE o.id IN (SELECT id FROM SupplierOrderIDs)
+    `;
+    const [customerTypeStats] = await db.query(customerTypeQuery, [supplierId, supplierId, startDateWithTime, endDateWithTime]);
+
+    // Unimos los resultados de las consultas en el objeto final
     return {
         summary: {
-            totalOrders: parseInt(summary[0].total_orders) || 0,
-            pending: parseInt(summary[0].pending_count) || 0,
-            shipped: parseInt(summary[0].shipped_count) || 0,
-            delivered: parseInt(summary[0].delivered_count) || 0,
+            totalOrders: parseInt(createdStats[0].total_orders) || 0,
+            pending: parseInt(createdStats[0].pending_count) || 0,
+            shipped: parseInt(updatedStats[0].shipped_count) || 0,
+            delivered: parseInt(updatedStats[0].delivered_count) || 0,
         },
-        statusDistribution,
-        recentOrders
+        recentOrders,
+        customerTypeStats: customerTypeStats[0]
     };
 };
 

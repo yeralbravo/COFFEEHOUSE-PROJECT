@@ -3,8 +3,13 @@ import { FiFileText, FiClock, FiTruck, FiCheckCircle } from 'react-icons/fi';
 import { getOrderStats } from '../services/supplierService';
 import StatCard from '../components/supplier/StatCard';
 import TimeRangeFilter from '../components/TimeRangeFilter';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend
+} from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import '../style/SupplierDashboard.css';
 import '../style/UserList.css';
@@ -85,43 +90,66 @@ const SupplierOrderStatsPage = () => {
         fetchStats();
     }, [fetchStats]);
 
-    const getChartData = () => {
-        const labels = ['Pendiente', 'Enviado', 'Entregado', 'Cancelado'];
-        const backgroundColors = ['#f5a623', '#4a90e2', '#28a745', '#dc3545'];
-        const counts = labels.map(label => {
-            const item = stats?.statusDistribution.find(s => s.status === label);
-            return item ? item.count : 0;
-        });
-
-        return {
-            labels: labels,
-            datasets: [{
-                data: counts,
-                backgroundColor: backgroundColors,
-                borderColor: '#fff',
-                borderWidth: 2,
-            }],
-        };
+    const customerTypeChartData = {
+        labels: ['Clientes Nuevos', 'Clientes Recurrentes'],
+        datasets: [{
+            data: [
+                stats?.customerTypeStats?.new_customer_orders || 0,
+                stats?.customerTypeStats?.returning_customer_orders || 0
+            ],
+            backgroundColor: ['#24651C', '#82ca9d'],
+            borderColor: '#ffffff',
+            borderWidth: 2,
+        }],
     };
 
-    const pieChartOptions = {
+    // --- OPCIONES IDÉNTICAS A LA PÁGINA DE VENTAS ---
+    const doughnutOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        cutout: '60%',
         plugins: {
-            legend: { position: 'bottom' },
-            datalabels: {
-                formatter: (value, ctx) => {
-                    const sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                    const percentage = sum > 0 ? ((value / sum) * 100).toFixed(1) + '%' : '';
-                    return percentage;
-                },
-                // --- CORRECCIÓN DE COLOR ---
-                color: '#1f2937', // Un color oscuro y legible
-                font: { weight: 'bold', size: 14 },
-                textShadow: {
-                    stroke: 'white',
-                    color: 'white',
-                    lineWidth: 2
+            datalabels: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.parsed || 0;
+                        const sum = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                        const percentage = sum > 0 ? ((value / sum) * 100).toFixed(1) + '%' : '0%';
+                        return `${label}: ${value} pedidos (${percentage})`;
+                    }
+                }
+            },
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#333',
+                    font: { size: 14 },
+                    boxWidth: 15,
+                    padding: 20,
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            const sum = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                            return data.labels.map((label, i) => {
+                                const ds = data.datasets[0];
+                                const value = ds.data[i];
+                                const percentage = sum > 0 ? `(${(value / sum * 100).toFixed(1)}%)` : '';
+                                const formattedValue = `${value}`; // Se muestra el número de pedidos
+                                
+                                return {
+                                    text: `${label}: ${formattedValue} ${percentage}`,
+                                    fillStyle: ds.backgroundColor[i],
+                                    strokeStyle: ds.borderColor[i],
+                                    lineWidth: ds.borderWidth,
+                                    hidden: isNaN(ds.data[i]) || chart.getDatasetMeta(0).data[i].hidden,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
                 }
             },
         },
@@ -149,13 +177,20 @@ const SupplierOrderStatsPage = () => {
                     </div>
                     <div className="charts-grid two-columns">
                         <div className="chart-card">
-                            <h3>Distribución por Estado</h3>
+                            <h3>Pedidos por Tipo de Cliente</h3>
                             <div className="chart-container">
-                                <Pie data={getChartData()} options={pieChartOptions} />
+                                {stats?.customerTypeStats && (stats.customerTypeStats.new_customer_orders > 0 || stats.customerTypeStats.returning_customer_orders > 0) ? (
+                                    <Doughnut data={customerTypeChartData} options={doughnutOptions} />
+                                ) : (
+                                    <div className="no-data-message">
+                                        <p>No hay pedidos en este período para mostrar la gráfica.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        <div className="chart-card">
-                            <h3>Últimos Pedidos Recibidos</h3>
+
+                        <div className="chart-card centered-table-card">
+                            <h3>Últimos 5 Pedidos Recibidos</h3>
                             <div className="list-container">
                                 <table className="user-table">
                                     <thead>
