@@ -78,3 +78,56 @@
     font-size: 0.9rem;
     font-weight: 600;
 }
+
+/* Estilos para el input de edición de stock en la tabla */
+.stock-input {
+    width: 60px; /* Ancho más pequeño */
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center; /* Centrar el texto dentro del input */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.stock-input:focus {
+    outline: none;
+    border-color: #24651C; /* Color del borde al enfocar */
+    box-shadow: 0 0 0 2px rgba(36, 101, 28, 0.2); /* Sombra suave al enfocar */
+}
+
+/* Estilos para los badges de stock */
+.stock-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.stock-low {
+    background-color: #ffedcc; /* Color suave para bajo stock */
+    color: #cc8400;
+}
+
+.stock-out {
+    background-color: #fce7e7; /* Color suave para sin stock */
+    color: #cc0000;
+}
+
+/* Ajustes a la imagen miniatura */
+.product-image-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* Ajuste de los botones de acción para que no se vean tan grandes */
+.supplier-low-stock-page .action-btn {
+    font-size: 16px; /* Iconos un poco más pequeños */
+    padding: 6px;
+}

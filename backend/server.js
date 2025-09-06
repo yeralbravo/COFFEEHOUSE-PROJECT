@@ -23,7 +23,8 @@ import contactRoutes from './routes/contactRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
-import addressRoutes from './routes/addressRoutes.js'; // <-- 1. LÍNEA AÑADIDA
+import addressRoutes from './routes/addressRoutes.js'; 
+import itemRoutes from './routes/itemRoutes.js'; 
 
 dotenv.config();
 
@@ -73,7 +74,8 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/addresses', addressRoutes); // <-- 2. LÍNEA AÑADIDA
+app.use('/api/addresses', addressRoutes); 
+app.use('/api/items', itemRoutes);
 
 // Middleware para rutas no encontradas (404)
 app.use((req, res, next) => {

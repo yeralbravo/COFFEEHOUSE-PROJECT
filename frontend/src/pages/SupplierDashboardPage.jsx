@@ -10,8 +10,6 @@ import '../style/SupplierDashboard.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
-// ================== FUNCIÓN DE FECHAS CORREGIDA ==================
-// Esta función formatea una fecha a 'YYYY-MM-DD' sin ser afectada por la zona horaria.
 const formatDateSafe = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -21,7 +19,7 @@ const formatDateSafe = (date) => {
 
 const getWeekRange = () => {
     const today = new Date();
-    const dayOfWeek = (today.getDay() === 0) ? 6 : today.getDay() - 1; // Lunes = 0, Domingo = 6
+    const dayOfWeek = (today.getDay() === 0) ? 6 : today.getDay() - 1;
     
     const monday = new Date(today);
     monday.setDate(today.getDate() - dayOfWeek);
@@ -34,13 +32,11 @@ const getWeekRange = () => {
         end: formatDateSafe(sunday),
     };
 };
-// ================== FIN DE LA CORRECCIÓN DE FECHAS ==================
-
 
 const SupplierDashboardPage = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [range, setRange] = useState('week'); // Inicia en 'Esta Semana'
+    const [range, setRange] = useState('week');
     const [selectedDate, setSelectedDate] = useState('');
 
     const timeRangeLabels = {
@@ -101,8 +97,6 @@ const SupplierDashboardPage = () => {
         fetchStats();
     }, [fetchStats]);
 
-
-    // Datos para la gráfica de barras de ventas
     const salesBarChartData = {
         labels: stats?.salesData.map(d => new Date(d.date).toLocaleDateString('es-CO', { timeZone: 'UTC', month: 'short', day: 'numeric' })) || [],
         datasets: [{
@@ -113,7 +107,7 @@ const SupplierDashboardPage = () => {
         }],
     };
     
-    // Opciones para la gráfica de barras de ventas
+    // --- OPCIONES DE GRÁFICA DE VENTAS ACTUALIZADAS ---
     const salesBarChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -137,11 +131,22 @@ const SupplierDashboardPage = () => {
                     }
                 }
             },
-            datalabels: { display: false }
+            // --- CÓDIGO AÑADIDO ---
+            datalabels: {
+                color: '#ffffff',
+                font: { weight: 'bold' },
+                anchor: 'center',
+                align: 'center',
+                formatter: (value) => {
+                    if (value < 1000) return null; // No mostrar etiquetas para valores muy pequeños
+                    return new Intl.NumberFormat('es-CO', { 
+                        style: 'currency', currency: 'COP', notation: 'compact', maximumFractionDigits: 0 
+                    }).format(value);
+                }
+            }
         }
     };
 
-    // Datos para la gráfica de productos más vendidos
     const topProductsChartData = {
         labels: stats?.topProducts.map(p => p.name) || [],
         datasets: [{
@@ -152,17 +157,23 @@ const SupplierDashboardPage = () => {
         }],
     };
     
-    // Opciones para la gráfica horizontal de productos
+    // --- OPCIONES DE GRÁFICA DE PRODUCTOS ACTUALIZADAS ---
     const topProductsChartOptions = {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
-            datalabels: { display: false }
+            // --- CÓDIGO AÑADIDO ---
+            datalabels: {
+                color: '#ffffff',
+                font: { weight: 'bold' },
+                anchor: 'center',
+                align: 'center',
+                formatter: (value) => value, // Muestra el número de unidades
+            }
         }
     };
-
 
     return (
         <div className="supplier-dashboard-container">
@@ -179,7 +190,6 @@ const SupplierDashboardPage = () => {
             {loading ? <p>Cargando dashboard...</p> : stats && (
                 <>
                     <div className="stats-grid">
-            
                         <StatCard 
                             icon={<FiDollarSign />} 
                             title={`Ventas de ${selectedDate ? 'la fecha seleccionada' : timeRangeLabels[range]}`} 
@@ -187,11 +197,9 @@ const SupplierDashboardPage = () => {
                             link="/supplier/stats/sales" 
                             linkText="Ver reporte de ventas" 
                         />
-
                         <StatCard icon={<FiList />} title="Pedidos Pendientes" value={stats.summary.pendingOrders} link="/supplier/orders" linkText="Gestionar pedidos" />
                         <StatCard icon={<FiAlertTriangle />} title="Productos con Bajo Stock" value={stats.summary.lowStockCount} link="/supplier/stats/low-stock" linkText="Ver inventario" />
                         <StatCard icon={<FiPackage />} title="Total de Productos" value={stats.summary.totalProducts} />
-
                     </div>
 
                     <div className="charts-grid">
@@ -199,7 +207,8 @@ const SupplierDashboardPage = () => {
                             <h3>Resumen de Ingresos</h3>
                             {stats?.salesData && stats.salesData.length > 0 ? (
                                 <div className="chart-container">
-                                    <Bar options={salesBarChartOptions} data={salesBarChartData} />
+                                    {/* --- COMPONENTE ACTUALIZADO --- */}
+                                    <Bar options={salesBarChartOptions} data={salesBarChartData} plugins={[ChartDataLabels]} />
                                 </div>
                             ) : (
                                 <div className="no-data-message">
@@ -211,7 +220,8 @@ const SupplierDashboardPage = () => {
                             <h3>Productos más vendidos</h3>
                             {stats?.topProducts && stats.topProducts.length > 0 ? (
                                 <div className="chart-container">
-                                    <Bar options={topProductsChartOptions} data={topProductsChartData} />
+                                    {/* --- COMPONENTE ACTUALIZADO --- */}
+                                    <Bar options={topProductsChartOptions} data={topProductsChartData} plugins={[ChartDataLabels]} />
                                 </div>
                             ) : (
                                 <div className="no-data-message">
