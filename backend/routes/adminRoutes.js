@@ -10,11 +10,12 @@ import {
 
 const router = express.Router();
 
-// Ruta para el Dashboard principal
+// Ruta para el Dashboard principal (MODIFICADA)
 router.get('/stats', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
-        const { range } = req.query;
-        const stats = await getAdminDashboardStats(range);
+        const { range, startDate, endDate } = req.query;
+        // Pasamos todos los posibles filtros al modelo
+        const stats = await getAdminDashboardStats({ range, startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         console.error("Error al obtener estadísticas del admin:", error);

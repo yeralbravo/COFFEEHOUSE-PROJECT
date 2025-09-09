@@ -5,6 +5,8 @@ import { sendContactMessage } from '../services/contactService';
 import axios from 'axios';
 import '../style/LandingPage.css';
 import logo from '../assets/logo.png';
+import { FiCoffee, FiPackage, FiTruck, FiCreditCard } from 'react-icons/fi';
+import { FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const LandingPage = () => {
     const navigate = useNavigate();
@@ -85,26 +87,26 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="feature-zone" id="about-us">
-        <div className="feature-block">
-          <span className="feature-symbol">☕</span>
-          <h3 className="feature-title">Cafés especiales</h3>
-          <p className="feature-detail">Lorem ipsum dolor sit, amet consectetur adipiscing elit. Velit, nemo officiis iste amet</p>
+      <section className="features-section" id="about-us">
+        <div className="feature-item">
+          <div className="feature-icon"><FiCoffee /></div>
+          <h3>Cafés especiales</h3>
+          <p>Descubre granos únicos seleccionados de las mejores fincas para una experiencia inolvidable.</p>
         </div>
-        <div className="feature-block">
-          <span className="feature-symbol">📦</span>
-          <h3 className="feature-title">Equipo de calidad</h3>
-          <p className="feature-detail">Lorem ipsum dolor sit, amet consectetur adipiscing elit. Velit, nemo officiis iste amet</p>
+        <div className="feature-item">
+          <div className="feature-icon"><FiPackage /></div>
+          <h3>Equipo de calidad</h3>
+          <p>Encuentra todo lo que necesitas, desde molinillos hasta cafeteras, para preparar el café perfecto.</p>
         </div>
-        <div className="feature-block">
-          <span className="feature-symbol">🚚</span>
-          <h3 className="feature-title">Entregas rápidas</h3>
-          <p className="feature-detail">Lorem ipsum dolor sit, amet consectetur adipiscing elit. Velit, nemo officiis iste amet</p>
+        <div className="feature-item">
+          <div className="feature-icon"><FiTruck /></div>
+          <h3>Entregas rápidas</h3>
+          <p>Recibe tu café y equipo directamente en tu puerta con nuestro eficiente servicio de envío.</p>
         </div>
-        <div className="feature-block">
-          <span className="feature-symbol">💳</span>
-          <h3 className="feature-title">Pagos seguros</h3>
-          <p className="feature-detail">Lorem ipsum dolor sit, amet consectetur adipiscing elit. Velit, nemo officiis iste amet</p>
+        <div className="feature-item">
+          <div className="feature-icon"><FiCreditCard /></div>
+          <h3>Pagos seguros</h3>
+          <p>Compra con total confianza utilizando nuestra plataforma de pagos segura y confiable.</p>
         </div>
       </section>
 
@@ -135,11 +137,11 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Proveedores Section */}
-      <section className="supplier-area" id="suppliers">
-        <h2 className="supplier-heading">¿Eres proveedor de cafés especiales?</h2>
-        <p className="supplier-text">Únete a nuestra plataforma y llega a más clientes</p>
-        <Link to="/supplier-request" className="supplier-btn" style={{ textDecoration: 'none' }}>FORMULARIO PROVEEDOR</Link>
+      {/* Suppliers Section */}
+      <section className="suppliers-section" id="suppliers">
+        <h2>¿Eres proveedor de cafés especiales?</h2>
+        <p>Únete a nuestra plataforma y llega a más clientes.</p>
+        <Link to="/supplier-request" className="btn btn-supplier-form">FORMULARIO PROVEEDOR</Link>
       </section>
 
       {/* Contact Section */}

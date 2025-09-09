@@ -1,34 +1,36 @@
 import db from '../config/db.js';
 
-// Función auxiliar para obtener el rango de fechas
 const getDateRangeQuery = (range, dateColumn) => {
     switch (range) {
         case 'day':
             return ` AND DATE(${dateColumn}) = CURDATE()`;
-        
-        // ================== AQUÍ ESTÁ LA CORRECCIÓN ==================
-        // Usamos YEARWEEK con el modo 1, que considera el Lunes como el primer día de la semana.
-        // Esto filtra todos los registros cuya semana y año coinciden con la fecha actual.
         case 'week':
             return ` AND YEARWEEK(${dateColumn}, 1) = YEARWEEK(CURDATE(), 1)`;
-
         case 'month':
             return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
         case 'year':
             return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)`;
         default:
-            return ''; // 'all'
+            return '';
     }
 };
 
-/**
- * Obtiene las estadísticas generales para el dashboard del administrador, incluyendo KPIs y datos para gráficos.
- */
-export const getAdminDashboardStats = async (range = 'month') => {
-    const dateFilter = getDateRangeQuery(range, 'o.created_at');
-    const userDateFilter = getDateRangeQuery(range, 'created_at');
+export const getAdminDashboardStats = async (filters) => {
+    const { range, startDate, endDate } = filters;
 
-    // 1. KPIs (Tarjetas de estadísticas)
+    let dateFilter;
+    let userDateFilter;
+
+    if (startDate && endDate) {
+        const startDateWithTime = `${startDate} 00:00:00`;
+        const endDateWithTime = `${endDate} 23:59:59`;
+        dateFilter = ` AND o.created_at BETWEEN '${startDateWithTime}' AND '${endDateWithTime}'`;
+        userDateFilter = ` AND created_at BETWEEN '${startDateWithTime}' AND '${endDateWithTime}'`;
+    } else {
+        dateFilter = getDateRangeQuery(range, 'o.created_at');
+        userDateFilter = getDateRangeQuery(range, 'created_at');
+    }
+
     const kpiQuery = `
         SELECT
             (SELECT COUNT(*) FROM users WHERE role = 'client' ${userDateFilter}) as new_users,
@@ -38,7 +40,6 @@ export const getAdminDashboardStats = async (range = 'month') => {
     `;
     const [kpiResult] = await db.query(kpiQuery);
 
-    // 2. Gráfica de Ventas (ingresos a lo largo del tiempo)
     const salesOverTimeQuery = `
         SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as date, SUM(total_amount) as total
         FROM orders o
@@ -48,26 +49,51 @@ export const getAdminDashboardStats = async (range = 'month') => {
     `;
     const [salesData] = await db.query(salesOverTimeQuery);
 
-    // 3. Gráfica de Productos más vendidos
+    // --- CONSULTA CORREGIDA ---
     const topProductsQuery = `
-        SELECT p.nombre, SUM(oi.quantity) as quantity_sold
+        SELECT
+            COALESCE(p.nombre, i.nombre) AS nombre,
+            SUM(oi.quantity) AS quantity_sold
         FROM order_items oi
-        JOIN products p ON oi.product_id = p.id
         JOIN orders o ON oi.order_id = o.id
-        WHERE p.nombre IS NOT NULL ${dateFilter}
-        GROUP BY p.nombre
-        ORDER BY quantity_sold DESC
+        LEFT JOIN products p ON oi.product_id = p.id
+        LEFT JOIN insumos i ON oi.insumo_id = i.id
+        WHERE
+            COALESCE(p.nombre, i.nombre) IS NOT NULL
+            ${dateFilter}
+        GROUP BY
+            nombre
+        ORDER BY
+            quantity_sold DESC
         LIMIT 5
     `;
     const [topProducts] = await db.query(topProductsQuery);
 
-    // 4. Gráfica de Usuarios (por rol, total histórico)
     const userDistributionQuery = `
         SELECT role, COUNT(*) as count FROM users GROUP BY role;
     `;
     const [userDistribution] = await db.query(userDistributionQuery);
     
-    // 5. Gráfica de Pedidos (por estado, según el filtro de fecha)
+    const topSuppliersQuery = `
+        SELECT
+            CONCAT(u.nombre, ' ', u.apellido) as supplier_name,
+            SUM(oi.quantity * oi.price_at_purchase) as total_revenue
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.id
+        LEFT JOIN products p ON oi.product_id = p.id
+        LEFT JOIN insumos i ON oi.insumo_id = i.id
+        JOIN users u ON u.id = COALESCE(p.supplier_id, i.supplier_id)
+        WHERE
+            COALESCE(p.supplier_id, i.supplier_id) IS NOT NULL
+            ${dateFilter}
+        GROUP BY
+            u.id, supplier_name
+        ORDER BY
+            total_revenue DESC
+        LIMIT 5
+    `;
+    const [topSuppliers] = await db.query(topSuppliersQuery);
+
     const orderStatusQuery = `
         SELECT status, COUNT(*) as count
         FROM orders o
@@ -86,13 +112,12 @@ export const getAdminDashboardStats = async (range = 'month') => {
         salesOverTime: salesData,
         topProducts,
         userDistribution,
+        topSuppliers,
         orderStatusDistribution
     };
 };
 
-/**
- * Obtiene estadísticas detalladas de ventas.
- */
+// ... (resto de funciones del archivo sin cambios)
 export const getSalesStats = async (range = 'month') => {
     const dateFilter = getDateRangeQuery(range, 'created_at');
     const query = `
@@ -117,9 +142,6 @@ export const getSalesStats = async (range = 'month') => {
     return { kpis: kpis[0], salesOverTime };
 };
 
-/**
- * Obtiene estadísticas detalladas de productos.
- */
 export const getProductStats = async (range = 'month') => {
     const dateFilter = getDateRangeQuery(range, 'o.created_at');
     const topProductsQuery = `
@@ -144,9 +166,6 @@ export const getProductStats = async (range = 'month') => {
     return { topProducts, stockStatus: stockStatus[0] };
 };
 
-/**
- * Obtiene estadísticas detalladas de usuarios.
- */
 export const getUserStats = async (range = 'month') => {
     const userDateFilter = getDateRangeQuery(range, 'created_at');
     const newUsersQuery = `
@@ -163,9 +182,6 @@ export const getUserStats = async (range = 'month') => {
     return { newUsersOverTime, userDistribution };
 };
 
-/**
- * Obtiene estadísticas detalladas de pedidos.
- */
 export const getOrderStats = async (range = 'month') => {
     const dateFilter = getDateRangeQuery(range, 'created_at');
     const ordersOverTimeQuery = `

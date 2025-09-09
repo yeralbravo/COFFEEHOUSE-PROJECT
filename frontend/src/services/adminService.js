@@ -6,7 +6,6 @@ const api = axios.create({
     baseURL: API_URL,
 });
 
-// Interceptor para añadir el token a las peticiones
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -17,11 +16,13 @@ api.interceptors.request.use((config) => {
 
 /**
  * Obtiene las estadísticas del dashboard principal del administrador.
- * @param {string} range - 'day', 'week', 'month', 'year', 'all'.
+ * @param {object} params - Puede contener { range } o { startDate, endDate }.
  */
-export const getDashboardStats = async (range) => {
+export const getDashboardStats = async (params) => {
     try {
-        const response = await api.get(`/stats?range=${range}`);
+        // new URLSearchParams(params) construirá la query string correcta
+        // ej: ?range=month  o  ?startDate=2025-09-06&endDate=2025-09-06
+        const response = await api.get(`/stats`, { params });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener las estadísticas del dashboard');

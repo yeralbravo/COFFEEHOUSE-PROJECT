@@ -121,38 +121,28 @@
   background-color: var(--hover);
 }
 
-/* Features Section */
-.feature-zone {
-  display: flex;
-  justify-content: space-around;
-  padding: 2rem;
-  background-color: var(--blanco);
-  text-align: center;
-  border-top: 1px solid var(--gris-medio);
-  border-bottom: 1px solid var(--gris-medio);
+/* === FEATURES SECTION === */
+.features-section {
+    display: flex;
+    justify-content: space-around;
+    padding: 4rem 5%;
+    background-color: #f8f9fa;
+    text-align: center;
 }
 
-.feature-block {
-  width: 22%;
-  vertical-align: top;
+.feature-item {
+    max-width: 250px;
 }
 
-.feature-symbol {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  display: block;
+.feature-icon {
+    font-size: 3rem;
+    color: #24651C;
+    margin-bottom: 1rem;
 }
 
-.feature-title {
-  font-size: 1.2rem;
-  color: var(--negro);
-  margin-bottom: 0.5rem;
-}
-
-.feature-detail {
-  font-size: 0.9rem;
-  color: var(--gris-oscuro);
-  line-height: 1.4;
+.feature-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Productos Section */
@@ -220,33 +210,22 @@
 }
 
 /* Proveedores Section */
-.supplier-area {
-  padding: 2rem;
-  background-color: var(--gris-claro);
-  text-align: center;
+/* === SUPPLIERS & CONTACT SECTIONS === */
+.suppliers-section {
+    background-color: #f8f9fa;
+    padding: 4rem 2rem;
+    text-align: center;
 }
 
-.supplier-heading {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--negro);
-}
-
-.supplier-text {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  color: var(--gris-oscuro);
-}
-
-.supplier-btn {
-    padding: 1rem 2.5rem;
-    background-color: #333;
-    color: var(--blanco);
-    border: none;
-    font-size: 1rem;
-    font-weight: 600;
+.btn-supplier-form {
+    background-color: #343a40;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
     border-radius: 8px;
-    cursor: pointer;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 1rem;
 }
 
 .contact-section {
