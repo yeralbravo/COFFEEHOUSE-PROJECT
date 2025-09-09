@@ -79,3 +79,21 @@
     align-items: center;
     justify-content: center;
 }
+
+/* --- NUEVOS ESTILOS PARA ALINEAR LAS TARJETAS DE GRÁFICAS --- */
+.charts-container-stats.two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    align-items: stretch; /* Hace que los items se estiren para ocupar el mismo alto */
+}
+
+.charts-container-stats.two-columns .chart-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.charts-container-stats.two-columns .pie-chart-container,
+.charts-container-stats.two-columns .chart-wrapper {
+    flex-grow: 1; /* Permite que el contenedor de la gráfica crezca para llenar el espacio */
+}

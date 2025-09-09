@@ -14,14 +14,8 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-/**
- * Obtiene las estadísticas del dashboard principal del administrador.
- * @param {object} params - Puede contener { range } o { startDate, endDate }.
- */
 export const getDashboardStats = async (params) => {
     try {
-        // new URLSearchParams(params) construirá la query string correcta
-        // ej: ?range=month  o  ?startDate=2025-09-06&endDate=2025-09-06
         const response = await api.get(`/stats`, { params });
         return response.data;
     } catch (error) {
@@ -29,21 +23,16 @@ export const getDashboardStats = async (params) => {
     }
 };
 
-/**
- * Obtiene las estadísticas de la página de Ventas.
- */
-export const fetchSalesStats = async (range) => {
+// --- FUNCIÓN MODIFICADA ---
+export const fetchSalesStats = async (params) => {
     try {
-        const response = await api.get(`/stats/sales?range=${range}`);
+        const response = await api.get(`/stats/sales`, { params });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener estadísticas de ventas');
     }
 };
 
-/**
- * Obtiene las estadísticas de la página de Productos.
- */
 export const fetchProductStats = async (range) => {
     try {
         const response = await api.get(`/stats/products?range=${range}`);
@@ -53,9 +42,6 @@ export const fetchProductStats = async (range) => {
     }
 };
 
-/**
- * Obtiene las estadísticas de la página de Usuarios.
- */
 export const fetchUserStats = async (range) => {
     try {
         const response = await api.get(`/stats/users?range=${range}`);
@@ -65,9 +51,6 @@ export const fetchUserStats = async (range) => {
     }
 };
 
-/**
- * Obtiene las estadísticas de la página de Pedidos.
- */
 export const fetchOrderStats = async (range) => {
     try {
         const response = await api.get(`/stats/orders?range=${range}`);

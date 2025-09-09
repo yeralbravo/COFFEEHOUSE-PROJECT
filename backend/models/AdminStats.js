@@ -6,12 +6,14 @@ const getDateRangeQuery = (range, dateColumn) => {
             return ` AND DATE(${dateColumn}) = CURDATE()`;
         case 'week':
             return ` AND YEARWEEK(${dateColumn}, 1) = YEARWEEK(CURDATE(), 1)`;
+        // --- CORRECCIÓN FINAL ---
         case 'month':
-            return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
+            // Ahora establece un rango entre el primer día del mes y el momento actual.
+            return ` AND ${dateColumn} BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND NOW()`;
         case 'year':
-            return ` AND ${dateColumn} >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)`;
+            return ` AND ${dateColumn} >= DATE_FORMAT(CURDATE(), '%Y-01-01')`;
         default:
-            return '';
+            return ''; // Para 'all' o 'Histórico'
     }
 };
 
@@ -49,7 +51,6 @@ export const getAdminDashboardStats = async (filters) => {
     `;
     const [salesData] = await db.query(salesOverTimeQuery);
 
-    // --- CONSULTA CORREGIDA ---
     const topProductsQuery = `
         SELECT
             COALESCE(p.nombre, i.nombre) AS nombre,
@@ -117,29 +118,68 @@ export const getAdminDashboardStats = async (filters) => {
     };
 };
 
-// ... (resto de funciones del archivo sin cambios)
-export const getSalesStats = async (range = 'month') => {
-    const dateFilter = getDateRangeQuery(range, 'created_at');
-    const query = `
+export const getSalesStats = async (filters) => {
+    const { range, startDate, endDate } = filters;
+
+    let dateFilter;
+    if (startDate && endDate) {
+        const startDateWithTime = `${startDate} 00:00:00`;
+        const endDateWithTime = `${endDate} 23:59:59`;
+        dateFilter = ` AND o.created_at BETWEEN '${startDateWithTime}' AND '${endDateWithTime}'`;
+    } else {
+        dateFilter = getDateRangeQuery(range, 'o.created_at');
+    }
+    
+    const kpiQuery = `
         SELECT
             COALESCE(SUM(total_amount), 0) as totalRevenue,
             COUNT(*) as totalOrders,
-            COALESCE(AVG(total_amount), 0) as averageOrderValue,
             (SELECT SUM(oi.quantity) FROM order_items oi JOIN orders o ON oi.order_id = o.id WHERE 1=1 ${dateFilter}) as totalItemsSold
-        FROM orders
-        WHERE 1=1 ${dateFilter.replace('o.created_at', 'created_at')};
+        FROM orders o
+        WHERE 1=1 ${dateFilter}
     `;
-    const [kpis] = await db.query(query);
+    const [kpis] = await db.query(kpiQuery);
 
-    const salesOverTimeQuery = `
-        SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as date, SUM(total_amount) as total
-        FROM orders
-        WHERE 1=1 ${dateFilter.replace('o.created_at', 'created_at')}
-        GROUP BY date ORDER BY date ASC;
+    const recurringCustomersQuery = `
+        SELECT COUNT(*) AS recurringCustomers
+        FROM (
+            SELECT user_id
+            FROM orders
+            GROUP BY user_id
+            HAVING COUNT(id) > 1
+        ) AS recurring_users
     `;
-    const [salesOverTime] = await db.query(salesOverTimeQuery);
+    const [recurringResult] = await db.query(recurringCustomersQuery);
+
+    kpis[0].recurringCustomers = recurringResult[0].recurringCustomers;
+
+    const paymentMethodQuery = `
+        SELECT 
+            payment_method, 
+            SUM(total_amount) as total 
+        FROM orders o
+        WHERE 1=1 ${dateFilter} AND payment_method IS NOT NULL
+        GROUP BY payment_method
+    `;
+    const [paymentMethodStats] = await db.query(paymentMethodQuery);
+
+    const locationRevenueQuery = `
+        SELECT 
+            JSON_UNQUOTE(JSON_EXTRACT(shipping_address, '$.ciudad')) AS ciudad,
+            SUM(total_amount) as total
+        FROM orders o
+        WHERE JSON_UNQUOTE(JSON_EXTRACT(shipping_address, '$.ciudad')) IS NOT NULL ${dateFilter}
+        GROUP BY ciudad
+        ORDER BY total DESC
+        LIMIT 7
+    `;
+    const [locationRevenueStats] = await db.query(locationRevenueQuery);
     
-    return { kpis: kpis[0], salesOverTime };
+    return { 
+        kpis: kpis[0], 
+        paymentMethodStats,
+        locationRevenueStats
+    };
 };
 
 export const getProductStats = async (range = 'month') => {
@@ -174,7 +214,7 @@ export const getUserStats = async (range = 'month') => {
         WHERE role = 'client' ${userDateFilter}
         GROUP BY date ORDER BY date ASC;
     `;
-    const [newUsersOverTime] = await db.query(newUsersQuery);
+    const [newUsersOverTime] = await db.query(newUsersOverTime);
     
     const userDistributionQuery = `SELECT role, COUNT(*) as count FROM users GROUP BY role;`;
     const [userDistribution] = await db.query(userDistributionQuery);
@@ -193,7 +233,7 @@ export const getOrderStats = async (range = 'month') => {
     const [ordersOverTime] = await db.query(ordersOverTimeQuery);
 
     const orderStatusQuery = `SELECT status, COUNT(*) as count FROM orders WHERE 1=1 ${dateFilter} GROUP BY status;`;
-    const [orderStatusDistribution] = await db.query(orderStatusQuery);
+    const [orderStatusDistribution] = await db.query(orderStatusDistribution);
 
     return { ordersOverTime, orderStatusDistribution };
 };

@@ -10,11 +10,10 @@ import {
 
 const router = express.Router();
 
-// Ruta para el Dashboard principal (MODIFICADA)
+// Ruta para el Dashboard principal
 router.get('/stats', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { range, startDate, endDate } = req.query;
-        // Pasamos todos los posibles filtros al modelo
         const stats = await getAdminDashboardStats({ range, startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
@@ -23,10 +22,12 @@ router.get('/stats', [verifyToken, checkRole(['admin'])], async (req, res) => {
     }
 });
 
-// Rutas para las páginas de estadísticas específicas
+// --- RUTA MODIFICADA ---
+// Ruta para las páginas de estadísticas de ventas
 router.get('/stats/sales', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
-        const stats = await getSalesStats(req.query.range);
+        const { range, startDate, endDate } = req.query;
+        const stats = await getSalesStats({ range, startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al obtener estadísticas de ventas.' });
