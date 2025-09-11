@@ -22,7 +22,6 @@ router.get('/stats', [verifyToken, checkRole(['admin'])], async (req, res) => {
     }
 });
 
-// --- RUTA MODIFICADA ---
 // Ruta para las páginas de estadísticas de ventas
 router.get('/stats/sales', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
@@ -34,9 +33,11 @@ router.get('/stats/sales', [verifyToken, checkRole(['admin'])], async (req, res)
     }
 });
 
+// --- RUTA MODIFICADA ---
 router.get('/stats/products', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
-        const stats = await getProductStats(req.query.range);
+        const { range, startDate, endDate } = req.query;
+        const stats = await getProductStats({ range, startDate, endDate });
         res.status(200).json({ success: true, data: stats });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al obtener estadísticas de productos.' });

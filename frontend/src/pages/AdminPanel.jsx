@@ -167,7 +167,7 @@ const AdminPanel = () => {
                         </div>
                     </div>
                     <div className="chart-card">
-                        <h3>Top 5 Proveedores por Ingresos 💰</h3>
+                        <h3>Top 5 Proveedores por Ingresos</h3>
                         <div className="chart-wrapper">
                            <Bar data={topSuppliersChartData} options={topSuppliersOptions} plugins={[ChartDataLabels]} />
                         </div>
