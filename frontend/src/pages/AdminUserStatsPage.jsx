@@ -1,80 +1,154 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchUserStats } from '../services/adminService';
 import { useAlerts } from '../hooks/useAlerts';
-import { Line, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { FiUsers, FiUserPlus, FiBriefcase, FiShield } from 'react-icons/fi';
+import StatCard from '../components/admin/StatCard';
+import TimeRangeFilter from '../components/TimeRangeFilter';
 import '../style/AdminStatsPages.css';
 
-const timeRangeLabels = { month: 'Últimos 30 días', week: 'Últimos 7 días', year: 'Último año', all: 'Histórico' };
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
 const AdminUserStatsPage = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const { showErrorAlert } = useAlerts();
     const [timeRange, setTimeRange] = useState('month');
+    const [selectedDate, setSelectedDate] = useState('');
 
+    const fetchStats = useCallback(async () => {
+        setLoading(true);
+        const apiParams = {};
+        if (selectedDate) {
+            apiParams.startDate = selectedDate;
+            apiParams.endDate = selectedDate;
+        } else {
+            apiParams.range = timeRange;
+        }
+        try {
+            const response = await fetchUserStats(apiParams);
+            if (response.success) setStats(response.data);
+        } catch (err) {
+            showErrorAlert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [timeRange, selectedDate, showErrorAlert]);
+    
     useEffect(() => {
-        const fetchStats = async () => {
-            setLoading(true);
-            try {
-                const response = await fetchUserStats(timeRange);
-                if (response.success) setStats(response.data);
-            } catch (err) {
-                showErrorAlert(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchStats();
-    }, [timeRange, showErrorAlert]);
+    }, [fetchStats]);
 
-    const newUsersChartData = {
-        labels: stats?.newUsersOverTime.map(d => new Date(d.date).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })) || [],
+    const aovByRoleChartData = {
+        labels: stats?.aovByRole.map(r => r.role === 'client' ? 'Clientes' : 'Proveedores') || [],
         datasets: [{
-            label: 'Nuevos Clientes',
-            data: stats?.newUsersOverTime.map(d => d.count) || [],
-            borderColor: '#4a90e2',
-            backgroundColor: 'rgba(74, 144, 226, 0.1)',
-            fill: true,
-            tension: 0.4,
+            label: 'Valor de Compra Promedio',
+            data: stats?.aovByRole.map(r => r.average_order_value) || [],
+            backgroundColor: ['#24651C', '#82ca9d'],
+            borderRadius: 4,
         }],
     };
 
-    const userDistributionChartData = {
-        labels: stats?.userDistribution.map(u => u.role.charAt(0).toUpperCase() + u.role.slice(1)) || [],
+    const aovByRoleOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            datalabels: {
+                color: '#ffffff',
+                font: { weight: 'bold' },
+                anchor: 'center',
+                align: 'center',
+                formatter: (value) => {
+                    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', notation: 'compact' }).format(value);
+                }
+            }
+        },
+        scales: {
+            y: {
+                ticks: {
+                    callback: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', notation: 'compact' }).format(value)
+                }
+            }
+        }
+    };
+
+    const activeUsersChartData = {
+        labels: stats?.activeUsersOverTime.map(d => new Date(d.month).toLocaleDateString('es-CO', { timeZone: 'UTC', year: 'numeric', month: 'short' })) || [],
         datasets: [{
-            data: stats?.userDistribution.map(u => u.count) || [],
-            backgroundColor: ['#4a90e2', '#ffc107', '#28a745'],
-            borderColor: '#fff',
-            borderWidth: 3,
+            label: 'Clientes Activos',
+            data: stats?.activeUsersOverTime.map(d => d.active_users) || [],
+            backgroundColor: '#24651C',
+            borderRadius: 4,
         }],
+    };
+
+    // --- OPCIONES DE GRÁFICA ACTUALIZADAS ---
+    const activeUsersOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            // --- CÓDIGO AÑADIDO ---
+            datalabels: {
+                color: '#ffffff',
+                font: { weight: 'bold' },
+                anchor: 'center',
+                align: 'center',
+                formatter: (value) => value > 0 ? value : '', // Muestra el número si es mayor a 0
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
     };
 
     return (
         <div className="admin-stats-page">
             <header className="admin-header">
                 <h1>Estadísticas de Usuarios</h1>
-                <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)} className="filter-select">
-                    {Object.entries(timeRangeLabels).map(([key, label]) => (
-                        <option key={key} value={key}>{label}</option>
-                    ))}
-                </select>
+                <TimeRangeFilter
+                    currentRange={timeRange}
+                    onRangeChange={setTimeRange}
+                    selectedDate={selectedDate}
+                    onDateChange={setSelectedDate}
+                />
             </header>
 
             {loading ? <p>Cargando...</p> : stats && (
-                <div className="charts-container-stats">
-                    <div className="chart-card large-chart">
-                        <h3>Registro de Nuevos Clientes</h3>
-                        <div className="chart-wrapper">
-                            <Line data={newUsersChartData} options={{ maintainAspectRatio: false }} />
+                <>  
+                    <div className="stats-grid">
+                        <StatCard title="Total de Clientes" value={stats.kpis.total_clients} icon={<FiUsers />} />
+                        <StatCard title="Total de Proveedores" value={stats.kpis.total_suppliers} icon={<FiBriefcase />} />
+                        <StatCard title="Total de Administradores" value={stats.kpis.total_admins} icon={<FiShield />} />
+                        <StatCard title="Nuevos Usuarios (Período)" value={stats.kpis.new_users_in_period} icon={<FiUserPlus />} />
+                    </div>
+
+                    <div className="charts-container-stats two-columns">
+                        <div className="chart-card">
+                            <h3>Valor de Compra Promedio por Tipo de Usuario</h3>
+                            <div className="chart-wrapper">
+                                <Bar data={aovByRoleChartData} options={aovByRoleOptions} plugins={[ChartDataLabels]} />
+                            </div>
+                        </div>
+                        <div className="chart-card">
+                            <h3>Clientes Activos por Mes</h3>
+                            <div className="chart-wrapper">
+                                {/* --- COMPONENTE ACTUALIZADO --- */}
+                                <Bar data={activeUsersChartData} options={activeUsersOptions} plugins={[ChartDataLabels]} />
+                            </div>
                         </div>
                     </div>
-                    <div className="chart-card">
-                        <h3>Distribución Total de Usuarios por Rol</h3>
-                        <div className="pie-chart-container">
-                            <Pie data={userDistributionChartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }} />
-                        </div>
-                    </div>
-                </div>
+                </>
             )}
         </div>
     );
