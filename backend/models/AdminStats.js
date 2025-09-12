@@ -12,7 +12,7 @@ const getDateRangeQuery = (range, dateColumn) => {
 };
 
 export const getAdminDashboardStats = async (filters) => {
-    // ... (esta función no cambia, la dejo aquí para que el archivo esté completo)
+    // ... (esta función no cambia)
     const { range, startDate, endDate } = filters;
     let dateFilter, userDateFilter;
     if (startDate && endDate) {
@@ -40,7 +40,7 @@ export const getAdminDashboardStats = async (filters) => {
 };
 
 export const getSalesStats = async (filters) => {
-    // ... (esta función no cambia, la dejo aquí para que el archivo esté completo)
+    // ... (esta función no cambia)
     const { range, startDate, endDate } = filters;
     let dateFilter;
     if (startDate && endDate) {
@@ -63,7 +63,7 @@ export const getSalesStats = async (filters) => {
 };
 
 export const getProductStats = async (filters) => {
-    // ... (esta función no cambia, la dejo aquí para que el archivo esté completo)
+    // ... (esta función no cambia)
     const { range, startDate, endDate } = filters;
     let dateFilter, viewsDateFilter;
     if (startDate && endDate) {
@@ -84,11 +84,10 @@ export const getProductStats = async (filters) => {
     return { kpis: kpis[0], conversionData, leastSoldData };
 };
 
-// --- FUNCIÓN DE ESTADÍSTICAS DE USUARIOS MODIFICADA ---
 export const getUserStats = async (filters) => {
+    // ... (esta función no cambia)
     const { range, startDate, endDate } = filters;
     let userDateFilter, orderDateFilter;
-
     if (startDate && endDate) {
         const startDateWithTime = `${startDate} 00:00:00`;
         const endDateWithTime = `${endDate} 23:59:59`;
@@ -98,50 +97,59 @@ export const getUserStats = async (filters) => {
         userDateFilter = getDateRangeQuery(range, 'created_at');
         orderDateFilter = getDateRangeQuery(range, 'created_at');
     }
-
-    const kpiQuery = `
-        SELECT
-            (SELECT COUNT(*) FROM users WHERE role = 'client') AS total_clients,
-            (SELECT COUNT(*) FROM users WHERE role = 'supplier') AS total_suppliers,
-            (SELECT COUNT(*) FROM users WHERE role = 'admin') AS total_admins,
-            (SELECT COUNT(*) FROM users WHERE 1=1 ${userDateFilter}) AS new_users_in_period
-    `;
+    const kpiQuery = `SELECT (SELECT COUNT(*) FROM users WHERE role = 'client') AS total_clients, (SELECT COUNT(*) FROM users WHERE role = 'supplier') AS total_suppliers, (SELECT COUNT(*) FROM users WHERE role = 'admin') AS total_admins, (SELECT COUNT(*) FROM users WHERE 1=1 ${userDateFilter}) AS new_users_in_period`;
     const [kpis] = await db.query(kpiQuery);
-    
-    // --- NUEVA CONSULTA: VALOR PROMEDIO DE COMPRA POR ROL ---
-    const aovByRoleQuery = `
-        SELECT
-            u.role,
-            AVG(o.total_amount) AS average_order_value
-        FROM orders o
-        JOIN users u ON o.user_id = u.id
-        WHERE u.role IN ('client', 'supplier') ${orderDateFilter.replace('created_at', 'o.created_at')}
-        GROUP BY u.role;
-    `;
+    const aovByRoleQuery = `SELECT u.role, AVG(o.total_amount) AS average_order_value FROM orders o JOIN users u ON o.user_id = u.id WHERE u.role IN ('client', 'supplier') ${orderDateFilter.replace('created_at', 'o.created_at')} GROUP BY u.role;`;
     const [aovByRole] = await db.query(aovByRoleQuery);
-
-    // Gráfica: Clientes Activos a lo largo del tiempo
-    const activeUsersOverTimeQuery = `
-        SELECT DATE_FORMAT(created_at, '%Y-%m-01') as month, COUNT(DISTINCT user_id) as active_users
-        FROM orders o
-        WHERE 1=1 ${orderDateFilter}
-        GROUP BY month ORDER BY month ASC;
-    `;
+    const activeUsersOverTimeQuery = `SELECT DATE_FORMAT(created_at, '%Y-%m-01') as month, COUNT(DISTINCT user_id) as active_users FROM orders o WHERE 1=1 ${orderDateFilter} GROUP BY month ORDER BY month ASC;`;
     const [activeUsersOverTime] = await db.query(activeUsersOverTimeQuery);
-
-    return { 
-        kpis: kpis[0], 
-        aovByRole, 
-        activeUsersOverTime 
-    };
+    return { kpis: kpis[0], aovByRole, activeUsersOverTime };
 };
 
-export const getOrderStats = async (range = 'month') => {
-    // ... (esta función no cambia)
-    const dateFilter = getDateRangeQuery(range, 'created_at');
-    const ordersOverTimeQuery = `SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as date, COUNT(*) as count FROM orders WHERE 1=1 ${dateFilter} GROUP BY date ORDER BY date ASC;`;
-    const [ordersOverTime] = await db.query(ordersOverTimeQuery);
-    const orderStatusQuery = `SELECT status, COUNT(*) as count FROM orders WHERE 1=1 ${dateFilter} GROUP BY status;`;
+// --- FUNCIÓN DE ESTADÍSTICAS DE PEDIDOS MODIFICADA ---
+export const getOrderStats = async (filters) => {
+    const { range, startDate, endDate } = filters;
+    let dateFilter;
+
+    if (startDate && endDate) {
+        const startDateWithTime = `${startDate} 00:00:00`;
+        const endDateWithTime = `${endDate} 23:59:59`;
+        dateFilter = ` AND o.created_at BETWEEN '${startDateWithTime}' AND '${endDateWithTime}'`;
+    } else {
+        dateFilter = getDateRangeQuery(range, 'o.created_at');
+    }
+
+    const orderStatusQuery = `
+        SELECT status, COUNT(*) as count 
+        FROM orders o 
+        WHERE 1=1 ${dateFilter} 
+        GROUP BY status
+    `;
     const [orderStatusDistribution] = await db.query(orderStatusQuery);
-    return { ordersOverTime, orderStatusDistribution };
+
+    const shippingCompanyQuery = `
+        SELECT shipping_company, COUNT(id) as order_count
+        FROM orders o
+        WHERE shipping_company IS NOT NULL AND shipping_company != '' ${dateFilter}
+        GROUP BY shipping_company
+        ORDER BY order_count DESC
+    `;
+    const [shippingCompanyStats] = await db.query(shippingCompanyQuery);
+
+    // Procesamiento de datos para los KPIs
+    const totalOrders = orderStatusDistribution.reduce((sum, s) => sum + s.count, 0);
+    const deliveredOrders = orderStatusDistribution.find(s => s.status === 'Entregado')?.count || 0;
+    const inTransitOrders = orderStatusDistribution.find(s => s.status === 'Enviado')?.count || 0;
+    const cancelledOrders = orderStatusDistribution.find(s => s.status === 'Cancelado')?.count || 0;
+    const successRate = totalOrders > 0 ? (deliveredOrders / totalOrders) * 100 : 0;
+    
+    const kpis = {
+        total_orders: totalOrders,
+        in_transit_orders: inTransitOrders,
+        cancelled_orders: cancelledOrders,
+        delivered_orders: deliveredOrders, // <-- Dato añadido para la nueva tarjeta
+        successful_delivery_rate: successRate
+    };
+
+    return { kpis, orderStatusDistribution, shippingCompanyStats };
 };

@@ -41,7 +41,6 @@ export const fetchProductStats = async (params) => {
     }
 };
 
-// --- FUNCIÓN MODIFICADA ---
 export const fetchUserStats = async (params) => {
     try {
         const response = await api.get(`/stats/users`, { params });
@@ -51,9 +50,10 @@ export const fetchUserStats = async (params) => {
     }
 };
 
-export const fetchOrderStats = async (range) => {
+// --- FUNCIÓN MODIFICADA ---
+export const fetchOrderStats = async (params) => {
     try {
-        const response = await api.get(`/stats/orders?range=${range}`);
+        const response = await api.get(`/stats/orders`, { params });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al obtener estadísticas de pedidos');
