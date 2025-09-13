@@ -141,3 +141,12 @@
 .filter-dropdown-item:hover {
     background-color: #f8f9fa;
 }
+
+/* --- NUEVOS ESTILOS PARA CENTRAR CONTENIDO --- */
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente el contenido */
+    padding: 2rem;
+    width: 100%;
+}

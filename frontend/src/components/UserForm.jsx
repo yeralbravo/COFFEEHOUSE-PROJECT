@@ -2,11 +2,11 @@ import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import '../style/Forms.css';
 import { FiUser, FiPhone, FiMail, FiLock, FiBriefcase, FiEye, FiEyeOff } from 'react-icons/fi';
-import { useAlerts } from '../hooks/useAlerts'; // <-- Importamos el hook
+import { useAlerts } from '../hooks/useAlerts';
 
 const UserForm = ({ title }) => {
     const { createUserByAdmin } = useContext(AuthContext);
-    const { showSuccessAlert, showErrorAlert } = useAlerts(); // <-- Usamos el hook
+    const { showSuccessAlert, showErrorAlert } = useAlerts();
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -26,21 +26,29 @@ const UserForm = ({ title }) => {
 
     const validateForm = () => {
         const newErrors = {};
-        const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+$/;
+        // --- EXPRESIÓN REGULAR CORREGIDA ---
+        // Permite letras y espacios en medio de las palabras.
+        const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/;
         const phoneRegex = /^[0-9]{10}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?])[A-Za-z\d@$!%*?]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        if (!formData.nombre) newErrors.nombre = 'El nombre es obligatorio.';
-        else if (!nameRegex.test(formData.nombre)) newErrors.nombre = 'El nombre no puede contener espacios ni caracteres especiales.';
-        if (!formData.apellido) newErrors.apellido = 'El apellido es obligatorio.';
-        else if (!nameRegex.test(formData.apellido)) newErrors.apellido = 'El apellido no puede contener espacios ni caracteres especiales.';
+        // Se usa .trim() para eliminar espacios al inicio y al final antes de validar
+        if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio.';
+        else if (!nameRegex.test(formData.nombre.trim())) newErrors.nombre = 'El nombre solo puede contener letras y espacios intermedios.';
+        
+        if (!formData.apellido.trim()) newErrors.apellido = 'El apellido es obligatorio.';
+        else if (!nameRegex.test(formData.apellido.trim())) newErrors.apellido = 'El apellido solo puede contener letras y espacios intermedios.';
+        
         if (!formData.telefono) newErrors.telefono = 'El teléfono es obligatorio.';
         else if (!phoneRegex.test(formData.telefono)) newErrors.telefono = 'El teléfono debe tener exactamente 10 dígitos.';
+        
         if (!formData.correo) newErrors.correo = 'El correo es obligatorio.';
         else if (!emailRegex.test(formData.correo)) newErrors.correo = 'El formato del correo no es válido.';
+        
         if (!formData.contraseña) newErrors.contraseña = 'La contraseña es obligatoria.';
-        else if (!passwordRegex.test(formData.contraseña)) newErrors.contraseña = 'La contraseña debe ser de 8+ caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial (@$!%*?).';
+        else if (!passwordRegex.test(formData.contraseña)) newErrors.contraseña = 'La contraseña debe ser de 8+ caracteres y contener mayúscula, minúscula, número y un carácter especial (@$!%*?).';
+        
         if (formData.contraseña !== formData.confirmarContraseña) newErrors.confirmarContraseña = 'Las contraseñas no coinciden.';
         
         setErrors(newErrors);
@@ -52,14 +60,17 @@ const UserForm = ({ title }) => {
         if (!validateForm()) return;
 
         try {
-            // eslint-disable-next-line no-unused-vars
             const { confirmarContraseña, ...dataToSend } = formData;
+            // Enviamos los datos sin espacios extra
+            dataToSend.nombre = dataToSend.nombre.trim();
+            dataToSend.apellido = dataToSend.apellido.trim();
+            
             const response = await createUserByAdmin(dataToSend);
-            showSuccessAlert(response.message); // <-- Usamos SweetAlert para éxito
+            showSuccessAlert(response.message);
             setFormData({ nombre: '', apellido: '', telefono: '', correo: '', contraseña: '', confirmarContraseña: '', role: 'client' });
             setErrors({});
         } catch (err) {
-            showErrorAlert(err.message); // <-- Usamos SweetAlert para error
+            showErrorAlert(err.message);
         }
     };
 
@@ -133,7 +144,6 @@ const UserForm = ({ title }) => {
                 </div>
                 <button type="submit" className="form-button">Crear Usuario</button>
             </form>
-            {/* Ya no necesitamos mostrar los mensajes de éxito/error aquí */}
         </div>
     );
 };

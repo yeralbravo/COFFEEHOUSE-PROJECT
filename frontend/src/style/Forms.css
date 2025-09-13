@@ -1,80 +1,85 @@
+/* === ESTILOS GENERALES DEL FORMULARIO === */
 .form-container {
     background-color: #ffffff;
-    padding: 2rem 2.5rem;
+    padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    width: 100%; /* Ocupa el ancho del contenedor */
-    max-width: 600px; /* Pero con un máximo */
-    border: 1px solid #e8e8e8;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 600px; /* Ancho máximo del formulario */
+    border: 1px solid #e2e8f0;
 }
 
 .form-title {
     text-align: center;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
     margin-bottom: 2rem;
+    color: #1f2937;
 }
 
+/* === GRUPOS Y FILAS DEL FORMULARIO === */
 .form-group {
     margin-bottom: 1.25rem;
-    width: 100%; /* Para que ocupe el espacio en la fila */
 }
 
-/* --- NUEVO: Contenedor para la fila de nombre/apellido --- */
 .form-row {
     display: flex;
     gap: 1.5rem;
-    justify-content: space-between;
+}
+
+.form-row .form-group {
+    flex: 1;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    font-size: 14px;
-    color: #555;
+    color: #4a5568;
 }
 
+/* === INPUTS Y ELEMENTOS DEL FORMULARIO === */
 .input-with-icon {
     position: relative;
 }
 
-.input-icon {
+.input-with-icon .input-icon {
     position: absolute;
-    left: 15px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
-    transition: color 0.2s;
+    color: #9ca3af;
+    pointer-events: none;
 }
 
-.form-group input,
-.form-select {
+/* --- CORRECCIÓN CLAVE AQUÍ --- */
+/* Regla unificada para TODOS los campos (input y select) que lleven ícono */
+.input-with-icon input,
+.input-with-icon select {
     width: 100%;
-    padding: 0.8rem 1rem 0.8rem 3rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
     font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    background-color: #f9f9f9;
+    font-family: inherit;
     transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box; /* Importante para que el padding no afecte el ancho */
+    box-sizing: border-box;
+    padding: 10px 12px 10px 40px !important; /* Forzar el padding izquierdo para el ícono */
 }
 
-.form-group input:focus,
-.form-select:focus {
+/* Ajuste para que la flecha del select no se solape con el texto */
+.input-with-icon select {
+    padding-right: 30px !important;
+}
+
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
     outline: none;
-    border-color: #1a4d2e;
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+    border-color: #24651C;
+    box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
 }
 
-.input-with-icon:focus-within .input-icon {
-    color: #1a4d2e;
-}
-
-/* --- NUEVO: Estilos para el botón de mostrar contraseña --- */
+/* === BOTÓN DE CONTRASEÑA === */
 .password-toggle-btn {
     position: absolute;
     right: 10px;
@@ -83,57 +88,32 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #999;
-    padding: 5px;
+    color: #6b7280;
+    padding: 4px;
 }
 
-.password-toggle-btn:hover {
-    color: #1a4d2e;
-}
-
+/* === BOTÓN PRINCIPAL DEL FORMULARIO === */
 .form-button {
     width: 100%;
-    padding: 0.9rem;
-    background: linear-gradient(90deg, #24651C, #3E7B27);
-    color: white;
+    padding: 12px;
+    background-color: #24651C;
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
+    border-radius: 6px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: background-color 0.2s;
     margin-top: 1rem;
 }
 
 .form-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(26, 77, 46, 0.3);
+    background-color: #1a4d2e;
 }
 
-/* --- NUEVO: Estilo para los textos de error de validación --- */
+/* === TEXTO DE ERROR === */
 .error-text {
     color: #dc3545;
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-
-.success-message, .error-message {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-weight: 500;
-    padding: 0.75rem;
-    border-radius: 8px;
-}
-
-.success-message {
-    color: #155724;
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-}
-
-.error-message {
-    color: #721c24;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
 }

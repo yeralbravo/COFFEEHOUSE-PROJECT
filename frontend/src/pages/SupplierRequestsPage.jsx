@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllRequests, updateRequestStatus } from '../services/supplierRequestService';
 import { useAlerts } from '../hooks/useAlerts';
-import { FiCheck, FiX } from 'react-icons/fi';
+import { FiCheck, FiX, FiEye } from 'react-icons/fi';
+import RequestDetailsModal from '../components/admin/RequestDetailsModal';
 import '../style/UserList.css';
 import '../style/AdminPanel.css';
 
@@ -10,6 +11,7 @@ const SupplierRequestsPage = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
+    const [viewingRequest, setViewingRequest] = useState(null);
 
     const fetchRequests = useCallback(async () => {
         try {
@@ -68,7 +70,7 @@ const SupplierRequestsPage = () => {
                                 <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Fecha de Solicitud</th>
-                                {filter === 'pending' && <th>Acciones</th>}
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,19 +82,27 @@ const SupplierRequestsPage = () => {
                                         <td>{req.email}</td>
                                         <td>{req.phone}</td>
                                         <td>{new Date(req.created_at).toLocaleDateString()}</td>
-                                        {filter === 'pending' && (
-                                            <td>
-                                                <div className="action-buttons">
-                                                    <button onClick={() => handleUpdateStatus(req, 'approved')} className="action-btn approve-btn" title="Aprobar"><FiCheck /></button>
-                                                    <button onClick={() => handleUpdateStatus(req, 'rejected')} className="action-btn delete-btn" title="Rechazar"><FiX /></button>
-                                                </div>
-                                            </td>
-                                        )}
+                                        <td>
+                                            <div className="action-buttons">
+                                                {/* Botón para ver detalles (siempre visible) */}
+                                                <button onClick={() => setViewingRequest(req)} className="action-btn" title="Ver Detalles">
+                                                    <FiEye />
+                                                </button>
+                                                
+                                                {/* Botones de aprobar/rechazar (solo en pendientes) */}
+                                                {filter === 'pending' && (
+                                                    <>
+                                                        <button onClick={() => handleUpdateStatus(req, 'approved')} className="action-btn approve-btn" title="Aprobar"><FiCheck /></button>
+                                                        <button onClick={() => handleUpdateStatus(req, 'rejected')} className="action-btn delete-btn" title="Rechazar"><FiX /></button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={filter === 'pending' ? 6 : 5} style={{ textAlign: 'center', padding: '2rem' }}>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
                                         No hay solicitudes en la bandeja de "{filter}".
                                     </td>
                                 </tr>
@@ -100,6 +110,13 @@ const SupplierRequestsPage = () => {
                         </tbody>
                     </table>
                 </div>
+            )}
+            
+            {viewingRequest && (
+                <RequestDetailsModal 
+                    request={viewingRequest}
+                    onClose={() => setViewingRequest(null)}
+                />
             )}
         </>
     );
