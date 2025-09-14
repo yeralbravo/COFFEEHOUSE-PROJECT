@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import UpdateStatusModal from '../components/UpdateStatusModal';
-import { getAllOrders, updateOrderStatus, deleteOrder } from '../services/orderService'; // <-- 1. Importar deleteOrder
+import OrderDetailsModal from '../components/OrderDetailsModal';
+import { getAllOrders, updateOrderStatus, deleteOrder, getAdminOrderDetails } from '../services/orderService';
 import { useAlerts } from '../hooks/useAlerts';
-import { FiEdit, FiTrash2 } from 'react-icons/fi'; // <-- 2. Importar FiTrash2
+import { FiEdit, FiTrash2, FiEye } from 'react-icons/fi';
 import '../style/UserList.css';
 import '../style/AdminPanel.css';
 
@@ -10,7 +11,8 @@ const AdminOrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingOrder, setEditingOrder] = useState(null);
-    const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts(); // <-- 3. Incluir showConfirmDialog
+    const [viewingOrder, setViewingOrder] = useState(null);
+    const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
 
     const [filters, setFilters] = useState({
         status: '',
@@ -18,7 +20,7 @@ const AdminOrdersPage = () => {
         endDate: '',
     });
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
             setLoading(true);
             const response = await getAllOrders(filters);
@@ -30,11 +32,11 @@ const AdminOrdersPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [filters, showErrorAlert]);
 
     useEffect(() => {
         fetchOrders();
-    }, [filters]);
+    }, [fetchOrders]);
 
     const handleFilterChange = (e) => {
         setFilters({
@@ -56,18 +58,28 @@ const AdminOrdersPage = () => {
             showErrorAlert(error.message);
         }
     };
+    
+    const handleViewDetails = async (orderId) => {
+        try {
+            const response = await getAdminOrderDetails(orderId);
+            if (response.success) {
+                setViewingOrder(response.data);
+            }
+        } catch (error) {
+            showErrorAlert(error.message);
+        }
+    };
 
-    // --- 4. AÑADIR FUNCIÓN PARA MANEJAR LA ELIMINACIÓN ---
     const handleDelete = (orderId) => {
         showConfirmDialog({
             title: '¿Estás seguro?',
-            text: "Esta acción eliminará el pedido permanentemente y no se podrá revertir."
+            text: "Esta acción eliminará el pedido permanentemente."
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await deleteOrder(orderId);
                     showSuccessAlert('Pedido eliminado correctamente.');
-                    fetchOrders(); // Recargar la lista de pedidos
+                    fetchOrders();
                 } catch (error) {
                     showErrorAlert(error.message);
                 }
@@ -115,8 +127,11 @@ const AdminOrdersPage = () => {
                                     <td>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</td>
                                     <td><span className={`role-badge role-${order.status.toLowerCase()}`}>{order.status}</span></td>
                                     <td>
-                                        {/* --- 5. AÑADIR BOTÓN DE ELIMINAR --- */}
                                         <div className="action-buttons">
+                                            {/* --- LÍNEA MODIFICADA --- */}
+                                            <button onClick={() => handleViewDetails(order.id)} className="action-btn view-btn" title="Ver Detalles">
+                                                <FiEye />
+                                            </button>
                                             <button onClick={() => handleOpenModal(order)} className="action-btn edit-btn" title="Editar Estado">
                                                 <FiEdit />
                                             </button>
@@ -137,6 +152,13 @@ const AdminOrdersPage = () => {
                     order={editingOrder}
                     onSave={handleSaveStatus}
                     onClose={handleCloseModal}
+                />
+            )}
+            
+            {viewingOrder && (
+                <OrderDetailsModal
+                    order={viewingOrder}
+                    onClose={() => setViewingOrder(null)}
                 />
             )}
         </>

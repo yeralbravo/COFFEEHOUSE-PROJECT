@@ -10,8 +10,8 @@ import {
     deleteOrderById,
     updateOrderStatusBySupplier,
     cancelOrder,
-    // NUEVO: Importamos la nueva función del modelo
-    findSupplierOrderDetails
+    findSupplierOrderDetails,
+    findOrderDetailsForAdmin // <-- 1. IMPORTAR LA NUEVA FUNCIÓN
 } from '../models/Order.js';
 import { createNotification } from '../models/Notification.js';
 
@@ -74,6 +74,20 @@ router.get('/admin/all', [verifyToken, checkRole(['admin'])], async (req, res) =
     }
 });
 
+// --- 2. AÑADIR LA NUEVA RUTA AQUÍ ---
+router.get('/admin/details/:orderId', [verifyToken, checkRole(['admin'])], async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const orderDetails = await findOrderDetailsForAdmin(orderId);
+        if (!orderDetails) {
+            return res.status(404).json({ success: false, error: 'Pedido no encontrado.' });
+        }
+        res.status(200).json({ success: true, data: orderDetails });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error al obtener los detalles del pedido.' });
+    }
+});
+
 router.put('/admin/:orderId', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -103,7 +117,6 @@ router.get('/supplier/my-orders', [verifyToken, checkRole(['supplier'])], async 
     }
 });
 
-// --- NUEVA RUTA: Obtener detalles de un pedido específico para el proveedor ---
 router.get('/supplier/details/:orderId', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -145,7 +158,6 @@ router.delete('/:orderId', [verifyToken, checkRole(['admin', 'supplier'])], asyn
     try {
         const { orderId } = req.params;
         
-        // CORRECCIÓN DE SEGURIDAD: Los proveedores no deben poder eliminar pedidos.
         if(req.user.role !== 'admin') {
             return res.status(403).json({ success: false, error: 'No tienes permiso para realizar esta acción.' });
         }

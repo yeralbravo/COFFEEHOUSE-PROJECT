@@ -30,7 +30,7 @@ export const cancelOrder = async (orderId, userId) => {
 };
 
 export const createOrder = async (userId, cartItems, shippingAddress, paymentMethod, totalAmount) => {
-    const connection = await db.getConnection();
+    const connection = await db.getConnection(); 
     try {
         await connection.beginTransaction();
         const stockChecks = [];
@@ -77,16 +77,13 @@ export const createOrder = async (userId, cartItems, shippingAddress, paymentMet
 
 export const findOrdersByUserId = async (userId, filters = {}) => {
     await db.query("SET lc_time_names = 'es_ES'");
-
     let query = `SELECT o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, DATE_FORMAT(o.created_at, '%d de %M de %Y') as date, o.updated_at FROM orders o`;
     const conditions = ['o.user_id = ?'];
     const params = [userId];
-
     if (filters.status && filters.status !== '') {
         conditions.push('o.status = ?');
         params.push(filters.status);
     }
-
     if (filters.startDate && !filters.endDate) {
         conditions.push('DATE(o.created_at) = ?');
         params.push(filters.startDate);
@@ -101,28 +98,17 @@ export const findOrdersByUserId = async (userId, filters = {}) => {
             params.push(`${filters.endDate} 23:59:59`);
         }
     }
-
     query += ' WHERE ' + conditions.join(' AND ');
     query += ' ORDER BY o.created_at DESC';
-    
     const [orders] = await db.query(query, params);
-
-    if (orders.length === 0) {
-        return [];
-    }
-
+    if (orders.length === 0) return [];
     const orderIds = orders.map(o => o.id);
     const itemsQuery = `SELECT oi.order_id, IFNULL(p.nombre, i.nombre) as name, oi.quantity, IFNULL(p.marca, i.marca) as marca, IFNULL((SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1), (SELECT image_url FROM insumo_images WHERE insumo_id = i.id LIMIT 1)) as image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id WHERE oi.order_id IN (?)`;
     const [items] = await db.query(itemsQuery, [orderIds]);
-
-    const ordersWithItems = orders.map(order => {
-        return {
-            ...order,
-            items: items.filter(item => item.order_id === order.id)
-        };
-    });
-
-    return ordersWithItems;
+    return orders.map(order => ({
+        ...order,
+        items: items.filter(item => item.order_id === order.id)
+    }));
 };
 
 export const findOrderById = async (orderId, userId) => {
@@ -165,7 +151,6 @@ export const updateOrderStatus = async (orderId, updateData) => {
 
 export const findOrdersBySupplierId = async (supplierId, filters = {}) => {
     await db.query("SET lc_time_names = 'es_ES'");
-    
     const orderIdsQuery = `
         SELECT DISTINCT oi.order_id 
         FROM order_items oi 
@@ -174,31 +159,18 @@ export const findOrdersBySupplierId = async (supplierId, filters = {}) => {
         WHERE p.supplier_id = ? OR i.supplier_id = ?
     `;
     const [orderIdRows] = await db.query(orderIdsQuery, [supplierId, supplierId]);
-
-    if (orderIdRows.length === 0) {
-        return [];
-    }
+    if (orderIdRows.length === 0) return [];
     const orderIds = orderIdRows.map(row => row.order_id);
-
-    // CORRECCIÓN DEFINITIVA: Se busca la clave 'direccion' en el JSON.
     let query = `
         SELECT 
-            o.id, 
-            o.total_amount, 
-            o.status, 
-            o.shipping_company, 
-            o.tracking_number, 
-            u.nombre AS user_name, 
-            u.apellido AS user_lastname, 
-            o.created_at AS date,
+            o.id, o.total_amount, o.status, o.shipping_company, o.tracking_number, 
+            u.nombre AS user_name, u.apellido AS user_lastname, o.created_at AS date,
             JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.direccion')) AS address
         FROM orders o 
         JOIN users u ON o.user_id = u.id
     `;
-    
     const conditions = ['o.id IN (?)'];
     const params = [orderIds];
-
     if (filters.status && filters.status !== '') {
         conditions.push('o.status = ?');
         params.push(filters.status);
@@ -207,10 +179,8 @@ export const findOrdersBySupplierId = async (supplierId, filters = {}) => {
         conditions.push('DATE(o.created_at) = ?');
         params.push(filters.startDate);
     }
-    
     query += ' WHERE ' + conditions.join(' AND ');
     query += ' ORDER BY o.created_at DESC';
-    
     const [orders] = await db.query(query, params);
     return orders;
 };
@@ -225,9 +195,7 @@ export const updateOrderStatusBySupplier = async (orderId, supplierId, updateDat
     try {
         await connection.beginTransaction();
         const [items] = await connection.query( `SELECT oi.id FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id LEFT JOIN insumos i ON oi.insumo_id = i.id WHERE oi.order_id = ? AND (p.supplier_id = ? OR i.supplier_id = ?)`, [orderId, supplierId, supplierId] );
-        if (items.length === 0) {
-            throw new Error('No tienes permiso para modificar este pedido.');
-        }
+        if (items.length === 0) throw new Error('No tienes permiso para modificar este pedido.');
         const [result] = await connection.query( `UPDATE orders SET status = ?, shipping_company = ?, tracking_number = ? WHERE id = ?`, [updateData.status, updateData.shipping_company, updateData.tracking_number, orderId] );
         const [order] = await db.query('SELECT user_id FROM orders WHERE id = ?', [orderId]);
         await connection.commit();
@@ -241,49 +209,60 @@ export const updateOrderStatusBySupplier = async (orderId, supplierId, updateDat
 };
 
 export const findSupplierOrderDetails = async (orderId, supplierId) => {
-    // CORRECCIÓN DEFINITIVA: Se buscan las claves 'direccion', 'ciudad' y 'departamento' en el JSON.
     const orderQuery = `
         SELECT 
-            o.id,
-            o.created_at as date,
-            o.total_amount,
-            o.status,
-            u.nombre as user_name,
-            u.apellido as user_lastname,
-            u.correo as user_email,
+            o.id, o.created_at as date, o.total_amount, o.status,
+            u.nombre as user_name, u.apellido as user_lastname, u.correo as user_email,
             JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.direccion')) AS user_address,
             JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.ciudad')) AS user_city,
-            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.departamento')) AS user_department
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.departamento')) AS user_department,
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.nota')) AS user_note
         FROM orders o
         JOIN users u ON o.user_id = u.id
         WHERE o.id = ?
     `;
     const [orderResult] = await db.query(orderQuery, [orderId]);
-
-    if (orderResult.length === 0) {
-        return null;
-    }
-    
+    if (orderResult.length === 0) return null;
     const orderDetails = orderResult[0];
-
     const itemsQuery = `
-        SELECT 
-            oi.quantity,
-            oi.price_at_purchase,
-            COALESCE(p.nombre, i.nombre) as name
+        SELECT oi.quantity, oi.price_at_purchase, COALESCE(p.nombre, i.nombre) as name
         FROM order_items oi
         LEFT JOIN products p ON oi.product_id = p.id
         LEFT JOIN insumos i ON oi.insumo_id = i.id
         WHERE oi.order_id = ? AND (p.supplier_id = ? OR i.supplier_id = ?)
     `;
     const [itemsResult] = await db.query(itemsQuery, [orderId, supplierId, supplierId]);
+    if(itemsResult.length === 0) return null;
+    return { ...orderDetails, items: itemsResult };
+};
+
+// --- FUNCIÓN CORREGIDA Y MEJORADA ---
+export const findOrderDetailsForAdmin = async (orderId) => {
+    const orderQuery = `
+        SELECT 
+            o.id, o.created_at as date, o.total_amount, o.status,
+            u.nombre as user_name, u.apellido as user_lastname, u.correo as user_email,
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.direccion')) AS user_address,
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.ciudad')) AS user_city,
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.departamento')) AS user_department,
+            JSON_UNQUOTE(JSON_EXTRACT(o.shipping_address, '$.nota')) AS user_note
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        WHERE o.id = ?
+    `;
+    const [orderResult] = await db.query(orderQuery, [orderId]);
+    if (orderResult.length === 0) return null;
     
-    if(itemsResult.length === 0) {
-        return null;
-    }
-    
-    return {
-        ...orderDetails,
-        items: itemsResult
-    };
+    const orderDetails = orderResult[0];
+
+    const itemsQuery = `
+        SELECT oi.quantity, oi.price_at_purchase, COALESCE(p.nombre, i.nombre) as name
+        FROM order_items oi
+        LEFT JOIN products p ON oi.product_id = p.id
+        LEFT JOIN insumos i ON oi.insumo_id = i.id
+        WHERE oi.order_id = ?
+    `;
+    const [itemsResult] = await db.query(itemsQuery, [orderId]);
+
+    return { ...orderDetails, items: itemsResult };
 };

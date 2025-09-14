@@ -129,3 +129,9 @@
 .action-btn.approve-btn {
     color: #28a745; /* Verde */
 }
+
+/* --- NUEVO ESTILO AÑADIDO --- */
+/* Estilo para el botón de "Ver detalles" con el ícono del ojo */
+.action-btn.view-btn {
+    color: #17a2b8; /* Color cian/informativo */
+}

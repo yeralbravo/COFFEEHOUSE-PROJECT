@@ -1,6 +1,6 @@
 import React from 'react';
 import '../style/OrderDetailsModal.css';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiInfo } from 'react-icons/fi';
 
 const OrderDetailsModal = ({ order, onClose }) => {
     if (!order) return null;
@@ -18,9 +18,16 @@ const OrderDetailsModal = ({ order, onClose }) => {
                         <h3>Información del Cliente y Envío</h3>
                         <p><strong>Nombre:</strong> {order.user_name} {order.user_lastname}</p>
                         <p><strong>Correo:</strong> {order.user_email}</p>
-                        {/* CORRECCIÓN: Leemos los campos de dirección directamente del objeto 'order' */}
                         <p><strong>Dirección:</strong> {`${order.user_address || 'No especificada'}, ${order.user_city || ''}, ${order.user_department || ''}`}</p>
                         <p><strong>Fecha del Pedido:</strong> {new Date(order.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        
+                        {/* --- LÍNEAS AÑADIDAS --- */}
+                        {order.user_note && order.user_note !== 'null' && (
+                            <div className="odm-note-section">
+                                <FiInfo className="note-icon" />
+                                <p><strong>Nota del Cliente:</strong> {order.user_note}</p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="odm-items-section">

@@ -84,12 +84,10 @@ const SupplierRequestsPage = () => {
                                         <td>{new Date(req.created_at).toLocaleDateString()}</td>
                                         <td>
                                             <div className="action-buttons">
-                                                {/* Botón para ver detalles (siempre visible) */}
-                                                <button onClick={() => setViewingRequest(req)} className="action-btn" title="Ver Detalles">
+                                                {/* --- LÍNEA MODIFICADA --- */}
+                                                <button onClick={() => setViewingRequest(req)} className="action-btn view-btn" title="Ver Detalles">
                                                     <FiEye />
                                                 </button>
-                                                
-                                                {/* Botones de aprobar/rechazar (solo en pendientes) */}
                                                 {filter === 'pending' && (
                                                     <>
                                                         <button onClick={() => handleUpdateStatus(req, 'approved')} className="action-btn approve-btn" title="Aprobar"><FiCheck /></button>
