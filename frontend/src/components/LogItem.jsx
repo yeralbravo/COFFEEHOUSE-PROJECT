@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiUserPlus, FiUserMinus, FiEdit } from 'react-icons/fi';
+import { FiUserPlus, FiUserMinus, FiEdit, FiFileText, FiCheckSquare, FiTrash2 } from 'react-icons/fi';
 import '../style/ActivityLog.css';
 
 const actionInfo = {
@@ -17,6 +17,21 @@ const actionInfo = {
         icon: <FiEdit />,
         colorClass: 'color-blue',
         title: 'actualizó un usuario'
+    },
+    ORDER_STATUS_UPDATED: {
+        icon: <FiFileText />,
+        colorClass: 'color-blue',
+        title: 'actualizó un pedido'
+    },
+    ORDER_DELETED: {
+        icon: <FiTrash2 />,
+        colorClass: 'color-red',
+        title: 'eliminó un pedido'
+    },
+    SUPPLIER_REQUEST_UPDATED: {
+        icon: <FiCheckSquare />,
+        colorClass: 'color-purple',
+        title: 'gestionó una solicitud de proveedor'
     }
 };
 
@@ -38,20 +53,26 @@ const LogItem = ({ log }) => {
                 case 'USER_CREATED':
                     return `Se creó al usuario <strong>${detailsObj.createdUserName}</strong> con el rol de <strong>${detailsObj.createdUserRole}</strong>.`;
                 case 'USER_DELETED':
-                    return `Se eliminó al usuario <strong>${detailsObj.deletedUserName}</strong> con el rol de <strong>${detailsObj.deletedUserRole}</strong>.`;
-                // --- LÓGICA MEJORADA PARA MOSTRAR ACTUALIZACIONES ---
+                    return `Se eliminó al usuario <strong>${detailsObj.deletedUserName}</strong> (${detailsObj.deletedUserEmail}).`;
                 case 'USER_UPDATED':
                     if (detailsObj.changes && detailsObj.changes.length > 0) {
                         const changesList = detailsObj.changes.map(c => 
-                            `<li>Se cambió <strong>${fieldTranslations[c.field] || c.field}</strong> de '<code>${c.from}</code>' a '<code>${c.to}</code>'.</li>`
+                            `<li>Cambió <strong>${fieldTranslations[c.field] || c.field}</strong> de '<code>${c.from}</code>' a '<code>${c.to}</code>'.</li>`
                         ).join('');
-                        return `Para el usuario <strong>${detailsObj.updatedUserName}</strong> (Rol: <strong>${detailsObj.updatedUserRole}</strong>): <ul>${changesList}</ul>`;
+                        return `Para el usuario <strong>${detailsObj.updatedUserName}</strong>: <ul>${changesList}</ul>`;
                     }
                     return `Se actualizó la información del usuario <strong>${detailsObj.updatedUserName}</strong>.`;
+                
+                case 'ORDER_STATUS_UPDATED':
+                    return `Cambió el estado del pedido <strong>#${detailsObj.orderId}</strong> de '<code>${detailsObj.fromStatus}</code>' a '<code>${detailsObj.toStatus}</code>' para el cliente <strong>${detailsObj.customerName}</strong>.`;
+                case 'ORDER_DELETED':
+                    return `Eliminó el pedido <strong>#${detailsObj.orderId}</strong> del cliente <strong>${detailsObj.customerName}</strong> (Total: $${new Intl.NumberFormat('es-CO').format(detailsObj.totalAmount)}).`;
+                case 'SUPPLIER_REQUEST_UPDATED':
+                    return `Se <strong>${detailsObj.action}</strong> la solicitud de la empresa <strong>${detailsObj.companyName}</strong>.`;
+
                 default:
                     return log.details;
             }
-        // eslint-disable-next-line no-unused-vars
         } catch (e) {
             return log.details || 'N/A';
         }

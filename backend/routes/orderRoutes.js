@@ -11,9 +11,10 @@ import {
     updateOrderStatusBySupplier,
     cancelOrder,
     findSupplierOrderDetails,
-    findOrderDetailsForAdmin // <-- 1. IMPORTAR LA NUEVA FUNCIÓN
+    findOrderDetailsForAdmin
 } from '../models/Order.js';
 import { createNotification } from '../models/Notification.js';
+import { logAdminActivity } from '../models/ActivityLog.js'; // <-- 1. IMPORTAR LOG
 
 const router = express.Router();
 
@@ -74,7 +75,6 @@ router.get('/admin/all', [verifyToken, checkRole(['admin'])], async (req, res) =
     }
 });
 
-// --- 2. AÑADIR LA NUEVA RUTA AQUÍ ---
 router.get('/admin/details/:orderId', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -88,13 +88,33 @@ router.get('/admin/details/:orderId', [verifyToken, checkRole(['admin'])], async
     }
 });
 
+// --- RUTA ACTUALIZADA ---
 router.put('/admin/:orderId', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { orderId } = req.params;
-        const result = await updateOrderStatus(orderId, req.body);
-        if (result.affectedRows === 0) {
+        const adminUser = req.user;
+
+        const orderBeforeUpdate = await findOrderDetailsForAdmin(orderId);
+        if (!orderBeforeUpdate) {
             return res.status(404).json({ success: false, error: 'Orden no encontrada.' });
         }
+
+        const result = await updateOrderStatus(orderId, req.body);
+        
+        await logAdminActivity(
+            adminUser.id,
+            `${adminUser.nombre} ${adminUser.apellido}`,
+            'ORDER_STATUS_UPDATED',
+            'order',
+            orderId,
+            { 
+                orderId: orderId,
+                customerName: `${orderBeforeUpdate.user_name} ${orderBeforeUpdate.user_lastname}`,
+                fromStatus: orderBeforeUpdate.status,
+                toStatus: req.body.status
+            }
+        );
+
         if (req.body.status === 'Entregado' && result.userId) {
             const message = `Tu pedido #${orderId} ha sido entregado. ¡Ya puedes calificar tus productos!`;
             await createNotification(result.userId, message, `/order/${orderId}`);
@@ -104,6 +124,8 @@ router.put('/admin/:orderId', [verifyToken, checkRole(['admin'])], async (req, r
         res.status(500).json({ success: false, error: 'Error al actualizar la orden.' });
     }
 });
+
+// ... (rutas de supplier)
 
 router.get('/supplier/my-orders', [verifyToken, checkRole(['supplier'])], async (req, res) => {
     try {
@@ -154,18 +176,39 @@ router.put('/supplier/:orderId', [verifyToken, checkRole(['supplier'])], async (
     }
 });
 
-router.delete('/:orderId', [verifyToken, checkRole(['admin', 'supplier'])], async (req, res) => {
+// --- RUTA ACTUALIZADA ---
+router.delete('/:orderId', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { orderId } = req.params;
+        const adminUser = req.user;
         
         if(req.user.role !== 'admin') {
             return res.status(403).json({ success: false, error: 'No tienes permiso para realizar esta acción.' });
+        }
+
+        const orderToDelete = await findOrderDetailsForAdmin(orderId);
+        if (!orderToDelete) {
+             return res.status(404).json({ success: false, error: 'Pedido no encontrado.' });
         }
 
         const result = await deleteOrderById(orderId);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, error: 'Pedido no encontrado.' });
         }
+
+        await logAdminActivity(
+            adminUser.id,
+            `${adminUser.nombre} ${adminUser.apellido}`,
+            'ORDER_DELETED',
+            'order',
+            orderId,
+            { 
+                orderId: orderId,
+                customerName: `${orderToDelete.user_name} ${orderToDelete.user_lastname}`,
+                totalAmount: orderToDelete.total_amount
+            }
+        );
+
         res.status(200).json({ success: true, message: 'Pedido eliminado correctamente.' });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al eliminar el pedido.' });

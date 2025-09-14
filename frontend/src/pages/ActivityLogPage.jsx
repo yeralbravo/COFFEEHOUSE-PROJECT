@@ -33,7 +33,6 @@ const ActivityLogPage = () => {
                     params: activeFilters 
                 });
                 setLogs(res.data.data);
-            // eslint-disable-next-line no-unused-vars
             } catch (err) {
                 setError('No se pudo cargar el registro de actividad.');
             } finally {
@@ -73,6 +72,9 @@ const ActivityLogPage = () => {
                     <option value="USER_CREATED">Usuario Creado</option>
                     <option value="USER_DELETED">Usuario Eliminado</option>
                     <option value="USER_UPDATED">Usuario Actualizado</option>
+                    <option value="ORDER_STATUS_UPDATED">Pedido Actualizado</option>
+                    <option value="ORDER_DELETED">Pedido Eliminado</option>
+                    <option value="SUPPLIER_REQUEST_UPDATED">Solicitud Gestionada</option>
                 </select>
                 <input 
                     type="date" 

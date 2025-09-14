@@ -3,12 +3,13 @@ import { body, validationResult } from 'express-validator';
 import { createSupplierRequest, getAllSupplierRequests, updateRequestStatus, findRequestById, findRequestByEmail, findRequestByPhone, findRequestByNit } from '../models/SupplierRequest.js';
 import { createUser, findUserByEmail, findUserByPhone } from '../models/User.js';
 import { verifyToken, checkRole } from '../middleware/authMiddleware.js';
+import { logAdminActivity } from '../models/ActivityLog.js'; // <-- 1. IMPORTAR LOG
 import crypto from 'crypto';
 
 const router = express.Router();
 
-// Ruta de validación en tiempo real para email, teléfono y NIT
 router.post('/validate', async (req, res) => {
+    // ... (código de validación sin cambios)
     const { field, value } = req.body;
     let userExists, requestExists;
 
@@ -19,7 +20,7 @@ router.post('/validate', async (req, res) => {
         } else if (field === 'phone') {
             userExists = await findUserByPhone(value);
             requestExists = await findRequestByPhone(value);
-        } else if (field === 'nit') { // <-- LÓGICA AÑADIDA
+        } else if (field === 'nit') {
             requestExists = await findRequestByNit(value);
         } else {
             return res.status(400).json({ success: false, error: 'Campo no válido para validación.' });
@@ -37,8 +38,6 @@ router.post('/validate', async (req, res) => {
     }
 });
 
-
-// Ruta pública para que un proveedor envíe su solicitud
 router.post('/',
     [
         body('company_name').trim().notEmpty().withMessage('El nombre de la empresa es obligatorio.'),
@@ -49,6 +48,7 @@ router.post('/',
         body('product_types').trim().notEmpty().withMessage('Debe especificar qué tipo de productos ofrece.')
     ],
     async (req, res) => {
+        // ... (código de creación sin cambios)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ success: false, error: errors.array()[0].msg });
@@ -67,7 +67,6 @@ router.post('/',
     }
 );
 
-// Ruta protegida para que los administradores vean las solicitudes
 router.get('/admin', [verifyToken, checkRole(['admin'])], async (req, res) => {
     try {
         const { status } = req.query;
@@ -78,10 +77,11 @@ router.get('/admin', [verifyToken, checkRole(['admin'])], async (req, res) => {
     }
 });
 
-// Ruta para actualizar estado (Aprobar/Rechazar)
+// --- RUTA ACTUALIZADA ---
 router.put('/admin/:id/status', [verifyToken, checkRole(['admin'])], async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+    const adminUser = req.user;
 
     if (!['approved', 'rejected'].includes(status)) {
         return res.status(400).json({ success: false, error: 'Estado no válido.' });
@@ -120,7 +120,21 @@ router.put('/admin/:id/status', [verifyToken, checkRole(['admin'])], async (req,
         }
 
         await updateRequestStatus(id, status);
-        res.status(200).json({ success: true, message: `Solicitud ${status === 'approved' ? 'aprobada' : 'rechazada'} con éxito.` });
+
+        const actionText = status === 'approved' ? 'aprobó' : 'rechazó';
+        await logAdminActivity(
+            adminUser.id,
+            `${adminUser.nombre} ${adminUser.apellido}`,
+            'SUPPLIER_REQUEST_UPDATED',
+            'supplier_request',
+            id,
+            { 
+                companyName: request.company_name,
+                action: actionText
+            }
+        );
+
+        res.status(200).json({ success: true, message: `Solicitud ${actionText} con éxito.` });
 
     } catch (error) {
         console.error("Error al actualizar el estado de la solicitud:", error);
