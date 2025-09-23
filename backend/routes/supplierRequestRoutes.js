@@ -3,13 +3,14 @@ import { body, validationResult } from 'express-validator';
 import { createSupplierRequest, getAllSupplierRequests, updateRequestStatus, findRequestById, findRequestByEmail, findRequestByPhone, findRequestByNit } from '../models/SupplierRequest.js';
 import { createUser, findUserByEmail, findUserByPhone } from '../models/User.js';
 import { verifyToken, checkRole } from '../middleware/authMiddleware.js';
-import { logAdminActivity } from '../models/ActivityLog.js'; // <-- 1. IMPORTAR LOG
+import { logAdminActivity } from '../models/ActivityLog.js';
+import { sendEmail } from '../services/emailService.js';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 const router = express.Router();
 
 router.post('/validate', async (req, res) => {
-    // ... (código de validación sin cambios)
     const { field, value } = req.body;
     let userExists, requestExists;
 
@@ -48,7 +49,6 @@ router.post('/',
         body('product_types').trim().notEmpty().withMessage('Debe especificar qué tipo de productos ofrece.')
     ],
     async (req, res) => {
-        // ... (código de creación sin cambios)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ success: false, error: errors.array()[0].msg });
@@ -77,7 +77,6 @@ router.get('/admin', [verifyToken, checkRole(['admin'])], async (req, res) => {
     }
 });
 
-// --- RUTA ACTUALIZADA ---
 router.put('/admin/:id/status', [verifyToken, checkRole(['admin'])], async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -107,16 +106,30 @@ router.put('/admin/:id/status', [verifyToken, checkRole(['admin'])], async (req,
             }
 
             const tempPassword = crypto.randomBytes(8).toString('hex');
+            const hashedPassword = await bcrypt.hash(tempPassword, 10);
+            
             const nameParts = request.contact_person.split(' ');
             const nombre = nameParts[0];
             const apellido = nameParts.slice(1).join(' ') || nombre;
 
-            await createUser(nombre, apellido, request.phone, request.email, tempPassword, 'supplier');
+            await createUser(nombre, apellido, request.phone, request.email, hashedPassword, 'supplier');
             
-            console.log(`\n--- NUEVO PROVEEDOR APROBADO ---`);
-            console.log(`Email: ${request.email}`);
-            console.log(`Contraseña Temporal: ${tempPassword}`);
-            console.log(`---------------------------------\n`);
+            //Código para enviar el correo con el logo
+            const emailSubject = "¡Tu solicitud para ser proveedor ha sido aprobada!";
+            const emailContent = `
+                <div style="text-align: center;">
+                    <img src="https://subir-imagen.com/images/2025/09/23/logo.png" alt="Logo de COFFEEHOUSE" style="width:120px; height:auto;"/>
+                </div>
+                <h1>Hola, ${request.contact_person}</h1>
+                <p>¡Tu solicitud ha sido aprobada! 🎉 Ahora eres un proveedor registrado en COFFEE HOUSE.</p>
+                <p>Aquí están tus credenciales para iniciar sesión:</p>
+                <ul>
+                    <li><strong>Correo:</strong> ${request.email}</li>
+                    <li><strong>Contraseña temporal:</strong> <strong>${tempPassword}</strong></li>
+                </ul>
+                <p>Te recomendamos cambiar tu contraseña por una más segura después de tu primer inicio de sesión, la puedes cambiar en tu perfil, en la opcion modificar contraseña.</p>
+            `;
+            await sendEmail(request.email, emailSubject, emailContent);
         }
 
         await updateRequestStatus(id, status);

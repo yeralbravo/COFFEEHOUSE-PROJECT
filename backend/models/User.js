@@ -1,109 +1,108 @@
 import bcrypt from 'bcryptjs';
 import db from '../config/db.js';
 import crypto from 'crypto';
+import { sendEmail } from '../services/emailService.js'; 
 
 export const createUser = async (nombre, apellido, telefono, correo, contraseña, role) => {
-  try {
-    const hashedPassword = await bcrypt.hash(contraseña, 10);
-    const [result] = await db.query(
-      'INSERT INTO users (nombre, apellido, telefono, correo, contraseña, role) VALUES (?, ?, ?, ?, ?, ?)',
-      [nombre, apellido, telefono, correo, hashedPassword, role]
-    );
-    return result;
-  } catch (error) {
-    console.error("Error en createUser:", error);
-    throw error;
-  }
+    try {
+        const hashedPassword = await bcrypt.hash(contraseña, 10);
+        const [result] = await db.query(
+            'INSERT INTO users (nombre, apellido, telefono, correo, contraseña, role) VALUES (?, ?, ?, ?, ?, ?)',
+            [nombre, apellido, telefono, correo, hashedPassword, role]
+        );
+        return result;
+    } catch (error) {
+        console.error("Error en createUser:", error);
+        throw error;
+    }
 };
 
 export const findUserByEmail = async (correo) => {
-  try {
-    // Añadimos profile_picture_url a la selección
-    const [rows] = await db.query('SELECT * FROM users WHERE correo = ?', [correo]);
-    return rows[0];
-  } catch (error) {
-    console.error("Error en findUserByEmail:", error);
-    throw error;
-  }
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE correo = ?', [correo]);
+        return rows[0];
+    } catch (error) {
+        console.error("Error en findUserByEmail:", error);
+        throw error;
+    }
 };
 
 export const findUserByPhone = async (telefono) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM users WHERE telefono = ?', [telefono]);
-    return rows[0];
-  } catch (error) {
-    console.error("Error en findUserByPhone:", error);
-    throw error;
-  }
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE telefono = ?', [telefono]);
+        return rows[0];
+    } catch (error) {
+        console.error("Error en findUserByPhone:", error);
+        throw error;
+    }
 };
 
 export const loginUser = async (correo) => {
-  return findUserByEmail(correo);
+    return findUserByEmail(correo);
 };
 
 export const findUserById = async (id) => {
-  try {
-    // Añadimos profile_picture_url a la selección
-    const [result] = await db.query(
-      'SELECT id, nombre, apellido, telefono, correo, role, profile_picture_url FROM users WHERE id = ?',
-      [id]
-    );
-    return result[0];
-  } catch (error) {
-    throw error;
-  }
+    try {
+        const [result] = await db.query(
+            'SELECT id, nombre, apellido, telefono, correo, role, profile_picture_url FROM users WHERE id = ?',
+            [id]
+        );
+        return result[0];
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const showUsers = async (role, searchTerm) => {
-  try {
-    let query = 'SELECT id, nombre, apellido, telefono, correo, role, profile_picture_url FROM users';
-    const conditions = [];
-    const params = [];
+    try {
+        let query = 'SELECT id, nombre, apellido, telefono, correo, role, profile_picture_url FROM users';
+        const conditions = [];
+        const params = [];
 
-    if (role) {
-        conditions.push('role = ?');
-        params.push(role);
+        if (role) {
+            conditions.push('role = ?');
+            params.push(role);
+        }
+
+        if (searchTerm) {
+            conditions.push('(nombre LIKE ? OR apellido LIKE ? OR correo LIKE ? OR telefono LIKE ?)');
+            const searchTermLike = `%${searchTerm}%`;
+            params.push(searchTermLike, searchTermLike, searchTermLike, searchTermLike);
+        }
+
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+        
+        query += ' ORDER BY nombre ASC';
+
+        const [results] = await db.query(query, params);
+        return results;
+    } catch (error) {
+        console.error('Error en la consulta:', error);
+        throw error;
     }
-
-    if (searchTerm) {
-        conditions.push('(nombre LIKE ? OR apellido LIKE ? OR correo LIKE ? OR telefono LIKE ?)');
-        const searchTermLike = `%${searchTerm}%`;
-        params.push(searchTermLike, searchTermLike, searchTermLike, searchTermLike);
-    }
-
-    if (conditions.length > 0) {
-        query += ' WHERE ' + conditions.join(' AND ');
-    }
-    
-    query += ' ORDER BY nombre ASC';
-
-    const [results] = await db.query(query, params);
-    return results;
-  } catch (error) {
-    console.error('Error en la consulta:', error);
-    throw error;
-  }
 };
 
 export const deleteUserById = async (userId) => {
-  try {
-    const [result] = await db.query('DELETE FROM users WHERE id = ?', [userId]);
-    return result;
-  } catch (error) {
-    throw error;
-  }
+    try {
+        const [result] = await db.query('DELETE FROM users WHERE id = ?', [userId]);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const editUsers = async (id, fields) => {
-  try {
-    if (Object.keys(fields).length === 0) {
-      throw new Error('No se proporcionaron campos para actualizar');
+    try {
+        if (Object.keys(fields).length === 0) {
+            throw new Error('No se proporcionaron campos para actualizar');
+        }
+        const [result] = await db.query('UPDATE users SET ? WHERE id = ?', [fields, id]);
+        return result;
+    } catch (error) {
+        throw error;
     }
-    const [result] = await db.query('UPDATE users SET ? WHERE id = ?', [fields, id]);
-    return result;
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const getUserStats = async (range) => {
@@ -182,6 +181,20 @@ export const generatePasswordResetCode = async (email) => {
         'UPDATE users SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?',
         [hashedCode, expirationDate, user.id]
     );
+    
+    // Lógica de envío de correo con logo
+    const subject = "Código de Recuperación de Contraseña";
+    const htmlContent = `
+        <div style="text-align: center;">
+            <img src="https://subir-imagen.com/images/2025/09/23/logo.png" alt="Logo de COFFEEHOUSE" style="width:120px; height:auto;"/>
+        </div>
+        <h1>Hola, ${user.nombre}</h1>
+        <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Si no hiciste esta solicitud, por favor ignora este correo.</p>
+        <p>Tu código de recuperación es:</p>
+        <h2 style="color: #24651C; font-size: 24px; text-align: center;"><strong>${resetCode}</strong></h2>
+        <p style="margin-top: 20px;">Este código es válido por 10 minutos.</p>
+    `;
+    await sendEmail(user.correo, subject, htmlContent); // Llama a la función para enviar el correo
 
     return resetCode;
 };
@@ -211,11 +224,11 @@ export const resetPasswordWithCode = async (email, code, newPassword) => {
 };
 
 export const findAllAdminIds = async () => {
-  try {
-    const [rows] = await db.query("SELECT id FROM users WHERE role = 'admin'");
-    return rows.map(row => row.id);
-  } catch (error) {
-    console.error("Error en findAllAdminIds:", error);
-    throw error;
-  }
+    try {
+        const [rows] = await db.query("SELECT id FROM users WHERE role = 'admin'");
+        return rows.map(row => row.id);
+    } catch (error) {
+        console.error("Error en findAllAdminIds:", error);
+        throw error;
+    }
 };
