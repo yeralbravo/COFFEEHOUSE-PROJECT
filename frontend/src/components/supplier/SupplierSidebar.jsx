@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiGrid, FiPlus, FiBox, FiCoffee, FiShoppingBag, FiFileText, FiBarChart2, FiChevronDown, FiX } from 'react-icons/fi';
+import {
+    FiGrid, FiPlus, FiBox, FiCoffee, FiShoppingBag,
+    FiFileText, FiBarChart2, FiChevronDown, FiX, FiShoppingCart,
+    FiTrendingUp, FiPackage, FiAlertTriangle
+} from 'react-icons/fi';
 import '../../style/SupplierSidebar.css';
 
 const SupplierSidebar = ({ isOpen, onClose }) => {
-    const [isProductsOpen, setProductsOpen] = useState(true); // Abierto por defecto
-    const [isStatsOpen, setStatsOpen] = useState(true);     // Abierto por defecto
+    const [isProductsOpen, setProductsOpen] = useState(true);
+    const [isStatsOpen, setStatsOpen] = useState(true);
+    const [isStoreOpen, setStoreOpen] = useState(true);
 
     return (
         <>
@@ -16,12 +21,10 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                     <button onClick={onClose} className="close-btn"><FiX /></button>
                 </div>
                 <div className="sidebar-links">
-                    <NavLink to="/home" className="sidebar-link" onClick={onClose}><FiHome /> Inicio</NavLink>
                     <NavLink to="/supplier/dashboard" className="sidebar-link" onClick={onClose}><FiGrid /> Dashboard</NavLink>
                     <NavLink to="/supplier/item/create?type=product" className="sidebar-link" onClick={onClose}><FiPlus /> Crear producto</NavLink>
                     <NavLink to="/supplier/orders" className="sidebar-link" onClick={onClose}><FiFileText /> Pedidos</NavLink>
                     
-                    {/* Submenú Mis Productos */}
                     <div className="submenu-container">
                         <button className="sidebar-link submenu-toggle" onClick={() => setProductsOpen(!isProductsOpen)}>
                             <span><FiBox /> Mis productos</span>
@@ -35,7 +38,6 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                         )}
                     </div>
 
-                    {/* Submenú Estadísticas */}
                     <div className="submenu-container">
                         <button className="sidebar-link submenu-toggle" onClick={() => setStatsOpen(!isStatsOpen)}>
                             <span><FiBarChart2 /> Estadísticas</span>
@@ -43,10 +45,24 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                         </button>
                         {isStatsOpen && (
                             <div className="submenu-links">
-                                <NavLink to="/supplier/stats/sales" className="sidebar-link sub-link" onClick={onClose}>Ventas</NavLink>
-                                <NavLink to="/supplier/stats/products" className="sidebar-link sub-link" onClick={onClose}>Productos</NavLink>
-                                <NavLink to="/supplier/stats/orders" className="sidebar-link sub-link" onClick={onClose}>Pedidos</NavLink>
-                                <NavLink to="/supplier/stats/low-stock" className="sidebar-link sub-link" onClick={onClose}>Productos bajo stock</NavLink>
+                                <NavLink to="/supplier/stats/sales" className="sidebar-link sub-link" onClick={onClose}><FiTrendingUp /> Ventas</NavLink>
+                                <NavLink to="/supplier/stats/products" className="sidebar-link sub-link" onClick={onClose}><FiPackage /> Productos</NavLink>
+                                <NavLink to="/supplier/stats/orders" className="sidebar-link sub-link" onClick={onClose}><FiFileText /> Pedidos</NavLink>
+                                <NavLink to="/supplier/stats/low-stock" className="sidebar-link sub-link" onClick={onClose}><FiAlertTriangle /> Productos bajo stock</NavLink>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="submenu-container">
+                        <button className="sidebar-link submenu-toggle" onClick={() => setStoreOpen(!isStoreOpen)}>
+                            <span><FiShoppingCart /> Ver Tienda</span>
+                            <FiChevronDown className={`arrow-icon ${isStoreOpen ? 'open' : ''}`} />
+                        </button>
+                        {isStoreOpen && (
+                            <div className="submenu-links">
+                                <NavLink to="/cafe" className="sidebar-link sub-link" onClick={onClose}><FiCoffee /> Ver Cafés</NavLink>
+                                <NavLink to="/insumos" className="sidebar-link sub-link" onClick={onClose}><FiShoppingBag /> Ver Insumos</NavLink>
+                                <NavLink to="/mis-pedidos" className="sidebar-link sub-link" onClick={onClose}><FiFileText /> Mis Pedidos</NavLink>
                             </div>
                         )}
                     </div>

@@ -77,14 +77,13 @@ const SupplierRequestsPage = () => {
                             {requests.length > 0 ? (
                                 requests.map(req => (
                                     <tr key={req.id}>
-                                        <td>{req.company_name}</td>
-                                        <td>{req.contact_person}</td>
-                                        <td>{req.email}</td>
-                                        <td>{req.phone}</td>
-                                        <td>{new Date(req.created_at).toLocaleDateString()}</td>
-                                        <td>
+                                        <td data-label="Empresa">{req.company_name}</td>
+                                        <td data-label="Contacto">{req.contact_person}</td>
+                                        <td data-label="Email">{req.email}</td>
+                                        <td data-label="Teléfono">{req.phone}</td>
+                                        <td data-label="Fecha">{new Date(req.created_at).toLocaleDateString()}</td>
+                                        <td data-label="Acciones">
                                             <div className="action-buttons">
-                                                {/* --- LÍNEA MODIFICADA --- */}
                                                 <button onClick={() => setViewingRequest(req)} className="action-btn view-btn" title="Ver Detalles">
                                                     <FiEye />
                                                 </button>

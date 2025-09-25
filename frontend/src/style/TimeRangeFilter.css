@@ -1,31 +1,36 @@
-/* src/style/TimeRangeFilter.css */
+/**
+ * ============================================
+ * ARCHIVO: TimeRangeFilter.css
+ * ============================================
+ * Estilos para el componente de filtro por rango
+ * de tiempo, usado en varios dashboards y reportes.
+ *
+ * MODIFICACIÓN:
+ * - Se añadió un media query para reorganizar
+ * completamente el componente en pantallas pequeñas,
+ * apilando los elementos y ajustando tamaños.
+ */
 
-/* MODIFICADO: ¡Este es el cambio principal! El contenedor ahora es una tarjeta. */
 .time-filters-container {
     display: flex;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-
-    /* --- NUEVO: Estilo de Tarjeta de Dashboard --- */
-    background-color: #ffffff; /* Fondo blanco como las otras tarjetas */
-    padding: 0.75rem;          /* Espacio interior para que los elementos respiren */
-    border-radius: 12px;       /* Bordes redondeados consistentes con tu UI */
-    border: 1px solid #e9ecef; /* Un borde muy sutil, igual que tus cards */
-    /* La sombra es la clave para eliminar la sensación plana */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+    background-color: var(--fondo-tarjetas);
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--borde-suave);
+    box-shadow: 0 4px 12px var(--sombra-principal);
 }
 
-/* El grupo de botones ahora es una "píldora" dentro de la tarjeta */
 .time-range-buttons {
     display: flex;
     gap: 0.5rem;
-    background-color: #f0f0f0; /* Mantenemos este fondo para dar contraste */
+    background-color: var(--fondo-desactivado);
     padding: 0.3rem;
     border-radius: 8px;
 }
 
-/* Los botones se mantienen con tu estilo original, que funciona perfecto aquí */
 .time-range-buttons button {
     padding: 0.5rem 1rem;
     border: none;
@@ -33,46 +38,72 @@
     cursor: pointer;
     border-radius: 6px;
     font-weight: 500;
-    color: #555;
+    color: var(--texto-secundario);
     transition: all 0.2s ease-in-out;
 }
 
 .time-range-buttons button:hover {
-    background-color: #e0e0e0;
+    background-color: var(--borde-principal);
 }
 
-/* Tu estilo activo original se ve genial dentro de la píldora gris */
 .time-range-buttons button.active {
-    background-color: #ffffff;
-    color: #24651C; /* El color verde de tu marca */
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-weight: 600;
 }
 
-
-/* MODIFICADO: El input de fecha ahora tiene un estilo más limpio y definido */
 .date-filter-input {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     font-weight: 500;
-    color: #333;
-    background-color: #ffffff;
-    border: 1px solid #ced4da; /* Borde estándar para inputs */
-    transition: all 0.2s ease-in-out;
+    color: var(--texto-principal);
+    border: 1px solid var(--borde-principal);
+    background-color: var(--fondo-tarjetas);
 }
 
-/* NUEVO: Un estado de foco claro que usa el color de tu marca */
-.date-filter-input:focus {
-    outline: none;
-    border-color: #24651C;
-    box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.2);
-}
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 767px) {
+    .time-filters-container {
+        flex-direction: column;
+        /* Apila el grupo de botones y el input de fecha */
+        align-items: stretch;
+        /* Hace que ambos ocupen el ancho completo */
+        padding: 0.5rem;
+    }
 
-.date-filter-input::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    opacity: 0.6;
-}
+    .time-range-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 botones en una fila uniforme */
+        width: 100%;
+        gap: 0.3rem;
+        padding: 0.3rem;
+        box-sizing: border-box;
+    }
 
-.date-filter-input::-webkit-calendar-picker-indicator:hover {
-    opacity: 1;
+    .time-range-buttons button {
+        padding: 0.6rem 0.2rem;
+        /* Más padding vertical, menos horizontal */
+        font-size: 0.8rem;
+        /* Fuente más pequeña */
+        text-align: center;
+        white-space: nowrap;
+        /* Evita que el texto se parta en dos líneas */
+    }
+
+    .date-input-wrapper {
+        width: 100%;
+    }
+
+    .date-filter-input {
+        width: 100%;
+        box-sizing: border-box;
+        /* Asegura que el padding no desborde el contenedor */
+        text-align: center;
+    }
 }

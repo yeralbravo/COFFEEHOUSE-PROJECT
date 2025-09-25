@@ -11,11 +11,9 @@ const SupplierInsumosPage = () => {
     const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
     const navigate = useNavigate();
 
-    // --- ESTADOS PARA LA BÚSQUEDA ---
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
-    // Efecto para debounce
     useEffect(() => {
         const timerId = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
@@ -26,7 +24,6 @@ const SupplierInsumosPage = () => {
         };
     }, [searchTerm]);
 
-    // --- FUNCIÓN DE BÚSQUEDA ACTUALIZADA ---
     const fetchInsumos = useCallback(async () => {
         try {
             setLoading(true);
@@ -67,7 +64,6 @@ const SupplierInsumosPage = () => {
                 </button>
             </header>
 
-            {/* --- BARRA DE BÚSQUEDA AÑADIDA --- */}
             <div className="search-bar-container">
                 <FiSearch className="search-icon" />
                 <input
@@ -94,15 +90,15 @@ const SupplierInsumosPage = () => {
                         <tbody>
                             {insumos.length > 0 ? insumos.map(insumo => (
                                 <tr key={insumo.id}>
-                                    <td><img src={insumo.images.length > 0 ? `http://localhost:5000/${insumo.images[0]}` : 'https://placehold.co/60x60'} alt={insumo.nombre} className="product-image-thumbnail" /></td>
-                                    <td>{insumo.nombre}</td>
-                                    <td>${new Intl.NumberFormat('es-CO').format(insumo.precio)}</td>
-                                    <td>
+                                    <td data-label="Imagen"><img src={insumo.images.length > 0 ? `http://localhost:5000/${insumo.images[0]}` : 'https://placehold.co/60x60'} alt={insumo.nombre} className="product-image-thumbnail" /></td>
+                                    <td data-label="Nombre">{insumo.nombre}</td>
+                                    <td data-label="Precio">${new Intl.NumberFormat('es-CO').format(insumo.precio)}</td>
+                                    <td data-label="Stock">
                                         <span className={`stock-badge ${insumo.stock > 10 ? 'stock-high' : insumo.stock > 0 ? 'stock-low' : 'stock-out'}`}>
                                             {insumo.stock}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="Acciones">
                                         <div className="action-buttons">
                                             <button onClick={() => navigate(`/supplier/item/edit/insumo/${insumo.id}`)} className="action-btn edit-btn" title="Editar"><FiEdit /></button>
                                             <button onClick={() => handleDelete(insumo.id)} className="action-btn delete-btn" title="Eliminar"><FiTrash2 /></button>

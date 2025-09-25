@@ -1,25 +1,30 @@
-/* ============================================== */
-/* PÁGINA DE GESTIÓN DE PRODUCTOS DEL PROVEEDOR   */
-/* ============================================== */
+/**
+ * ============================================
+ * ARCHIVO: SupplierProductsPage.css
+ * ============================================
+ * Estilos para las páginas de gestión de productos
+ * e insumos del proveedor, incluyendo la tabla
+ * de ítems y la barra de búsqueda.
+ */
 
-/* --- Contenedor Principal --- */
 .supplier-products-page {
-    padding: 2.5rem 3rem; 
+    padding: 2.5rem 3rem;
 }
 
-/* --- Cabecera (Título y Botón Añadir) --- */
 .supplier-products-page .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid #EAEAEA;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .supplier-products-page .page-title {
     font-size: 2.5rem;
-    color: #000000; /* Color original restaurado */
+    color: var(--texto-principal);
     font-weight: 700;
     margin: 0;
 }
@@ -28,93 +33,91 @@
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    background-color: #24651C; /* Color original restaurado */
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     border-radius: 10px;
     padding: 0.9rem 1.6rem;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 4px 12px rgba(36, 101, 28, 0.2);
+    transition: background-color 0.2s ease;
 }
 
 .supplier-products-page .btn-add-product:hover {
-    background-color: #3E7B27; /* Color original restaurado */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(36, 101, 28, 0.25);
+    background-color: var(--color-primario-hover);
 }
 
-/* --- Contenedor de la Tabla --- */
-.supplier-products-page .product-list-container {
-    background-color: #FFFFFF;
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    padding: 1rem;
-    overflow-x: auto;
+.product-list-container {
+    background-color: var(--fondo-tarjetas);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--sombra-principal);
+    overflow: hidden;
 }
 
-/* --- Tabla de Productos --- */
-.supplier-products-page .product-table {
+.product-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.supplier-products-page .product-table th,
-.supplier-products-page .product-table td {
-    padding: 1.5rem;
+.product-table th {
+    background-color: var(--fondo-principal);
+    padding: 1rem 1.5rem;
     text-align: left;
-    border-bottom: 1px solid #F0F0F0;
+    font-size: 0.8rem;
+    color: var(--texto-desactivado);
+    text-transform: uppercase;
+}
+
+.product-table td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--borde-suave);
     vertical-align: middle;
 }
 
-.supplier-products-page .product-table tr:last-child td {
-    border-bottom: none;
+.product-table tbody tr:hover {
+    background-color: #fcfcfc;
 }
 
-.supplier-products-page .product-table th {
-    color: #8B8B8B; /* Color original restaurado */
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* --- Celdas Específicas de la Tabla --- */
-.supplier-products-page .product-image-thumbnail {
+.product-image-thumbnail {
     width: 60px;
     height: 60px;
     object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid #EAEAEA;
+    border-radius: 8px;
 }
 
-.supplier-products-page .stock-badge {
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #fff;
+.stock-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-weight: 500;
+    color: var(--texto-blanco);
+    text-align: center;
 }
 
-/* Colores originales para el stock restaurados */
-.supplier-products-page .stock-high { background-color: #3E7B27; } 
-.supplier-products-page .stock-low { background-color: #f5a623; } 
-.supplier-products-page .stock-out { background-color: #cc3333; } 
+.stock-high {
+    background-color: var(--color-exito);
+}
 
-.supplier-products-page .action-buttons {
+.stock-low {
+    background-color: var(--color-advertencia);
+    color: var(--texto-principal);
+}
+
+.stock-out {
+    background-color: var(--color-peligro);
+}
+
+.action-buttons {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.5rem;
 }
 
-.supplier-products-page .action-btn {
+.action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: transparent; /* Fondo original restaurado */
-    border: none; /* Borde original restaurado */
+    background: none;
+    border: none;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -123,16 +126,19 @@
     transition: all 0.2s ease;
 }
 
-/* Colores originales para los botones restaurados */
-.supplier-products-page .action-btn.edit-btn { color: #3E7B27; } 
-.supplier-products-page .action-btn.delete-btn { color: #cc3333; }
+.action-btn.edit-btn {
+    color: var(--color-primario-hover);
+}
 
-.supplier-products-page .action-btn:hover {
-    background-color: #EFEFEF; /* Color original restaurado */
+.action-btn.delete-btn {
+    color: var(--color-peligro);
+}
+
+.action-btn:hover {
+    background-color: var(--fondo-desactivado);
     transform: scale(1.1);
 }
 
-/* --- ESTILOS PARA LA BARRA DE BÚSQUEDA --- */
 .search-bar-container {
     position: relative;
     margin-bottom: 1.5rem;
@@ -143,28 +149,67 @@
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .search-input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 3rem; /* Espacio para el ícono a la izquierda */
-    border: 1px solid var(--gris-medio);
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--borde-principal);
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: var(--hover);
-    box-shadow: 0 0 0 3px rgba(62, 123, 39, 0.1);
-}
-
-/* --- ESTILO PARA MENSAJE DE "NO HAY RESULTADOS" --- */
 .no-results-cell {
     text-align: center;
     padding: 2rem;
-    color: var(--gris-oscuro);
-    font-style: italic;
+    color: var(--texto-desactivado);
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 767px) {
+    .supplier-products-page {
+        padding: 1rem;
+    }
+
+    .product-table thead {
+        display: none;
+    }
+
+    .product-table,
+    .product-table tbody,
+    .product-table tr,
+    .product-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .product-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--borde-suave);
+        border-radius: 8px;
+    }
+
+    .product-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-top: none;
+    }
+
+    .product-table td:not(:last-child) {
+        border-bottom: 1px solid var(--borde-suave);
+    }
+
+    .product-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        color: var(--texto-principal);
+    }
 }

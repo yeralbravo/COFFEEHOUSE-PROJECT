@@ -1,44 +1,51 @@
-/* --- ESTRUCTURA GENERAL DE LA PÁGINA --- */
+/**
+ * ============================================
+ * ARCHIVO: SupplierOrders.css
+ * ============================================
+ * Estilos para la página de gestión de pedidos
+ * del proveedor, incluyendo la tabla de pedidos
+ * y la barra de filtros.
+ */
+
 .so-page-container {
     padding: 2.5rem;
-    background-color: #f8f9fa;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--fondo-principal);
 }
 
-/* --- ENCABEZADO "GESTIÓN DE PEDIDOS" --- */
 .so-header {
     margin-bottom: 2rem;
 }
 
 .so-header h1 {
-    color: #212529;
+    color: var(--texto-principal);
     font-size: 2.5rem;
     font-weight: 700;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Lora', serif;
 }
 
-/* --- BARRA DE FILTROS (DISEÑO MEJORADO) --- */
 .so-filter-bar {
     display: flex;
-    border: 1px solid #dee2e6;
+    flex-wrap: wrap;
+    /* Para apilar en móvil */
+    border: 1px solid var(--borde-suave);
     border-radius: 0.5rem;
-    background-color: #fff;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    background-color: var(--fondo-tarjetas);
+    box-shadow: 0 1px 2px 0 var(--sombra-principal);
     overflow: hidden;
     margin-bottom: 2rem;
 }
 
 .so-filter-select,
 .so-filter-date-wrapper {
-    flex: 1; /* Crecen para ocupar el espacio equitativamente */
+    flex: 1;
 }
 
 .so-filter-select,
 .so-filter-date-input {
-    border: none; /* Sin bordes internos para un look unificado */
+    border: none;
     padding: 0.9rem 1rem;
     font-size: 1rem;
-    color: #495057;
+    color: var(--texto-secundario);
     background-color: transparent;
     width: 100%;
     box-sizing: border-box;
@@ -47,13 +54,12 @@
 .so-filter-select:focus,
 .so-filter-date-input:focus {
     outline: none;
-    /* Efecto de foco sutil que no mueve los elementos */
-    box-shadow: inset 0 0 0 2px var(--verde-oscuro);
+    box-shadow: inset 0 0 0 2px var(--color-primario);
     z-index: 1;
 }
 
 .so-filter-select {
-    border-right: 1px solid #e5e7eb; /* Divisor vertical */
+    border-right: 1px solid var(--borde-suave);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -74,9 +80,7 @@
 .so-calendar-icon {
     position: absolute;
     right: 0.75rem;
-    width: 1.25em;
-    height: 1.25em;
-    color: #6b7280;
+    color: var(--texto-desactivado);
     pointer-events: none;
 }
 
@@ -90,11 +94,10 @@
     left: 0;
 }
 
-/* --- TABLA DE PEDIDOS (INTACTA, TAL COMO TE GUSTÓ) --- */
 .so-table-container {
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px var(--sombra-principal);
     overflow-x: auto;
 }
 
@@ -107,17 +110,17 @@
 .so-orders-table td {
     padding: 1rem 1.25rem;
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--borde-suave);
     white-space: nowrap;
 }
 
 .so-orders-table th {
-    background-color: #f9fafb;
+    background-color: var(--fondo-principal);
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #6c757d;
+    color: var(--texto-desactivado);
 }
 
 .so-orders-table tbody tr:hover {
@@ -135,51 +138,44 @@
 
 .so-orders-table td {
     vertical-align: middle;
-    color: #343a40;
+    color: var(--texto-principal);
     font-size: 0.95rem;
 }
 
 .so-orders-table td:first-child {
     font-weight: 500;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
 }
 
-/* --- BADGES DE ESTADO (SIN CAMBIOS) --- */
 .so-status-badge {
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
     font-weight: 500;
-    border: 1px solid transparent;
+    color: var(--texto-blanco);
 }
 
-.so-status-badge.so-status-pendiente {
-    background-color: #f5a623;
-    color: #000000;
-    border-color: #d6951f;
-}
-.so-status-badge.so-status-enviado {
-    background-color: #4a90e2;
-    color: #FFFFFF;
-    border-color: #357ABD;
-}
-.so-status-badge.so-status-entregado {
-    background-color: #24651C;
-    color: #FFFFFF;
-    border-color: #1A4D14;
-}
-.so-status-badge.so-status-cancelado {
-    background-color: #dc3545;
-    color: #FFFFFF;
-    border-color: #c82333;
+.so-status-pendiente {
+    background-color: var(--color-advertencia);
+    color: var(--texto-principal);
 }
 
+.so-status-enviado {
+    background-color: var(--color-info);
+}
 
-/* --- BOTONES DE ACCIÓN (SIN CAMBIOS) --- */
+.so-status-entregado {
+    background-color: var(--color-exito);
+}
+
+.so-status-cancelado {
+    background-color: var(--color-peligro);
+}
+
 .so-action-buttons {
     display: flex;
     gap: 10px;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .so-action-btn {
@@ -193,12 +189,70 @@
 }
 
 .so-action-btn:hover {
-    background-color: #e9ecef;
+    background-color: var(--fondo-desactivado);
 }
 
-.so-action-buttons .so-action-btn:first-child {
-    color: #007bff;
+.so-action-btn[title="Editar Estado"] {
+    color: var(--color-primario-hover);
 }
-.so-action-buttons .so-action-btn:last-child {
-    color: #dc3545;
+
+.so-action-btn[title="Ver Detalles"] {
+    color: var(--color-info);
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 767px) {
+    .so-page-container {
+        padding: 1rem;
+    }
+
+    .so-orders-table thead {
+        display: none;
+    }
+
+    .so-orders-table,
+    .so-orders-table tbody,
+    .so-orders-table tr,
+    .so-orders-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .so-orders-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--borde-suave);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .so-orders-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--borde-suave);
+        border-top: none;
+        white-space: normal;
+    }
+
+    .so-orders-table tr td:last-child {
+        border-bottom: none;
+    }
+
+    .so-orders-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        margin-right: 1rem;
+        color: var(--texto-principal);
+    }
+
+    .so-action-buttons {
+        justify-content: flex-end;
+    }
 }

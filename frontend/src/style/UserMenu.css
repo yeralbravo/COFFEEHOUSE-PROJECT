@@ -1,12 +1,20 @@
-/* src/style/UserMenu.css */
+/**
+ * ============================================
+ * ARCHIVO: UserMenu.css
+ * ============================================
+ * Estilos para el menú desplegable que aparece
+ * al hacer clic en el ícono de perfil del
+ * usuario en el encabezado.
+ */
+
 .user-menu-container {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 10px);
     right: 0;
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border: 1px solid #EFEFEF;
+    box-shadow: 0 4px 20px var(--sombra-principal);
+    border: 1px solid var(--borde-suave);
     width: 220px;
     z-index: 100;
     padding: 0.5rem;
@@ -21,29 +29,26 @@
     padding: 0.8rem 1rem;
     border-radius: 6px;
     text-decoration: none;
-    color: #000000;
+    color: var(--texto-principal);
     background: none;
     border: none;
     width: 100%;
     text-align: left;
     font-size: 1rem;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .user-menu-item:hover {
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
 }
 
 .user-menu-item.logout {
-    color: #cc3333;
+    color: var(--color-peligro);
 }
 
-/* ... (tus estilos existentes) ... */
-
-/* --- NUEVOS ESTILOS PARA EL BOTÓN DE CIERRE --- */
 .close-dropdown-btn.top-right {
     position: absolute;
     top: 5px;
     right: 5px;
-    padding: 0.4rem;
 }

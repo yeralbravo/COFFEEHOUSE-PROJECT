@@ -1,17 +1,25 @@
-/* --- ESTILOS GENERALES DEL PANEL DE ADMIN --- */
+/**
+ * ARCHIVO: AdminPanel.css
+ *
+ * MODIFICACIÓN FINAL:
+ * - Se añadió `overflow-x: hidden;` a `.chart-card` para forzar a las
+ * gráficas a ser responsivas y no desbordar su contenedor.
+ */
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
 .admin-header h1 {
     font-size: 1.8rem;
     font-weight: 600;
+    margin: 0;
 }
 
-/* --- TARJETAS DE ESTADÍSTICAS (KPIs) --- */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -19,9 +27,9 @@
 }
 
 .stat-card {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    border-left: 5px solid #24651C;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
+    border-left: 5px solid var(--color-primario);
     border-radius: 8px;
     padding: 1.5rem;
     display: flex;
@@ -31,22 +39,21 @@
 
 .stat-icon {
     font-size: 2rem;
-    color: #24651C;
+    color: var(--color-primario);
 }
 
 .stat-info p {
     margin: 0;
-    color: #64748b;
+    color: var(--texto-secundario);
     font-size: 0.9rem;
 }
 
 .stat-info h3 {
     margin: 0;
     font-size: 1.75rem;
-    color: #1e293b;
+    color: var(--texto-principal);
 }
 
-/* --- NUEVA ESTRUCTURA PARA LAS GRÁFICAS --- */
 .charts-main-container {
     margin-top: 2rem;
     display: flex;
@@ -55,10 +62,12 @@
 }
 
 .chart-card {
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px var(--sombra-principal);
+    overflow-x: hidden;
+    /* <-- REGLA AÑADIDA */
 }
 
 .chart-card h3 {
@@ -79,32 +88,23 @@
     margin: 0 auto;
 }
 
-/* Gráfica que ocupa todo el ancho */
 .full-width-card {
     width: 100%;
 }
 
-/* Cuadrícula para las 4 gráficas pequeñas */
 .charts-grid-2x2 {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
-@media (max-width: 1200px) {
-    .charts-grid-2x2 {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* --- ESTILOS PARA EL FILTRO DE FECHAS --- */
 .filter-dropdown-container {
     position: relative;
 }
 
 .filter-dropdown-button {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
@@ -125,9 +125,9 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     border-radius: 6px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     z-index: 10;
     overflow: hidden;
     margin-top: 5px;
@@ -139,14 +139,23 @@
 }
 
 .filter-dropdown-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
 }
 
-/* --- NUEVOS ESTILOS PARA CENTRAR CONTENIDO --- */
 .centered-content {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra horizontalmente el contenido */
-    padding: 2rem;
+    align-items: center;
+    padding: 2rem 1rem;
     width: 100%;
+}
+
+@media (min-width: 768px) {
+    .admin-header {
+        flex-wrap: nowrap;
+    }
+
+    .charts-grid-2x2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

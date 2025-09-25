@@ -1,8 +1,17 @@
-/* src/style/PaymentPage.css */
+/**
+ * ============================================
+ * ARCHIVO: PaymentPage.css
+ * ============================================
+ * Estilos para una posible página de pago,
+ * mostrando un formulario de tarjeta y un
+ * resumen de la compra.
+ */
+
 .payment-main-content {
-    background-color: #EFEFEF;
+    background-color: var(--fondo-desactivado);
     padding: 2rem 5%;
 }
+
 .payment-layout {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -10,71 +19,84 @@
     max-width: 960px;
     margin: 0 auto;
 }
+
 .payment-form-column h3 {
     margin-top: 0;
     margin-bottom: 1rem;
 }
+
 .payment-method-box {
-    background-color: #FFFFFF;
-    border: 1px solid #D9D9D9;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-principal);
     border-radius: 8px;
     padding: 0.5rem;
     margin-bottom: 1.5rem;
 }
+
 .method-option {
     padding: 1rem;
     border-radius: 6px;
     display: flex;
     align-items: center;
 }
+
 .method-option.active {
-    background-color: #EFEFEF;
+    background-color: var(--fondo-desactivado);
     font-weight: 500;
 }
+
 .card-form {
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     padding: 2rem;
     border-radius: 8px;
 }
+
 .card-form .form-group {
     margin-bottom: 1rem;
 }
+
 .card-form label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     font-size: 0.9rem;
 }
+
 .card-form input {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     box-sizing: border-box;
 }
+
 .card-form .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+
 .summary-card {
-    background-color: #FFFFFF;
-    border: 1px solid #EFEFEF;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     padding: 1.5rem;
     position: sticky;
     top: 2rem;
 }
+
 .summary-card h3 {
     margin-top: 0;
 }
+
 .summary-item {
     display: flex;
     justify-content: space-between;
     padding: 0.8rem 0;
     font-size: 0.9rem;
-    border-bottom: 1px dashed #EFEFEF;
+    border-bottom: 1px dashed var(--borde-suave);
 }
+
 .summary-total {
     display: flex;
     justify-content: space-between;
@@ -82,17 +104,36 @@
     font-size: 1.2rem;
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #D9D9D9;
+    border-top: 1px solid var(--borde-principal);
 }
+
 .pay-btn {
     width: 100%;
     margin-top: 1.5rem;
     padding: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     border-radius: 8px;
     cursor: pointer;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 1024px) {
+    .payment-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-form .form-row {
+        grid-template-columns: 1fr;
+    }
 }

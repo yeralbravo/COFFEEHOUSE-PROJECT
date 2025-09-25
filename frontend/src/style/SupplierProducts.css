@@ -1,15 +1,16 @@
-/* Paleta de colores:
---verde-oscuro: #1A4D2E;
---verde-medio: #4F6F52;
---beige-claro: #E8DFCA;
---blanco-hueso: #F5EFE6;
---blanco: #FFFFFF;
---rojo-error: #dc3545;
-*/
+/**
+ * ============================================
+ * ARCHIVO: SupplierProducts.css
+ * ============================================
+ * Estilos para la página de productos del proveedor.
+ * NOTA: Parece ser una versión alternativa o
+ * anterior de SupplierProductsPage.css.
+ */
 
 .supplier-products-page {
     padding: 2rem;
     background-color: #E8DFCA;
+    /* Manteniendo color específico si es temático */
     min-height: 100vh;
 }
 
@@ -22,12 +23,12 @@
 
 .page-header h1 {
     font-size: 2.5rem;
-    color: #1A4D2E;
+    color: var(--color-primario);
 }
 
 .btn-primary {
-    background-color: #1A4D2E;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
@@ -40,15 +41,16 @@
 }
 
 .btn-primary:hover {
-    background-color: #4F6F52;
+    background-color: var(--color-primario-hover);
 }
 
 /* Estilos de la tabla de productos */
 .product-list-container {
     background-color: #F5EFE6;
+    /* Color específico */
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px var(--sombra-principal);
 }
 
 .product-table {
@@ -56,14 +58,16 @@
     border-collapse: collapse;
 }
 
-.product-table th, .product-table td {
+.product-table th,
+.product-table td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #E8DFCA;
+    /* Color específico */
 }
 
 .product-table th {
-    color: #1A4D2E;
+    color: var(--color-primario);
     font-weight: 600;
 }
 
@@ -79,13 +83,21 @@
     padding: 0.3rem 0.8rem;
     border-radius: 15px;
     font-weight: 500;
-    color: #fff;
+    color: var(--texto-blanco);
     text-align: center;
 }
 
-.stock-high { background-color: #4F6F52; }
-.stock-low { background-color: #f5a623; }
-.stock-out { background-color: #dc3545; }
+.stock-high {
+    background-color: var(--color-exito);
+}
+
+.stock-low {
+    background-color: var(--color-advertencia);
+}
+
+.stock-out {
+    background-color: var(--color-peligro);
+}
 
 /* Estilos del formulario de producto (dentro del modal) */
 .product-form {
@@ -99,12 +111,12 @@
     gap: 1.5rem;
 }
 
-.form-row > .form-group {
+.form-row>.form-group {
     flex: 1;
 }
 
 .image-uploader {
-    border: 2px dashed #4F6F52;
+    border: 2px dashed var(--color-primario-hover);
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
@@ -114,7 +126,7 @@
 
 .image-uploader p {
     margin: 0;
-    color: #4F6F52;
+    color: var(--color-primario-hover);
 }
 
 .image-preview-container {
@@ -139,8 +151,8 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: #dc3545;
-    color: white;
+    background-color: var(--color-peligro);
+    color: var(--texto-blanco);
     border: none;
     border-radius: 50%;
     width: 20px;
@@ -150,4 +162,20 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 767px) {
+    .supplier-products-page {
+        padding: 1rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
 }

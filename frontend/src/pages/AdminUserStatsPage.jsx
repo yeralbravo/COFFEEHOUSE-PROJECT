@@ -53,7 +53,7 @@ const AdminUserStatsPage = () => {
 
     const aovByRoleOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         plugins: {
             legend: { display: false },
             datalabels: {
@@ -85,21 +85,19 @@ const AdminUserStatsPage = () => {
         }],
     };
 
-    // --- OPCIONES DE GRÁFICA ACTUALIZADAS ---
     const activeUsersOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         plugins: {
             legend: {
                 display: false
             },
-            // --- CÓDIGO AÑADIDO ---
             datalabels: {
                 color: '#ffffff',
                 font: { weight: 'bold' },
                 anchor: 'center',
                 align: 'center',
-                formatter: (value) => value > 0 ? value : '', // Muestra el número si es mayor a 0
+                formatter: (value) => value > 0 ? value : '',
             },
         },
         scales: {
@@ -143,7 +141,6 @@ const AdminUserStatsPage = () => {
                         <div className="chart-card">
                             <h3>Clientes Activos por Mes</h3>
                             <div className="chart-wrapper">
-                                {/* --- COMPONENTE ACTUALIZADO --- */}
                                 <Bar data={activeUsersChartData} options={activeUsersOptions} plugins={[ChartDataLabels]} />
                             </div>
                         </div>

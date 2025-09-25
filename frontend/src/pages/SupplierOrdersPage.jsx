@@ -11,10 +11,9 @@ const SupplierOrdersPage = () => {
     const [loading, setLoading] = useState(true);
     const [editingOrder, setEditingOrder] = useState(null);
     const [viewingOrder, setViewingOrder] = useState(null);
-    const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
+    const { showSuccessAlert, showErrorAlert } = useAlerts();
     const [filters, setFilters] = useState({ status: '', startDate: '', endDate: '' });
 
-    // CORREGIDO: Se eliminaron los caracteres extra ('_') después de catch y finally
     const fetchOrders = async () => {
         try {
             setLoading(true);
@@ -56,8 +55,6 @@ const SupplierOrdersPage = () => {
             showErrorAlert(error.message);
         }
     };
-    
-    // ... (resto del componente sin cambios)
     
     return (
         <div className="so-page-container">
@@ -103,15 +100,15 @@ const SupplierOrdersPage = () => {
                             <tbody>
                                 {orders.map(order => (
                                     <tr key={order.id}>
-                                        <td>#{order.id}</td>
-                                        <td>{order.user_name} {order.user_lastname}</td>
-                                        <td>{new Date(order.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
-                                        <td>{order.address || 'No especificada'}</td>
-                                        <td>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</td>
-                                        <td>
+                                        <td data-label="ID Pedido">#{order.id}</td>
+                                        <td data-label="Cliente">{order.user_name} {order.user_lastname}</td>
+                                        <td data-label="Fecha">{new Date(order.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                                        <td data-label="Dirección">{order.address || 'No especificada'}</td>
+                                        <td data-label="Total">${new Intl.NumberFormat('es-CO').format(order.total_amount)}</td>
+                                        <td data-label="Estado">
                                             <span className={`so-status-badge so-status-${order.status.toLowerCase()}`}>{order.status}</span>
                                         </td>
-                                        <td>
+                                        <td data-label="Acciones">
                                             <div className="so-action-buttons">
                                                 <button onClick={() => setEditingOrder(order)} className="so-action-btn" title="Editar Estado"><FiEdit /></button>
                                                 <button onClick={() => handleViewDetails(order.id)} className="so-action-btn" title="Ver Detalles"><FiEye /></button>

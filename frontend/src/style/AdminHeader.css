@@ -1,11 +1,20 @@
+/**
+ * ============================================
+ * ARCHIVO: AdminHeader.css
+ * ============================================
+ * Estilos para la barra de navegación superior
+ * del panel de administración.
+ */
+
 .admin-header-container {
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border-bottom: 1px solid var(--gris-medio);
+    background-color: var(--fondo-tarjetas);
+    box-shadow: 0 2px 4px var(--sombra-principal);
+    border-bottom: 1px solid var(--borde-suave);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1rem;
+    /* Padding reducido para móviles */
     position: sticky;
     top: 0;
     z-index: 999;
@@ -14,7 +23,8 @@
 .header-left-admin {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+    /* Gap reducido */
 }
 
 .logo-container-admin {
@@ -31,21 +41,22 @@
 .logo-text-admin {
     font-size: 1.4rem;
     font-weight: bold;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-family: 'Lora', serif;
 }
 
 .user-actions-admin {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
+    /* Gap reducido */
 }
 
 .icon-btn-admin {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #333;
+    color: var(--texto-principal);
     cursor: pointer;
     position: relative;
     padding: 0.25rem;
@@ -63,8 +74,8 @@
     position: absolute;
     top: -5px;
     right: -8px;
-    background-color: var(--verde-oscuro);
-    color: white;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -80,4 +91,35 @@
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+/* Ocultar texto del logo en pantallas pequeñas */
+@media (max-width: 480px) {
+    .logo-text-admin {
+        display: none;
+    }
+}
+
+/* Ajustes para tablets y pantallas medianas */
+@media (min-width: 768px) {
+    .admin-header-container {
+        padding: 0.8rem 2rem;
+        /* Restaurar padding original */
+    }
+
+    .header-left-admin {
+        gap: 1rem;
+        /* Restaurar gap original */
+    }
+
+    .user-actions-admin {
+        gap: 1rem;
+        /* Restaurar gap original */
+    }
 }

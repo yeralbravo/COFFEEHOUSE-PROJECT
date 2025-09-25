@@ -1,14 +1,31 @@
-/* src/style/Layout.css */
-/* Este archivo define la estructura principal de las páginas con sidebar */
+/**
+ * ============================================
+ * ARCHIVO: Layout.css
+ * ============================================
+ * Define una estructura de layout muy simple
+ * para páginas que contienen una barra lateral
+ * y un área de contenido principal.
+ */
 
 .admin-layout {
   display: flex;
-  min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+  min-height: 100vh;
 }
 
-/* El contenido principal que acompaña al Sidebar */
 .admin-layout .main-content {
-  flex-grow: 1; /* Le dice al contenido que ocupe todo el espacio sobrante */
-  background-color: #F0F8FF; /* --azul-claro-fondo */
-  padding: 2rem; /* Añade espacio interno para que el contenido no pegue a los bordes */
+  flex-grow: 1;
+  background-color: var(--fondo-secundario);
+  padding: 2rem;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+  .admin-layout .main-content {
+    padding: 1rem;
+  }
 }

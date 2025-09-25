@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAllMessages, markAsRead } from '../services/contactService';
-import { FiMail } from 'react-icons/fi';
+import { FiMail, FiArrowLeft } from 'react-icons/fi';
 import '../style/SupportPage.css';
 
 const SupportPage = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
+    const [isDetailView, setIsDetailView] = useState(false); // Nuevo estado para vista móvil
+
+    // Detectar si estamos en una pantalla móvil
+    const isMobile = () => window.innerWidth <= 767;
 
     const loadMessages = async () => {
         try {
@@ -26,8 +30,23 @@ const SupportPage = () => {
         loadMessages();
     }, []);
 
+    // Efecto para manejar el cambio de tamaño de la ventana
+    useEffect(() => {
+        const handleResize = () => {
+            if (!isMobile() && isDetailView) {
+                setIsDetailView(false); // Si la pantalla se agranda, salimos de la vista de detalle móvil
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isDetailView]);
+
+
     const handleSelectMessage = async (message) => {
         setSelectedMessage(message);
+        if (isMobile()) {
+            setIsDetailView(true); // Entrar en modo detalle en móvil
+        }
         if (!message.is_read) {
             try {
                 await markAsRead(message.id);
@@ -41,8 +60,12 @@ const SupportPage = () => {
         }
     };
 
+    const handleBackToList = () => {
+        setIsDetailView(false);
+    };
+
     return (
-        <div className="support-page-layout">
+        <div className={`support-page-layout ${isDetailView ? 'show-detail' : ''}`}>
             <div className="message-list-panel">
                 <header className="panel-header">
                     <h1>Bandeja de Entrada</h1>
@@ -69,6 +92,12 @@ const SupportPage = () => {
                 {selectedMessage ? (
                     <>
                         <header className="panel-header detail-header">
+                            {/* Botón de volver para móvil */}
+                            {isDetailView && (
+                                <button onClick={handleBackToList} className="back-to-list-btn">
+                                    <FiArrowLeft /> Volver
+                                </button>
+                            )}
                             <div>
                                 <h2>{selectedMessage.name}</h2>
                                 <a href={`mailto:${selectedMessage.email}`} className="sender-email">{selectedMessage.email}</a>

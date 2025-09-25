@@ -1,31 +1,38 @@
-/* src/style/ProductCard.css */
+/**
+ * ============================================
+ * ARCHIVO: ProductCard.css
+ * ============================================
+ * Estilos para la tarjeta de producto individual
+ * que se muestra en los catálogos y carruseles.
+ */
+
 .product-card-client {
-    background-color: #FFFFFF;
-    border: 1px solid #EFEFEF;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     min-width: 250px;
     max-width: 250px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px var(--sombra-principal);
     scroll-snap-align: start;
 }
 
 .product-card-link-wrapper {
     text-decoration: none;
     color: inherit;
-    display: block; /* Para que ocupe el espacio y se pueda hacer clic */
+    display: block;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card-link-wrapper:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px var(--sombra-principal);
 }
 
 .product-card-image-wrapper {
     width: 100%;
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
     padding: 1rem;
     box-sizing: border-box;
 }
@@ -45,20 +52,20 @@
 .product-card-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #000000;
+    color: var(--texto-principal);
     margin: 0 0 0.25rem 0;
 }
 
 .product-card-type {
     font-size: 0.9rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin: 0 0 0.5rem 0;
 }
 
 .product-card-price {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #000000;
+    color: var(--texto-principal);
     margin: 0;
 }
 
@@ -80,32 +87,21 @@
 }
 
 .product-card-actions .btn-buy {
-    background-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
 }
+
 .product-card-actions .btn-buy:hover {
-    background-color: #3E7B27;
+    background-color: var(--color-primario-hover);
 }
 
 .product-card-actions .btn-add-cart {
-    background-color: #EFEFEF;
-    color: #24651C;
-    border: 1px solid #D9D9D9;
+    background-color: var(--fondo-desactivado);
+    color: var(--color-primario);
+    border: 1px solid var(--borde-principal);
 }
+
 .product-card-actions .btn-add-cart:hover {
-    background-color: #D9D9D9;
-}
-
-/* Añade o verifica esta clase en src/style/ProductCard.css */
-.product-card-link-wrapper {
-    text-decoration: none;
-    color: inherit;
-    display: block; 
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.product-card-link-wrapper:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    background-color: var(--borde-principal);
 }

@@ -1,11 +1,17 @@
-/* src/style/SupplierSidebar.css */
+/**
+ * ARCHIVO: SupplierSidebar.css
+ * MODIFICACIONES FINALES:
+ * - Se añadieron reglas para ocultar la barra de scroll vertical.
+ * - Se añadió media query para ancho responsivo en móvil.
+ * - Se corrigió el !important de la propiedad `left`.
+ */
 .supplier-sidebar {
     position: fixed;
     top: 0;
-    left: -320px; /* Inicia fuera de la pantalla */
+    left: -320px;
     width: 300px;
     height: 100%;
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
     z-index: 1001;
     transition: left 0.3s ease-in-out;
@@ -40,13 +46,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid var(--gris-claro);
-    flex-shrink: 0; /* Evita que el header se encoja */
+    border-bottom: 1px solid var(--borde-suave);
+    flex-shrink: 0;
 }
 
 .sidebar-header h3 {
     margin: 0;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-size: 1.2rem;
 }
 
@@ -55,7 +61,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .sidebar-links {
@@ -63,20 +69,17 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    overflow-y: auto; /* Permite el scroll vertical */
-    flex-grow: 1; /* Ocupa el espacio restante */
+    overflow-y: auto;
+    flex-grow: 1;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
-/* Scrollbar personalizado (para navegadores WebKit) */
 .sidebar-links::-webkit-scrollbar {
-    width: 6px;
-}
-.sidebar-links::-webkit-scrollbar-track {
-    background: transparent;
-}
-.sidebar-links::-webkit-scrollbar-thumb {
-    background: #007bff; /* Azul como en la imagen */
-    border-radius: 10px;
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 .sidebar-link {
@@ -85,7 +88,7 @@
     gap: 1rem;
     padding: 0.9rem 1rem;
     text-decoration: none;
-    color: #333;
+    color: var(--texto-principal);
     font-weight: 500;
     border-radius: 8px;
     transition: background-color 0.2s, color 0.2s;
@@ -103,12 +106,12 @@
 }
 
 .sidebar-link:hover {
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
 }
 
 .sidebar-link.active {
-    background-color: #f0f2f5; /* Gris claro como en la imagen */
-    color: var(--negro);
+    background-color: var(--fondo-secundario);
+    color: var(--color-primario);
     font-weight: 600;
 }
 
@@ -121,25 +124,50 @@
     justify-content: space-between;
 }
 
+.submenu-toggle span {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .submenu-toggle .arrow-icon {
     transition: transform 0.2s ease-in-out;
 }
+
 .submenu-toggle .arrow-icon.open {
     transform: rotate(180deg);
 }
 
 .submenu-links {
-    padding-left: 1.5rem; /* Indentación para los sub-enlaces */
-    margin-left: 1.2rem; /* Espacio para la línea vertical */
+    padding-left: 1.5rem;
+    margin-left: 1.2rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border-left: 2px solid var(--gris-claro);
-    position: relative;
+    border-left: 2px solid var(--borde-suave);
 }
 
 .sub-link {
     padding-top: 0.8rem;
     padding-bottom: 0.8rem;
     font-size: 0.95rem;
+}
+
+.sidebar-divider {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--texto-desactivado);
+    text-transform: uppercase;
+    padding: 1rem 1rem 0.5rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--borde-suave);
+}
+
+@media (max-width: 480px) {
+    .supplier-sidebar {
+        width: 85vw !important;
+        max-width: 300px !important;
+        left: -85vw;
+        /* Corregido: sin !important */
+    }
 }

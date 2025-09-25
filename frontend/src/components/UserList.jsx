@@ -21,11 +21,11 @@ const UserList = ({ users, onEdit, onDelete }) => {
                 <tbody>
                     {users.map(user => (
                         <tr key={user.id}>
-                            <td>{user.nombre} {user.apellido}</td>
-                            <td>{user.correo}</td>
-                            <td>{user.telefono}</td>
-                            <td><span className={`role-badge role-${user.role}`}>{user.role}</span></td>
-                            <td>
+                            <td data-label="Nombre Completo">{user.nombre} {user.apellido}</td>
+                            <td data-label="Correo">{user.correo}</td>
+                            <td data-label="Teléfono">{user.telefono}</td>
+                            <td data-label="Rol"><span className={`role-badge role-${user.role}`}>{user.role}</span></td>
+                            <td data-label="Acciones">
                                 <div className="action-buttons">
                                     <button onClick={() => onEdit(user)} className="action-btn edit-btn">
                                         <FiEdit />

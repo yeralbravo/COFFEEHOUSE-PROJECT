@@ -1,10 +1,17 @@
+/**
+ * ARCHIVO: AdminSidebar.css
+ * MODIFICACIONES FINALES:
+ * - Se añadieron reglas para ocultar la barra de scroll vertical.
+ * - Se añadió media query para ancho responsivo en móvil con !important.
+ */
+
 .admin-sidebar {
     position: fixed;
     top: 0;
     left: -320px;
     width: 300px;
     height: 100%;
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
     z-index: 1001;
     transition: left 0.3s ease-in-out;
@@ -36,12 +43,12 @@
 
 .sidebar-header-admin {
     padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid var(--gris-claro);
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .sidebar-header-admin h3 {
     margin: 0 0 1rem 0;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-size: 1.2rem;
 }
 
@@ -51,16 +58,11 @@
     gap: 0.8rem;
 }
 
-.profile-icon-admin {
+.sidebar-profile-picture {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background-color: var(--verde-oscuro);
-    color: var(--blanco);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
+    object-fit: cover;
 }
 
 .sidebar-nav-admin {
@@ -70,6 +72,15 @@
     gap: 0.5rem;
     overflow-y: auto;
     flex-grow: 1;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.sidebar-nav-admin::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 .sidebar-link-admin {
@@ -78,7 +89,7 @@
     gap: 1rem;
     padding: 0.9rem 1rem;
     text-decoration: none;
-    color: #333;
+    color: var(--texto-principal);
     font-weight: 500;
     border-radius: 8px;
     transition: background-color 0.2s, color 0.2s;
@@ -91,12 +102,12 @@
 }
 
 .sidebar-link-admin:hover {
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
 }
 
 .sidebar-link-admin.active {
-    background-color: var(--azul-claro-fondo);
-    color: var(--verde-oscuro);
+    background-color: var(--fondo-secundario);
+    color: var(--color-primario);
     font-weight: 600;
 }
 
@@ -123,7 +134,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border-left: 2px solid var(--gris-claro);
+    border-left: 2px solid var(--borde-suave);
 }
 
 .sub-link-admin {
@@ -134,7 +145,7 @@
 
 .sidebar-footer-admin {
     padding: 1.5rem;
-    border-top: 1px solid var(--gris-claro);
+    border-top: 1px solid var(--borde-suave);
 }
 
 .logout-btn-admin {
@@ -144,25 +155,27 @@
     justify-content: center;
     gap: 0.8rem;
     padding: 0.8rem;
-    border: 1px solid var(--gris-medio);
-    background-color: var(--gris-claro);
-    color: #333;
+    border: 1px solid var(--borde-principal);
+    background-color: var(--fondo-desactivado);
+    color: var(--texto-principal);
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .logout-btn-admin:hover {
-    background-color: #dc3545;
-    color: white;
-    border-color: #dc3545;
+    background-color: var(--color-peligro);
+    color: var(--texto-blanco);
+    border-color: var(--color-peligro);
 }
 
-.sidebar-profile-picture {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    object-fit: cover;
+@media (max-width: 480px) {
+    .admin-sidebar {
+        width: 85vw !important;
+        max-width: 300px !important;
+        left: -85vw;
+        /* Corregido: sin !important */
+    }
 }

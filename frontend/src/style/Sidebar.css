@@ -1,7 +1,16 @@
+/**
+ * ============================================
+ * ARCHIVO: Sidebar.css
+ * ============================================
+ * Estilos para una barra lateral genérica.
+ * NOTA: Este archivo parece usar una paleta de
+ * colores diferente a la principal del sitio.
+ */
+
 .sidebar {
     width: 250px;
-    background-color: var(--verde-oscuro);
-    color: #f5eec2;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -11,22 +20,22 @@
 .sidebar-header {
     padding: 20px;
     text-align: center;
-    border-bottom: 1px solid #4f6f52;
+    border-bottom: 1px solid var(--color-primario-hover);
 }
 
 .profile {
     display: flex;
     align-items: center;
     padding: 20px;
-    border-bottom: 1px solid #4f6f52;
+    border-bottom: 1px solid var(--color-primario-hover);
 }
 
 .profile-icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #f5eec2;
-    color: #1a4d2e;
+    background-color: var(--texto-blanco);
+    color: var(--color-primario);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,37 +43,30 @@
     margin-right: 15px;
 }
 
-/* --- SECCIÓN MODIFICADA --- */
 .sidebar-nav {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Esto MANTIENE la funcionalidad de scroll */
-
-    /* Regla para ocultar la barra en Firefox */
-    scrollbar-width: none; 
-    
-    /* Regla para ocultar la barra en Internet Explorer y Edge (versiones antiguas) */
+    overflow-y: auto;
+    scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-/* Regla para ocultar la barra en navegadores WebKit (Chrome, Safari, etc.) */
 .sidebar-nav::-webkit-scrollbar {
     display: none;
 }
-/* --- FIN DE LA SECCIÓN MODIFICADA --- */
-
 
 .sidebar-nav a {
-    color: #f5eec2;
+    color: var(--texto-blanco);
     text-decoration: none;
     padding: 15px 20px;
     display: block;
     transition: background-color 0.2s;
 }
 
-.sidebar-nav a:hover, .sidebar-nav a.active {
-    background-color: #4f6f52;
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+    background-color: var(--color-primario-hover);
 }
 
 .submenu-container {
@@ -75,7 +77,7 @@
 .submenu-toggle {
     background: none;
     border: none;
-    color: #f5eec2;
+    color: var(--texto-blanco);
     padding: 15px 20px;
     font-size: 16px;
     text-align: left;
@@ -87,7 +89,7 @@
 }
 
 .submenu-toggle:hover {
-    background-color: #4f6f52;
+    background-color: var(--color-primario-hover);
 }
 
 .arrow {
@@ -100,6 +102,7 @@
 
 .submenu {
     background-color: #123a22;
+    /* Color específico más oscuro */
     display: flex;
     flex-direction: column;
 }
@@ -110,13 +113,13 @@
 
 .sidebar-footer {
     padding: 20px;
-    border-top: 1px solid #4f6f52;
+    border-top: 1px solid var(--color-primario-hover);
 }
 
 .logout-btn {
     background-color: transparent;
-    border: 1px solid #f5eec2;
-    color: #f5eec2;
+    border: 1px solid var(--texto-blanco);
+    color: var(--texto-blanco);
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -125,6 +128,6 @@
 }
 
 .logout-btn:hover {
-    background-color: #f5eec2;
-    color: #1a4d2e;
+    background-color: var(--texto-blanco);
+    color: var(--color-primario);
 }

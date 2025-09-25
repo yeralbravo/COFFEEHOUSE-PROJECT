@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { FiBell, FiShoppingCart, FiUser, FiSearch } from 'react-icons/fi';
+import { FiBell, FiShoppingCart, FiUser, FiSearch, FiMenu } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext';
 import AuthContext from '../../context/AuthContext';
 import UserMenu from './UserMenu';
@@ -9,7 +9,8 @@ import { getMyNotifications, markAllAsRead } from '../../services/notificationSe
 import logo from '../../assets/logo.png';
 import '../../style/ClientHeader.css';
 
-const ClientHeader = () => {
+// Añadimos onMenuClick a las props
+const ClientHeader = ({ onMenuClick }) => {
     const { itemCount } = useCart();
     const { user, logout } = useContext(AuthContext);
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -65,21 +66,27 @@ const ClientHeader = () => {
     return (
         <header className="client-header-container">
             <div className="top-bar">
-                <Link to="/home" className="logo-container">
-                    <img src={logo} alt="Coffee House Logo" className="logo-img" />
-                    <span className="logo-text">COFFEE HOUSE</span>
-                </Link>
+                <div className="header-left">
+                    {/* BOTÓN DE HAMBURGUESA AÑADIDO */}
+                    <button onClick={onMenuClick} className="icon-btn hamburger-btn">
+                        <FiMenu />
+                    </button>
+                    <Link to="/home" className="logo-container">
+                        <img src={logo} alt="Coffee House Logo" className="logo-img" />
+                        <span className="logo-text">COFFEE HOUSE</span>
+                    </Link>
+                </div>
                 <div className="user-actions">
                     <div className="user-menu-wrapper">
                         <button className="icon-btn" onClick={handleToggleNotifications}>
                             <FiBell />
                             {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
                         </button>
-                        {isNotificationsOpen && 
-                            <Notifications 
+                        {isNotificationsOpen &&
+                            <Notifications
                                 notifications={notifications}
                                 setNotifications={setNotifications}
-                                onClose={() => setNotificationsOpen(false)} 
+                                onClose={() => setNotificationsOpen(false)}
                             />
                         }
                     </div>
@@ -109,9 +116,9 @@ const ClientHeader = () => {
                 <div className="search-bar-wrapper">
                     <form onSubmit={handleSearchSubmit} className="search-bar">
                         <FiSearch className="search-icon" />
-                        <input 
-                            type="text" 
-                            className="search-input" 
+                        <input
+                            type="text"
+                            className="search-input"
                             placeholder="Buscar productos, marcas y más..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}

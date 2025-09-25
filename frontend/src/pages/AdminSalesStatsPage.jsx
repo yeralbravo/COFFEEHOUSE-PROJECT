@@ -4,7 +4,7 @@ import { useAlerts } from '../hooks/useAlerts';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FiDollarSign, FiShoppingCart, FiUsers, FiShoppingBag } from 'react-icons/fi'; // <-- Cambiado FiTrendingUp por FiUsers
+import { FiDollarSign, FiShoppingCart, FiUsers, FiShoppingBag } from 'react-icons/fi';
 import StatCard from '../components/admin/StatCard';
 import TimeRangeFilter from '../components/TimeRangeFilter';
 import '../style/AdminStatsPages.css';
@@ -55,7 +55,7 @@ const AdminSalesStatsPage = () => {
 
     const doughnutOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         cutout: '60%',
         plugins: {
             datalabels: {
@@ -67,10 +67,7 @@ const AdminSalesStatsPage = () => {
                     return percentage;
                 },
                 color: '#fff',
-                font: {
-                    weight: 'bold',
-                    size: 14,
-                },
+                font: { weight: 'bold', size: 14, },
             },
             tooltip: {
                 callbacks: {
@@ -131,7 +128,7 @@ const AdminSalesStatsPage = () => {
     const barOptions = {
         indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         plugins: {
             legend: { display: false },
             datalabels: {
@@ -164,7 +161,6 @@ const AdminSalesStatsPage = () => {
                     <div className="stats-grid">
                         <StatCard title="Ingresos Totales" value={`$${new Intl.NumberFormat('es-CO').format(stats.kpis.totalRevenue)}`} icon={<FiDollarSign />} />
                         <StatCard title="Pedidos Totales" value={stats.kpis.totalOrders} icon={<FiShoppingCart />} />
-                        {/* --- TARJETA MODIFICADA --- */}
                         <StatCard title="Total de Clientes Recurrentes" value={stats.kpis.recurringCustomers} icon={<FiUsers />} />
                         <StatCard title="Artículos Vendidos" value={stats.kpis.totalItemsSold} icon={<FiShoppingBag />} />
                     </div>

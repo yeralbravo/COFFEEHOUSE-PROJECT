@@ -1,3 +1,12 @@
+/**
+ * ============================================
+ * ARCHIVO: RequestDetailsModal.css
+ * ============================================
+ * Estilos para la ventana modal que muestra los
+ * detalles de una solicitud de nuevo proveedor
+ * en el panel de administración.
+ */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -9,14 +18,15 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 1rem;
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     border-radius: 8px;
-    width: 90%;
+    width: 100%;
     max-width: 600px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.3s ease;
 }
 
@@ -25,7 +35,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .modal-header h2 {
@@ -38,7 +48,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #64748b;
+    color: var(--texto-desactivado);
 }
 
 .modal-body {
@@ -55,27 +65,28 @@
     margin-top: 0;
     margin-bottom: 0.75rem;
     font-size: 1rem;
-    color: #24651C;
-    border-bottom: 2px solid #24651C;
+    color: var(--color-primario);
+    border-bottom: 2px solid var(--color-primario);
     padding-bottom: 0.25rem;
     display: inline-block;
 }
 
 .detail-section p {
     margin: 0.5rem 0;
-    color: #333;
+    color: var(--texto-principal);
 }
 
 .detail-section p strong {
-    color: #1f2937;
+    color: var(--texto-principal);
+    font-weight: 600;
     margin-right: 8px;
 }
 
 .message-box {
     margin-top: 1rem;
     padding: 1rem;
-    background-color: #f8f9fa;
-    border-left: 4px solid #24651C;
+    background-color: var(--fondo-principal);
+    border-left: 4px solid var(--color-primario);
     border-radius: 4px;
 }
 
@@ -86,10 +97,30 @@
 
 .message-box p {
     margin: 0;
-    white-space: pre-wrap; /* Mantiene los saltos de línea del mensaje */
+    white-space: pre-wrap;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 480px) {
+    .modal-body {
+        padding: 1rem;
+    }
 }

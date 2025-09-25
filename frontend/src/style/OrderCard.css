@@ -1,14 +1,21 @@
-/* src/style/OrderCard.css */
+/**
+ * ============================================
+ * ARCHIVO: OrderCard.css
+ * ============================================
+ * Estilos para la tarjeta individual de pedido
+ * que se muestra en la lista de "Mis Pedidos".
+ */
+
 .order-card-container {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     gap: 1.5rem;
     align-items: center;
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     padding: 1.5rem;
     border-radius: 8px;
-    border: 1px solid #EFEFEF;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid var(--borde-suave);
+    box-shadow: 0 2px 8px var(--sombra-principal);
 }
 
 .order-card-image-wrapper img {
@@ -16,7 +23,7 @@
     height: 100px;
     object-fit: contain;
     border-radius: 8px;
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
 }
 
 .order-card-details {
@@ -38,9 +45,10 @@
     border-radius: 50%;
 }
 
-.status-description, .order-item-quantity {
+.status-description,
+.order-item-quantity {
     font-size: 0.9rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin: 0.25rem 0;
 }
 
@@ -52,12 +60,12 @@
 .order-card-shipping-info {
     text-align: right;
     font-size: 0.9rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
 }
 
 .supplier-name {
     font-weight: 500;
-    color: #000;
+    color: var(--texto-principal);
 }
 
 .tracking-info {
@@ -67,22 +75,57 @@
 
 .tracking-number {
     font-weight: bold;
-    color: #24651C;
+    color: var(--color-primario);
     text-decoration: none;
 }
 
 .view-order-btn {
-    background-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    text-align: center;
     transition: background-color 0.2s;
 }
 
 .view-order-btn:hover {
-    background-color: #3E7B27;
+    background-color: var(--color-primario-hover);
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .order-card-container {
+        grid-template-columns: 1fr;
+        /* Una sola columna */
+        gap: 1rem;
+        padding: 1rem;
+        text-align: center;
+        /* Centrar todo el contenido */
+    }
+
+    .order-card-image-wrapper {
+        margin: 0 auto;
+    }
+
+    .order-card-details,
+    .order-card-shipping-info,
+    .order-card-action {
+        text-align: center;
+    }
+
+    .order-status,
+    .tracking-info {
+        justify-content: center;
+        /* Centrar elementos internos */
+    }
 }

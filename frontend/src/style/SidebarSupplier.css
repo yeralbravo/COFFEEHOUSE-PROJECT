@@ -1,113 +1,112 @@
-/* src/style/Sidebar.css */
-
+/**
+ * ARCHIVO: SidebarSupplier.css
+ * MODIFICACIÓN: Media query para ancho responsivo en móvil.
+ */
 .sidebar-container {
-  display: flex;
-  flex-direction: column; /* Organiza los elementos verticalmente */
-  width: 260px; /* Ancho fijo para la barra lateral */
-  flex-shrink: 0; /* Evita que la barra se encoja */
-  background-color: #24651C; /* --verde-oscuro */
-  color: #FFFFFF; /* --blanco */
-  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+    flex-shrink: 0;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
+    min-height: 100vh;
 }
 
 .sidebar-container .sidebar-header {
-  padding: 1.5rem;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-container .profile-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
 }
 
 .sidebar-container .profile-section .profile-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #3E7B27; /* --hover */
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-primario-hover);
+    color: var(--texto-blanco);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 .sidebar-container .profile-section .profile-info .profile-name {
-  font-weight: 600;
-  margin: 0;
+    font-weight: 600;
+    margin: 0;
 }
 
 .sidebar-container .profile-section .profile-info .profile-role {
-  font-size: 0.8rem;
-  opacity: 0.8;
-  text-transform: capitalize;
-  margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-transform: capitalize;
+    margin: 0;
 }
 
 .sidebar-container .sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
 }
 
 .sidebar-container .sidebar-nav .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.9rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #EFEFEF; /* --gris-claro (para texto sobre fondo oscuro) */
-  transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--borde-suave);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-container .sidebar-nav .nav-link:hover {
-  background-color: #3E7B27; /* --hover */
-  color: #FFFFFF;
+    background-color: var(--color-primario-hover);
+    color: var(--texto-blanco);
 }
 
-/* Estilo para el enlace activo */
 .sidebar-container .sidebar-nav .nav-link.active {
-  background-color: #FFFFFF; /* --blanco */
-  color: #24651C; /* --verde-oscuro */
-  font-weight: 600;
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
+    font-weight: 600;
 }
 
 .sidebar-container .sidebar-footer {
-  margin-top: auto; /* Empuja el footer hacia el fondo */
-  padding: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-container .sidebar-footer .logout-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  padding: 0.8rem;
-  border: 1px solid #3E7B27; /* --hover */
-  background-color: transparent;
-  color: #EFEFEF;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid var(--color-primario-hover);
+    background-color: transparent;
+    color: var(--borde-suave);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-container .sidebar-footer .logout-btn:hover {
-  background-color: #FFFFFF;
-  color: #24651C;
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
 }
-
-/* --- ESTILOS NUEVOS PARA EL SUBMENÚ --- */
 
 .submenu-container {
     display: flex;
@@ -122,13 +121,12 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0; /* El padding ya lo tiene la clase .nav-link */
+    padding: 0;
     color: inherit;
     font-family: inherit;
     font-size: inherit;
 }
 
-/* El span es para que el ícono y el texto se queden juntos */
 .submenu-toggle span {
     display: flex;
     align-items: center;
@@ -146,13 +144,18 @@
 .submenu-links {
     display: flex;
     flex-direction: column;
-    /* Un pequeño margen para que se vea anidado */
     margin-left: 1rem;
     padding-left: 0.5rem;
-    border-left: 2px solid #3E7B27; /* --hover color */
+    border-left: 2px solid var(--color-primario-hover);
 }
 
-/* La clase .sub-link es solo para el NavLink dentro del submenú */
 .sub-link {
-    font-size: 0.95rem; /* Un poco más pequeño para indicar jerarquía */
+    font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+    .sidebar-container {
+        width: 85vw !important;
+        max-width: 260px !important;
+    }
 }

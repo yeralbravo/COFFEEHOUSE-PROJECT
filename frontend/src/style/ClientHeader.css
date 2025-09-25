@@ -1,11 +1,20 @@
-/* src/style/ClientHeader.css */
+/**
+ * ============================================
+ * ARCHIVO: ClientHeader.css
+ * ============================================
+ * Estilos para la barra de navegación principal
+ * de los clientes, incluyendo el logo, menú de
+ * usuario, carrito y barra de búsqueda.
+ */
+
 .client-header-container {
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border-bottom: 1px solid var(--gris-medio);
+    background-color: var(--fondo-tarjetas);
+    box-shadow: 0 2px 4px var(--sombra-principal);
+    border-bottom: 1px solid var(--borde-suave);
 }
 
-.top-bar, .navigation-and-search-bar {
+.top-bar,
+.navigation-and-search-bar {
     padding-left: 5%;
     padding-right: 5%;
     max-width: 1400px;
@@ -20,11 +29,10 @@
     padding-bottom: 0.8rem;
 }
 
-/* --- NUEVA CLASE PARA ALINEAR A LA IZQUIERDA --- */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Espacio entre el menú y el logo */
+    gap: 1.5rem;
 }
 
 .logo-container {
@@ -42,7 +50,7 @@
 .logo-text {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-family: 'Lora', serif;
 }
 
@@ -57,7 +65,7 @@
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #000000;
+    color: var(--texto-principal);
     cursor: pointer;
     position: relative;
     padding: 0.25rem;
@@ -65,18 +73,22 @@
 
 .hamburger-btn {
     font-size: 1.8rem;
+    display: none;
+    /* Oculto por defecto, se muestra en móvil */
 }
 
-.cart-icon-wrapper, .user-menu-wrapper {
+.cart-icon-wrapper,
+.user-menu-wrapper {
     position: relative;
 }
 
-.cart-item-count, .notification-badge {
+.cart-item-count,
+.notification-badge {
     position: absolute;
     top: -5px;
     right: -8px;
-    background-color: var(--verde-oscuro);
-    color: white;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -92,10 +104,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
-    background-color:  rgb(95, 151, 95);
+    background-color: var(--color-navegacion);
     padding-top: 0.8rem;
     padding-bottom: 0.8rem;
-    border-top: 1px solid var(--gris-claro);
+    border-top: 1px solid var(--borde-suave);
 }
 
 .main-nav {
@@ -105,16 +117,18 @@
 
 .nav-link {
     text-decoration: none;
-    color: #FFFFFF;
+    color: var(--texto-blanco);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0.5rem 0;
     border-bottom: 2px solid transparent;
     transition: opacity 0.2s;
 }
+
 .nav-link:hover {
     opacity: 0.8;
 }
+
 .nav-link.active {
     font-weight: bold;
 }
@@ -134,23 +148,23 @@
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     font-size: 1.2rem;
 }
 
 .search-bar .search-input {
     width: 100%;
     padding: 0.8rem 1rem 0.8rem 3.5rem;
-    border: 1px solid var(--gris-medio);
+    border: 1px solid var(--borde-principal);
     border-radius: 8px;
     font-size: 0.9rem;
-    background-color: var(--blanco);
+    background-color: var(--fondo-tarjetas);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-bar .search-input:focus {
     outline: none;
-    border-color: var(--verde-oscuro);
+    border-color: var(--color-primario);
     box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
 }
 
@@ -159,4 +173,63 @@
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+/* Tablets y Móviles */
+@media (max-width: 1024px) {
+    .hamburger-btn {
+        display: block;
+        /* Mostrar el botón de hamburguesa */
+    }
+
+    .navigation-and-search-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .main-nav {
+        display: none;
+        /* Ocultar la navegación principal */
+        /* Nota: Necesitarás lógica en JS para que el menú de hamburguesa */
+        /* muestre un menú desplegable con estos enlaces. */
+    }
+
+    .search-bar-wrapper {
+        max-width: none;
+        /* Permitir que la barra de búsqueda ocupe todo el ancho */
+    }
+
+    .top-bar,
+    .navigation-and-search-bar {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .logo-text {
+        display: none;
+        /* Ocultar el texto del logo para ahorrar espacio */
+    }
+
+    .user-actions {
+        gap: 0.5rem;
+        /* Reducir espacio entre íconos */
+    }
+
+    .icon-btn {
+        font-size: 1.3rem;
+        /* Íconos un poco más pequeños */
+    }
 }

@@ -1,44 +1,10 @@
-/* ==========================================================================
-   Variables Globales y Estilos Base
-   ========================================================================== */
-
-/* ... (tus estilos existentes) ... */
-
-.auth-main.single-panel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.form-description {
-    font-size: 0.9rem;
-    color: #8B8B8B;
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.general-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 0.8rem;
-    border-radius: 6px;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-   :root {
-  --negro: #000000;
-  --blanco: #FFFFFF;
-  --verde-oscuro: #24651C;
-  --hover: #3E7B27;
-  --gris-claro: #F7F7F7;
-  --gris-medio: #E0E0E0;
-  --gris-oscuro: #8B8B8B;
-  --rojo-error: #D32F2F;
-  --rojo-error-fondo: #FFCDD2;
-  --fuente-principal: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
+/**
+ * ============================================
+ * ARCHIVO: Auth.css
+ * ============================================
+ * Estilos para las páginas de autenticación
+ * (Login, Registro, Olvidé Contraseña).
+ */
 
 * {
   box-sizing: border-box;
@@ -47,13 +13,35 @@
 }
 
 body {
-  font-family: var(--fuente-principal);
-  background-color: #F8F9FA;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--fondo-principal);
 }
 
-/* ==========================================================================
-   Estructura Principal de Autenticación
-   ========================================================================== */
+.auth-main.single-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-description {
+  font-size: 0.9rem;
+  color: var(--texto-desactivado);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.general-success {
+  background-color: #d4edda;
+  /* Mantener por ser específico */
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 0.8rem;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* --- Estructura Principal --- */
 .auth-wrapper {
   display: flex;
   flex-direction: column;
@@ -63,15 +51,14 @@ body {
 .auth-nav {
   width: 100%;
   padding: 15px 40px;
-  background: var(--blanco);
-  /* CAMBIO: Sombra más pronunciada para el navbar */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: var(--fondo-tarjetas);
+  box-shadow: 0 4px 12px var(--sombra-principal);
   z-index: 10;
 }
 
 .logo-link {
-  text-decoration: none; /* Quita el subrayado del enlace del logo */
-  color: inherit; /* Hereda el color del texto para que no se vea azul */
+  text-decoration: none;
+  color: inherit;
 }
 
 .logo-section {
@@ -86,7 +73,7 @@ body {
 
 .logo-section h2 {
   font-size: 24px;
-  color: var(--verde-oscuro);
+  color: var(--color-primario);
   font-weight: 600;
 }
 
@@ -117,7 +104,6 @@ body {
 }
 
 .auth-image-panel img {
-  /* CAMBIO: Imagen más pequeña */
   max-width: 350px;
   height: auto;
 }
@@ -130,10 +116,9 @@ body {
 }
 
 .auth-box {
-  background: var(--blanco);
+  background: var(--fondo-tarjetas);
   padding: 40px;
   border-radius: 16px;
-  /* CAMBIO: Sombra mejorada para el formulario */
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
@@ -144,7 +129,7 @@ body {
   margin-bottom: 25px;
   font-size: 26px;
   font-weight: 700;
-  color: var(--negro);
+  color: var(--texto-principal);
 }
 
 .auth-footer {
@@ -154,19 +139,16 @@ body {
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: var(--gris-oscuro);
-  /* CAMBIO: Línea divisora arriba del footer */
-  border-top: 1px solid var(--gris-medio);
+  color: var(--texto-desactivado);
+  border-top: 1px solid var(--borde-principal);
 }
 
 .auth-footer a {
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
   text-decoration: none;
 }
 
-/* ==========================================================================
-   Estilos de Formulario
-   ========================================================================== */
+/* --- Estilos de Formulario --- */
 .input-group {
   position: relative;
   margin-bottom: 15px;
@@ -175,18 +157,18 @@ body {
 .input-group input {
   width: 100%;
   padding: 12px 15px 12px 50px;
-  border: 1px solid var(--gris-medio);
+  border: 1px solid var(--borde-principal);
   border-radius: 8px;
   font-size: 16px;
-  background-color: var(--gris-claro);
+  background-color: var(--fondo-principal);
   transition: all 0.2s ease-in-out;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: var(--verde-oscuro);
-  background-color: var(--blanco);
-  box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.1);
+  border-color: var(--color-primario);
+  background-color: var(--fondo-tarjetas);
+  box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
 }
 
 .input-icon {
@@ -194,7 +176,7 @@ body {
   left: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
   pointer-events: none;
 }
 
@@ -204,15 +186,15 @@ body {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
 }
 
 .auth-box button[type="submit"] {
   width: 100%;
   padding: 12px;
   margin-top: 15px;
-  background-color: var(--verde-oscuro);
-  color: var(--blanco);
+  background-color: var(--color-primario);
+  color: var(--texto-blanco);
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -222,14 +204,15 @@ body {
 }
 
 .auth-box button[type="submit"]:hover {
-  background-color: var(--hover);
+  background-color: var(--color-primario-hover);
 }
 
 .auth-box .link {
-  color: var(--verde-oscuro);
+  color: var(--color-primario);
   text-decoration: none;
   font-weight: 500;
 }
+
 .auth-box .link:hover {
   text-decoration: underline;
 }
@@ -237,7 +220,7 @@ body {
 .auth-box p {
   margin-top: 20px;
   font-size: 14px;
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
 }
 
 .auth-box .forgot-password {
@@ -251,17 +234,12 @@ body {
 .auth-box hr {
   border: 0;
   height: 1px;
-  background: var(--gris-medio);
+  background: var(--borde-principal);
   margin: 20px 0;
 }
 
-
-/* ==========================================================================
-  Estilos de Error (Preservados en color rojo como solicitaste)
-   ========================================================================== */
-/* CAMBIO: Selector más específico para asegurar que se aplique el color */
 .auth-box .error-text {
-  color: #D32F2F; /* Rojo vivo y estándar para errores */
+  color: var(--color-peligro);
   font-size: 0.875rem;
   text-align: left;
   width: 100%;
@@ -270,26 +248,32 @@ body {
 }
 
 .general-error {
-  /* Este estilo para el aviso general no cambia */
   text-align: center;
   margin-bottom: 15px;
   padding: 10px;
   background-color: #FFCDD2;
-  border: 1px solid #D32F2F;
+  /* Mantener por ser específico */
+  border: 1px solid var(--color-peligro);
   border-radius: 4px;
 }
 
 
-
-
-/* ==========================================================================
-   Responsividad
-   ========================================================================== */
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
 @media (max-width: 992px) {
   .auth-image-panel {
     display: none;
   }
+
   .auth-form-panel {
     justify-content: center;
+  }
+
+  .auth-box {
+    padding: 25px;
+    /* Menos padding en pantallas más pequeñas */
   }
 }

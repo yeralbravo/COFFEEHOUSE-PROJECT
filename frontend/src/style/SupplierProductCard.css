@@ -1,24 +1,32 @@
-/* src/style/SupplierProductCard.css */
+/**
+ * ============================================
+ * ARCHIVO: SupplierProductCard.css
+ * ============================================
+ * Estilos para la tarjeta de producto que se
+ * muestra en el catálogo del proveedor, con
+ * acciones para editar y eliminar.
+ */
+
 .supplier-product-card {
-    background-color: #FFFFFF; /* --blanco */
-    border: 1px solid #EFEFEF; /* --gris-claro */
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px var(--sombra-principal);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .supplier-product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px var(--sombra-principal);
 }
 
 .card-image-container {
     position: relative;
     width: 100%;
-    padding-top: 100%; /* Aspect ratio 1:1 */
+    padding-top: 100%;
 }
 
 .card-image {
@@ -38,15 +46,15 @@
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #FFFFFF;
+    color: var(--texto-blanco);
 }
 
 .card-stock-badge.in-stock {
-    background-color: #24651C; /* --verde-oscuro */
+    background-color: var(--color-primario);
 }
 
 .card-stock-badge.out-of-stock {
-    background-color: #8B8B8B; /* --gris-oscuro */
+    background-color: var(--texto-desactivado);
 }
 
 .card-info {
@@ -57,27 +65,27 @@
 .card-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #000000; /* --negro */
+    color: var(--texto-principal);
     margin: 0 0 0.25rem 0;
 }
 
 .card-brand {
     font-size: 0.9rem;
-    color: #8B8B8B; /* --gris-oscuro */
+    color: var(--texto-desactivado);
     margin: 0 0 0.5rem 0;
 }
 
 .card-price {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #24651C; /* --verde-oscuro */
+    color: var(--color-primario);
     margin: 0;
 }
 
 .card-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    border-top: 1px solid #EFEFEF;
+    border-top: 1px solid var(--borde-suave);
 }
 
 .action-btn {
@@ -95,14 +103,14 @@
 }
 
 .action-btn.edit-btn {
-    color: #3E7B27; /* --hover */
-    border-right: 1px solid #EFEFEF;
+    color: var(--color-primario-hover);
+    border-right: 1px solid var(--borde-suave);
 }
 
 .action-btn.delete-btn {
-    color: #cc3333;
+    color: var(--color-peligro);
 }
 
 .action-btn:hover {
-    background-color: #F0F8FF; /* --azul-claro-fondo */
+    background-color: var(--fondo-secundario);
 }

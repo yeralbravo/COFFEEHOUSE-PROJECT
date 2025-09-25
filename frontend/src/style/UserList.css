@@ -1,31 +1,46 @@
-/* ... (estilos de .list-container y .user-table sin cambios) ... */
+/**
+ * ARCHIVO: UserList.css
+ *
+ * MODIFICACIÓN FINAL:
+ * - Se ajustó el media query para que `.filter-tabs` se expanda
+ * al 100% del ancho en móviles y los botones se distribuyan
+ * equitativamente (control segmentado).
+ */
+
 .list-container {
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px var(--sombra-principal);
     overflow-x: auto;
 }
+
 .user-table {
     width: 100%;
     border-collapse: collapse;
 }
-.user-table th, .user-table td {
+
+.user-table th,
+.user-table td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borde-suave);
 }
+
 .user-table th {
-    background-color: #f4f4f9;
+    background-color: var(--fondo-principal);
     font-weight: 600;
 }
+
 .user-table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: var(--fondo-principal);
 }
+
 .action-buttons {
     display: flex;
     gap: 10px;
 }
+
 .action-btn {
     background: none;
     border: none;
@@ -35,103 +50,155 @@
     border-radius: 5px;
     transition: background-color 0.2s;
 }
-.edit-btn { color: #007bff; }
-.delete-btn { color: #dc3545; }
-.action-btn:hover { background-color: #e9ecef; }
+
+.edit-btn {
+    color: var(--color-info);
+}
+
+.delete-btn {
+    color: var(--color-peligro);
+}
+
+.approve-btn {
+    color: var(--color-exito);
+}
+
+.view-btn {
+    color: var(--texto-secundario);
+}
+
+.action-btn:hover {
+    background-color: var(--fondo-desactivado);
+}
+
+/* Badges de Rol */
 .role-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    color: #fff;
-    font-weight: 500;
-}
-.role-client { background-color: #17a2b8; }
-.role-supplier { background-color: #ffc107; color: #333; }
-.role-admin { background-color: #28a745; }
-
-/* --- NUEVOS ESTILOS PARA LA BARRA DE BÚSQUEDA --- */
-.search-bar-container {
-    position: relative;
-    margin-bottom: 1.5rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--texto-blanco);
+    text-transform: capitalize;
 }
 
-.search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
+.role-badge.role-admin {
+    background-color: var(--color-exito);
 }
 
-.search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Espacio para el icono */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    box-sizing: border-box;
+.role-badge.role-supplier {
+    background-color: var(--color-secundario);
+    color: var(--texto-principal);
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: #1a4d2e;
-    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+.role-badge.role-client {
+    background-color: var(--color-info);
 }
 
-/* ... (estilos existentes) ... */
-
-/* --- CORRECCIÓN DE COLOR PARA ESTADOS DE PEDIDO --- */
+/* Badges de Estado de Pedido */
 .role-badge.role-pendiente {
-    background-color: #f5a623; /* Naranja/amarillo */
-    color: #000000; /* Texto negro para contraste */
+    background-color: var(--color-advertencia);
+    color: var(--texto-principal);
 }
+
 .role-badge.role-enviado {
-    background-color: #4a90e2; /* Azul */
-    color: #FFFFFF;
+    background-color: var(--color-info);
 }
+
 .role-badge.role-entregado {
-    background-color: #24651C; /* Verde oscuro */
-    color: #FFFFFF;
+    background-color: var(--color-exito);
 }
+
 .role-badge.role-cancelado {
-    background-color: #dc3545; /* Rojo */
-    color: #FFFFFF;
+    background-color: var(--color-peligro);
 }
 
-/* ... (estilos existentes) ... */
-
-/* --- NUEVOS ESTILOS PARA LA PÁGINA DE SOLICITUDES --- */
+/* Tabs de Filtro */
 .filter-tabs {
     display: flex;
     gap: 0.5rem;
-    background-color: #e9ecef;
+    background-color: var(--fondo-desactivado);
     padding: 0.5rem;
     border-radius: 8px;
 }
 
 .filter-tabs button {
-    background-color: transparent;
-    border: none;
     padding: 0.6rem 1.2rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
     border-radius: 6px;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    color: var(--texto-secundario);
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.filter-tabs button:hover {
+    background-color: var(--borde-principal);
 }
 
 .filter-tabs button.active {
-    background-color: #FFFFFF;
-    color: var(--verde-oscuro);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
+    box-shadow: 0 2px 4px var(--sombra-principal);
+    font-weight: 600;
 }
 
-.action-btn.approve-btn {
-    color: #28a745; /* Verde */
+@media (max-width: 767px) {
+    .user-table thead {
+        display: none;
+    }
+
+    .user-table,
+    .user-table tbody,
+    .user-table tr,
+    .user-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .user-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--borde-suave);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .user-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--borde-suave);
+        text-align: right;
+    }
+
+    .user-table tr td:last-child {
+        border-bottom: none;
+    }
+
+    .user-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        color: var(--texto-principal);
+    }
 }
 
-/* --- NUEVO ESTILO AÑADIDO --- */
-/* Estilo para el botón de "Ver detalles" con el ícono del ojo */
-.action-btn.view-btn {
-    color: #17a2b8; /* Color cian/informativo */
+/* --- REGLAS CORREGIDAS PARA EL FILTRO RESPONSIVO --- */
+@media (max-width: 480px) {
+    .filter-tabs {
+        width: 100%;
+        /* Ocupa todo el ancho disponible */
+        padding: 0.3rem;
+        gap: 0.3rem;
+    }
+
+    .filter-tabs button {
+        flex-grow: 1;
+        /* Hace que cada botón crezca para llenar el espacio */
+        text-align: center;
+        padding: 0.6rem 0.2rem;
+        font-size: 0.8rem;
+    }
 }

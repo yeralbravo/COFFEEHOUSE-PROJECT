@@ -1,17 +1,25 @@
-/* src/style/SupplierHeader.css */
+/**
+ * ============================================
+ * ARCHIVO: SupplierHeader.css
+ * ============================================
+ * Estilos para la barra de navegación superior
+ * del panel de proveedores.
+ */
+
 .supplier-header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background-color: #FFFFFF; /* --blanco */
-    border-bottom: 1px solid #EFEFEF; /* --gris-claro */
+    background-color: var(--fondo-tarjetas);
+    border-bottom: 1px solid var(--borde-suave);
     position: sticky;
     top: 0;
     z-index: 900;
 }
 
-.header-left, .header-right {
+.header-left,
+.header-right {
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -22,13 +30,13 @@
     border: none;
     font-size: 1.6rem;
     cursor: pointer;
-    color: #000000; /* --negro */
+    color: var(--texto-principal);
 }
 
 .header-logo {
     font-size: 1.4rem;
     font-weight: bold;
-    color: #24651C; /* --verde-oscuro */
+    color: var(--color-primario);
 }
 
 .icon-btn {
@@ -36,5 +44,5 @@
     border: none;
     font-size: 1.3rem;
     cursor: pointer;
-    color: #8B8B8B; /* --gris-oscuro */
+    color: var(--texto-desactivado);
 }

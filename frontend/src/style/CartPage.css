@@ -1,6 +1,14 @@
-/* src/style/CartPage.css */
+/**
+ * ============================================
+ * ARCHIVO: CartPage.css
+ * ============================================
+ * Estilos para la página del carrito de compras,
+ * incluyendo la lista de productos, el resumen
+ * de la orden y la disposición general.
+ */
+
 .cart-main-content {
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
     padding: 2rem 5%;
 }
 
@@ -19,8 +27,8 @@
 }
 
 .cart-group {
-    background-color: #FFFFFF;
-    border: 1px solid #EFEFEF;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     padding: 1.5rem;
 }
@@ -30,7 +38,7 @@
     align-items: center;
     gap: 0.8rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
     margin-bottom: 1rem;
 }
 
@@ -47,14 +55,14 @@
 }
 
 .cart-item:not(:last-child) {
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .cart-item-image {
     width: 80px;
     height: 80px;
     object-fit: contain;
-    border: 1px solid #EFEFEF;
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
 }
 
@@ -62,19 +70,22 @@
     font-weight: 600;
     margin: 0;
 }
+
 .cart-item-details .item-desc {
     font-size: 0.9rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin: 0.25rem 0;
 }
+
 .cart-item-details .item-desc a {
-    color: #3E7B27;
+    color: var(--texto-enlace);
     text-decoration: none;
 }
+
 .cart-item-details .item-remove-btn {
     background: none;
     border: none;
-    color: #cc3333;
+    color: var(--color-peligro);
     text-decoration: underline;
     cursor: pointer;
     padding: 0;
@@ -84,9 +95,10 @@
 .cart-item-quantity {
     display: flex;
     align-items: center;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
 }
+
 .cart-item-quantity button {
     background: none;
     border: none;
@@ -94,6 +106,7 @@
     cursor: pointer;
     padding: 0.5rem 0.8rem;
 }
+
 .cart-item-quantity span {
     padding: 0 0.5rem;
     font-weight: 500;
@@ -105,47 +118,102 @@
 }
 
 .order-summary-section .summary-card {
-    background-color: #FFFFFF;
-    border: 1px solid #EFEFEF;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     padding: 1.5rem;
     position: sticky;
     top: 2rem;
 }
+
 .summary-card h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
 }
-.summary-row, .summary-total {
+
+.summary-row,
+.summary-total {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
 }
+
 .summary-total {
     font-weight: bold;
     font-size: 1.2rem;
     padding-top: 1rem;
-    border-top: 1px solid #EFEFEF;
+    border-top: 1px solid var(--borde-suave);
 }
+
 .checkout-btn {
     width: 100%;
     padding: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     border-radius: 8px;
     cursor: pointer;
 }
-.checkout-btn:hover {
-    background-color: #3E7B27;
-}
 
-/* ... (todos tus estilos existentes de CartPage.css) ... */
+.checkout-btn:hover {
+    background-color: var(--color-primario-hover);
+}
 
 .cart-item.disabled {
     opacity: 0.5;
     background-color: #f9f9f9;
-    pointer-events: none; /* Opcional: deshabilita interacciones */
+    pointer-events: none;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+        /* Apila las columnas */
+    }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+    .cart-main-content {
+        padding: 1rem 3%;
+    }
+
+    .cart-item {
+        grid-template-columns: auto 1fr;
+        /* Imagen a la izquierda, resto abajo */
+        grid-template-rows: auto auto auto;
+        gap: 0.5rem 1rem;
+    }
+
+    .cart-item-image {
+        grid-row: 1 / 4;
+    }
+
+    .cart-item-details {
+        grid-column: 2 / 3;
+    }
+
+    .cart-item-quantity {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        justify-self: flex-start;
+        /* Alinear a la izquierda */
+    }
+
+    .cart-item-price {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        text-align: left;
+        /* Alinear a la izquierda */
+        margin-top: 0.5rem;
+    }
 }

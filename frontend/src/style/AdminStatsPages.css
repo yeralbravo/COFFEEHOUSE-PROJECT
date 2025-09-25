@@ -1,26 +1,26 @@
+/**
+ * ARCHIVO: AdminStatsPages.css
+ *
+ * MODIFICACIÓN FINAL:
+ * - Se añadió `overflow-x: hidden;` a `.chart-card` para forzar a las
+ * gráficas a ser responsivas y no desbordar su contenedor.
+ */
 .admin-stats-page {
     width: 100%;
 }
 
 .admin-stats-page .admin-header {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 2rem;
 }
 
 .admin-stats-page .admin-header h1 {
     margin: 0;
     font-size: 1.8rem;
-}
-
-.filter-select {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--gris-medio);
-    background-color: #fff;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
 }
 
 .stats-grid {
@@ -32,27 +32,19 @@
 
 .charts-container-stats {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 .charts-container-stats .chart-card {
-    background-color: white;
+    background-color: var(--fondo-tarjetas);
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px var(--sombra-principal);
     display: flex;
     flex-direction: column;
-}
-
-.charts-container-stats .chart-card.large-chart {
-    grid-column: 1 / -1;
-}
-
-@media (min-width: 1200px) {
-    .charts-container-stats .chart-card.large-chart {
-        grid-column: 1 / 2;
-    }
+    overflow-x: hidden;
+    /* <-- REGLA AÑADIDA */
 }
 
 .charts-container-stats .chart-card h3 {
@@ -61,7 +53,7 @@
     text-align: center;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #555;
+    color: var(--texto-secundario);
 }
 
 .chart-wrapper {
@@ -80,20 +72,14 @@
     justify-content: center;
 }
 
-/* --- NUEVOS ESTILOS PARA ALINEAR LAS TARJETAS DE GRÁFICAS --- */
-.charts-container-stats.two-columns {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    align-items: stretch; /* Hace que los items se estiren para ocupar el mismo alto */
-}
+@media (min-width: 768px) {
+    .admin-stats-page .admin-header {
+        flex-direction: row;
+        align-items: center;
+    }
 
-.charts-container-stats.two-columns .chart-card {
-    display: flex;
-    flex-direction: column;
-}
-
-.charts-container-stats.two-columns .pie-chart-container,
-.charts-container-stats.two-columns .chart-wrapper {
-    flex-grow: 1; /* Permite que el contenedor de la gráfica crezca para llenar el espacio */
+    .charts-container-stats.two-columns {
+        grid-template-columns: repeat(2, 1fr);
+        align-items: stretch;
+    }
 }

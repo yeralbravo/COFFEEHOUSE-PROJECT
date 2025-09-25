@@ -71,7 +71,7 @@ const AdminProductStatsPage = () => {
 
     const commonBarOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         plugins: {
             legend: {
                 position: 'bottom',
@@ -108,20 +108,6 @@ const AdminProductStatsPage = () => {
                 formatter: (value) => value > 0 ? value : '',
             },
         },
-        scales: {
-            x: {
-                ticks: {
-                    stepSize: 1,
-                },
-            },
-            y: {
-                ticks: {
-                    autoSkip: false,
-                    maxRotation: 0,
-                    minRotation: 0,
-                }
-            }
-        }
     };
 
     return (

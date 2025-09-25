@@ -1,7 +1,13 @@
-/* src/style/SupplierDashboard.css */
+/**
+ * ARCHIVO: SupplierDashboard.css
+ *
+ * MODIFICACIÓN FINAL:
+ * - Se añadió `overflow-x: hidden;` a `.chart-card` para forzar a las
+ * gráficas a ser responsivas y no desbordar su contenedor.
+ */
 .supplier-dashboard-container {
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
 }
 
 .dashboard-header {
@@ -32,12 +38,14 @@
 }
 
 .chart-card {
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px var(--sombra-principal);
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    /* <-- REGLA AÑADIDA */
 }
 
 .chart-card h3 {
@@ -47,9 +55,9 @@
 
 .chart-container {
     position: relative;
-    height: 300px; /* Altura aumentada */
+    height: 300px;
     width: 100%;
-    flex-grow: 1; /* Permite que el contenedor crezca */
+    flex-grow: 1;
 }
 
 .no-data-message {
@@ -57,8 +65,23 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    min-height: 350px; /* Altura mínima */
-    color: #888;
-    background-color: #f9f9f9;
+    min-height: 350px;
+    color: var(--texto-desactivado);
+    background-color: var(--fondo-principal);
     border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+    .supplier-dashboard-container {
+        padding: 1rem;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
 }

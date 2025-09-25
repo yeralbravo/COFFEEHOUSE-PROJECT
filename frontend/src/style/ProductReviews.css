@@ -1,69 +1,103 @@
-/* src/style/ProductReviews.css */
+/**
+ * ============================================
+ * ARCHIVO: ProductReviews.css
+ * ============================================
+ * Estilos para la sección de reseñas de producto,
+ * que incluye el resumen de calificaciones y la
+ * lista de comentarios individuales.
+ */
+
 .reviews-container {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 3rem;
 }
+
 .reviews-summary {
     text-align: center;
 }
+
 .summary-average {
     font-size: 4rem;
     font-weight: 700;
     margin: 0;
 }
+
 .summary-total {
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin: 0 0 1.5rem 0;
 }
+
 .ratings-distribution {
     display: flex;
     flex-direction: column-reverse;
     gap: 0.5rem;
 }
+
 .rating-bar-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
 }
+
 .rating-bar {
     flex-grow: 1;
     height: 8px;
-    background-color: #EFEFEF;
+    background-color: var(--borde-suave);
     border-radius: 4px;
     overflow: hidden;
 }
+
 .rating-bar-filled {
     height: 100%;
-    background-color: #f5a623; /* Un color para las estrellas */
+    background-color: var(--color-advertencia);
     border-radius: 4px;
 }
+
 .reviews-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
+
 .review-comment {
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
     padding-bottom: 1.5rem;
 }
+
 .review-text {
     font-style: italic;
     margin: 0 0 0.5rem 0;
 }
+
 .review-date {
     font-size: 0.8rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     text-align: right;
     margin: 0;
 }
+
 .see-more-btn {
     align-self: center;
-    background-color: #3E7B27;
-    color: #FFFFFF;
+    background-color: var(--color-primario-hover);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.8rem 2rem;
     border-radius: 8px;
     cursor: pointer;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 768px) {
+    .reviews-container {
+        grid-template-columns: 1fr;
+        /* Apila las columnas */
+        gap: 2rem;
+    }
 }

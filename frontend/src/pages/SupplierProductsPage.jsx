@@ -11,26 +11,22 @@ const SupplierProductsPage = () => {
     const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
     const navigate = useNavigate();
     
-    // --- ESTADOS PARA LA BÚSQUEDA ---
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
-    // Efecto para debounce (retrasar la búsqueda para no saturar la API)
     useEffect(() => {
         const timerId = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 300); // Espera 300ms después de que el usuario deja de escribir
+        }, 300);
 
         return () => {
             clearTimeout(timerId);
         };
     }, [searchTerm]);
 
-    // --- FUNCIÓN DE BÚSQUEDA ACTUALIZADA ---
     const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
-            // Pasamos el término de búsqueda al servicio
             const response = await productService.getSupplierProducts(debouncedSearchTerm);
             setProducts(response.data);
         } catch (error) {
@@ -38,7 +34,7 @@ const SupplierProductsPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [debouncedSearchTerm, showErrorAlert]); // Se activa cuando el término de búsqueda cambia
+    }, [debouncedSearchTerm, showErrorAlert]);
 
     useEffect(() => {
         fetchProducts();
@@ -68,7 +64,6 @@ const SupplierProductsPage = () => {
                 </button>
             </header>
 
-            {/* --- BARRA DE BÚSQUEDA AÑADIDA --- */}
             <div className="search-bar-container">
                 <FiSearch className="search-icon" />
                 <input
@@ -95,15 +90,15 @@ const SupplierProductsPage = () => {
                         <tbody>
                             {products.length > 0 ? products.map(product => (
                                 <tr key={product.id}>
-                                    <td><img src={product.images.length > 0 ? `http://localhost:5000/${product.images[0]}` : 'https://placehold.co/60x60'} alt={product.nombre} className="product-image-thumbnail" /></td>
-                                    <td>{product.nombre}</td>
-                                    <td>${new Intl.NumberFormat('es-CO').format(product.precio)}</td>
-                                    <td>
+                                    <td data-label="Imagen"><img src={product.images.length > 0 ? `http://localhost:5000/${product.images[0]}` : 'https://placehold.co/60x60'} alt={product.nombre} className="product-image-thumbnail" /></td>
+                                    <td data-label="Nombre">{product.nombre}</td>
+                                    <td data-label="Precio">${new Intl.NumberFormat('es-CO').format(product.precio)}</td>
+                                    <td data-label="Stock">
                                         <span className={`stock-badge ${product.stock > 10 ? 'stock-high' : product.stock > 0 ? 'stock-low' : 'stock-out'}`}>
                                             {product.stock}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="Acciones">
                                         <div className="action-buttons">
                                             <button onClick={() => navigate(`/supplier/item/edit/product/${product.id}`)} className="action-btn edit-btn" title="Editar"><FiEdit /></button>
                                             <button onClick={() => handleDeleteProduct(product.id)} className="action-btn delete-btn" title="Eliminar"><FiTrash2 /></button>

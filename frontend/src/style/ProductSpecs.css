@@ -1,22 +1,48 @@
-/* src/style/ProductSpecs.css */
+/**
+ * ============================================
+ * ARCHIVO: ProductSpecs.css
+ * ============================================
+ * Estilos para la sección que muestra las
+ * especificaciones técnicas de un producto
+ * en formato de rejilla.
+ */
+
 .specs-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
     padding: 1.5rem;
     border-radius: 8px;
 }
+
 .spec-item {
     padding: 1rem;
-    border-bottom: 1px solid #D9D9D9;
+    border-bottom: 1px solid var(--borde-principal);
 }
+
 .spec-key {
     font-weight: 600;
-    color: #000000;
+    color: var(--texto-principal);
     margin: 0 0 0.25rem 0;
 }
+
 .spec-value {
-    color: #555;
+    color: var(--texto-secundario);
     margin: 0;
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .specs-grid {
+        grid-template-columns: 1fr;
+        /* Apila las especificaciones */
+        gap: 0.5rem;
+    }
 }

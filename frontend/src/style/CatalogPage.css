@@ -1,6 +1,13 @@
-/* src/style/CatalogPage.css */
+/**
+ * ============================================
+ * ARCHIVO: CatalogPage.css
+ * ============================================
+ * Estilos para las páginas de catálogo de productos
+ * e insumos. Define la estructura de la rejilla
+ * de productos.
+ */
 .catalog-page {
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
 }
 
 .catalog-main {
@@ -16,7 +23,7 @@
 
 .catalog-main p {
     font-size: 1.1rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin-top: 0;
     margin-bottom: 2.5rem;
 }
@@ -25,4 +32,26 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .catalog-main {
+        padding: 1.5rem 3%;
+        /* Menos padding en móviles */
+    }
+
+    .catalog-main h1 {
+        font-size: 1.8rem;
+    }
+
+    .catalog-main p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
 }

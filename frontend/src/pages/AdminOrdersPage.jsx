@@ -121,14 +121,13 @@ const AdminOrdersPage = () => {
                         <tbody>
                             {orders.map(order => (
                                 <tr key={order.id}>
-                                    <td>#{order.id}</td>
-                                    <td>{order.user_name} {order.user_lastname}</td>
-                                    <td>{order.date}</td>
-                                    <td>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</td>
-                                    <td><span className={`role-badge role-${order.status.toLowerCase()}`}>{order.status}</span></td>
-                                    <td>
+                                    <td data-label="ID Pedido">#{order.id}</td>
+                                    <td data-label="Cliente">{order.user_name} {order.user_lastname}</td>
+                                    <td data-label="Fecha">{order.date}</td>
+                                    <td data-label="Total">${new Intl.NumberFormat('es-CO').format(order.total_amount)}</td>
+                                    <td data-label="Estado"><span className={`role-badge role-${order.status.toLowerCase()}`}>{order.status}</span></td>
+                                    <td data-label="Acciones">
                                         <div className="action-buttons">
-                                            {/* --- LÍNEA MODIFICADA --- */}
                                             <button onClick={() => handleViewDetails(order.id)} className="action-btn view-btn" title="Ver Detalles">
                                                 <FiEye />
                                             </button>

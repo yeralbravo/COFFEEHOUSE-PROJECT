@@ -1,7 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
-import { FiGrid, FiUsers, FiFileText, FiActivity, FiMessageSquare, FiLogOut, FiChevronDown, FiBriefcase, FiBarChart2, FiUserCheck } from 'react-icons/fi';
+import {
+    FiGrid, FiUsers, FiFileText, FiActivity, FiMessageSquare, FiLogOut,
+    FiChevronDown, FiBriefcase, FiBarChart2, FiUserCheck, FiTrendingUp, FiPackage
+} from 'react-icons/fi';
 import '../../style/AdminSidebar.css';
 
 const AdminSidebar = ({ isOpen, onClose }) => {
@@ -35,10 +38,10 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                         </button>
                         {isGestionMenuOpen && (
                             <div className="submenu-links-admin">
-                                <NavLink to="/admin/stats/sales" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiBarChart2 /> Ventas</NavLink>
-                                <NavLink to="/admin/stats/products" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiBarChart2 /> Productos</NavLink>
-                                <NavLink to="/admin/stats/users" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiBarChart2 /> Usuarios</NavLink>
-                                <NavLink to="/admin/stats/orders" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiBarChart2 /> Pedidos</NavLink>
+                                <NavLink to="/admin/stats/sales" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiTrendingUp /> Ventas</NavLink>
+                                <NavLink to="/admin/stats/products" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiPackage /> Productos</NavLink>
+                                <NavLink to="/admin/stats/users" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiUsers /> Usuarios</NavLink>
+                                <NavLink to="/admin/stats/orders" className="sidebar-link-admin sub-link-admin" onClick={onClose}><FiFileText /> Pedidos</NavLink>
                             </div>
                         )}
                     </div>
@@ -58,9 +61,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                         )}
                     </div>
                     
-                    {/* --- NUEVO ENLACE --- */}
                     <NavLink to="/admin/supplier-requests" className="sidebar-link-admin" onClick={onClose}><FiUserCheck /> Solicitudes Proveedor</NavLink>
-                    
                     <NavLink to="/admin/orders" className="sidebar-link-admin" onClick={onClose}><FiFileText /> Pedidos</NavLink>
                     <NavLink to="/admin/activity-log" className="sidebar-link-admin" onClick={onClose}><FiActivity /> Registro de Actividad</NavLink>
                     <NavLink to="/admin/support" className="sidebar-link-admin" onClick={onClose}><FiMessageSquare /> Soporte</NavLink>

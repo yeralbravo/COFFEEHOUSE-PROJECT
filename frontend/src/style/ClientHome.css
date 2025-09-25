@@ -1,26 +1,42 @@
+/**
+ * ============================================
+ * ARCHIVO: ClientHome.css
+ * ============================================
+ * Estilos para la página de inicio del cliente,
+ * principalmente para definir el espaciado de
+ * las secciones de contenido como los carruseles.
+ */
+
 .client-dashboard .main-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem 2rem; /* Reducido el padding superior */
+    padding: 1.5rem 2rem;
 }
 
 .hero-section {
     text-align: center;
     font-size: 2rem;
     color: #ccc;
-    padding: 2rem 0; /* Reducido el padding vertical */
+    /* Variable no aplica, es un placeholder */
+    padding: 2rem 0;
 }
 
 .home-content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 1rem; /* Espacio entre la sección "Populares" y "Te puede interesar" */
-    padding: 1rem 0;
-}
-.home-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Espacio entre la sección "Populares" y "Te puede interesar" */
+    gap: 1rem;
     padding: 1rem 0;
 }
 
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .client-dashboard .main-content {
+        padding: 1rem;
+    }
+}

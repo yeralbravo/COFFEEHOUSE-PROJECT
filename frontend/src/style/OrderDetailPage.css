@@ -1,8 +1,17 @@
+/**
+ * ============================================
+ * ARCHIVO: OrderDetailPage.css
+ * ============================================
+ * Estilos para la página de detalle de un pedido,
+ * mostrando la lista de productos, resumen de
+ * la compra e información de envío.
+ */
+
 .order-detail-main {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
 }
 
 .back-button {
@@ -33,13 +42,13 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
 }
 
 .order-date-header a {
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-weight: 500;
 }
 
@@ -54,10 +63,10 @@
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
     align-items: center;
-    background: #fff;
+    background: var(--fondo-tarjetas);
     padding: 1rem;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--borde-principal);
 }
 
 .product-image-detail {
@@ -72,16 +81,28 @@
     font-weight: 600;
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
-    color: #fff;
+    color: var(--texto-blanco);
 }
-.status-entregado { background-color: #28a745; }
-.status-enviado { background-color: #4a90e2; }
-.status-pendiente { background-color: #f5a623; }
-.status-cancelado { background-color: #6c757d; }
+
+.status-entregado {
+    background-color: var(--color-exito);
+}
+
+.status-enviado {
+    background-color: var(--color-info);
+}
+
+.status-pendiente {
+    background-color: var(--color-advertencia);
+}
+
+.status-cancelado {
+    background-color: #6c757d;
+}
 
 .product-info-detail .delivery-date {
     font-size: 0.9rem;
-    color: #555;
+    color: var(--texto-secundario);
     margin: 0.5rem 0;
 }
 
@@ -93,7 +114,7 @@
 .product-info-detail .product-brand-detail,
 .product-info-detail .product-quantity-detail {
     font-size: 0.9rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     margin: 0.25rem 0;
 }
 
@@ -108,8 +129,8 @@
 }
 
 .btn-review {
-    background-color: var(--verde-oscuro);
-    color: white;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
@@ -119,7 +140,7 @@
 
 .review-submitted {
     font-size: 0.9rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     font-style: italic;
 }
 
@@ -129,18 +150,20 @@
     gap: 1.5rem;
 }
 
-.summary-card, .info-card {
-    background: #fff;
+.summary-card,
+.info-card {
+    background: var(--fondo-tarjetas);
     padding: 1.5rem;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--borde-principal);
 }
 
-.summary-card h3, .info-card h3 {
+.summary-card h3,
+.info-card h3 {
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--borde-principal);
     padding-bottom: 0.5rem;
 }
 
@@ -164,7 +187,7 @@
 }
 
 .info-icon {
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     flex-shrink: 0;
 }
 
@@ -179,14 +202,13 @@
     font-size: 1.2rem;
 }
 
-/* ================== ESTILO DE BOTÓN CORREGIDO ================== */
 .btn-cancel-order {
     width: 100%;
     margin-top: 1rem;
     padding: 0.8rem;
     background-color: transparent;
-    color: #dc3545;
-    border: 1px solid #dc3545;
+    color: var(--color-peligro);
+    border: 1px solid var(--color-peligro);
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
@@ -194,6 +216,40 @@
 }
 
 .btn-cancel-order:hover {
-    background-color: #dc3545;
-    color: white;
+    background-color: var(--color-peligro);
+    color: var(--texto-blanco);
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 1024px) {
+    .order-detail-layout {
+        grid-template-columns: 1fr;
+        /* Apila las columnas */
+    }
+}
+
+@media (max-width: 767px) {
+    .order-detail-main {
+        padding: 1rem;
+    }
+
+    .product-card-detail {
+        grid-template-columns: 1fr;
+        /* Apila el contenido de la tarjeta de producto */
+        text-align: center;
+    }
+
+    .product-image-detail {
+        margin: 0 auto;
+    }
+
+    .product-actions-detail {
+        text-align: center;
+        margin-top: 1rem;
+    }
 }

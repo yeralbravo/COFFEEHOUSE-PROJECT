@@ -1,6 +1,14 @@
-/* src/style/SupplierHomePage.css */
+/**
+ * ============================================
+ * ARCHIVO: SupplierHomePage.css
+ * ============================================
+ * Estilos para la página de inicio del proveedor,
+ * que sirve como un catálogo principal de sus
+ * productos.
+ */
+
 .supplier-home-page {
-    background-color: #F0F8FF; /* --azul-claro-fondo */
+    background-color: var(--fondo-secundario);
     min-height: 100vh;
 }
 
@@ -14,18 +22,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    /* Para que se apilen */
+    gap: 1rem;
     margin-bottom: 2rem;
 }
 
 .catalog-title {
     font-size: 2rem;
-    color: #000000;
+    color: var(--texto-principal);
     margin: 0;
 }
 
 .add-product-btn {
-    background-color: #24651C; /* --verde-oscuro */
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
@@ -39,11 +50,28 @@
 }
 
 .add-product-btn:hover {
-    background-color: #3E7B27; /* --hover */
+    background-color: var(--color-primario-hover);
 }
 
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .catalog-content {
+        padding: 1rem;
+    }
+
+    .catalog-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

@@ -1,7 +1,16 @@
-/* src/style/ImageGallery.css */
+/**
+ * ============================================
+ * ARCHIVO: ImageGallery.css
+ * ============================================
+ * Estilos para la galería de imágenes en las
+ * páginas de detalle de producto, con una imagen
+ * principal y miniaturas seleccionables.
+ */
+
 .image-gallery-redesign {
     display: flex;
-    flex-direction: column-reverse; /* Miniaturas arriba en móvil */
+    flex-direction: column-reverse;
+    /* Miniaturas arriba en móvil */
     gap: 1rem;
 }
 
@@ -9,6 +18,7 @@
     border-radius: 8px;
     overflow: hidden;
     background-color: #f9f9f9;
+    /* Color específico para fondo de imagen */
 }
 
 .main-image {
@@ -21,7 +31,7 @@
 
 .thumbnail-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 miniaturas en móvil */
+    grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
 }
 
@@ -35,7 +45,7 @@
 }
 
 .thumbnail-wrapper.active {
-    border-color: var(--verde-oscuro);
+    border-color: var(--color-primario);
 }
 
 .thumbnail-image {
@@ -45,15 +55,17 @@
     object-fit: contain;
 }
 
-/* Media Query para pantallas más grandes */
+/* Media Query para pantallas más grandes (ya existente y funcional) */
 @media (min-width: 768px) {
     .image-gallery-redesign {
-        flex-direction: row; /* Miniaturas a la izquierda */
+        flex-direction: row;
+        /* Miniaturas a la izquierda */
         gap: 1.5rem;
     }
 
     .thumbnail-list {
-        grid-template-columns: 1fr; /* Una columna de miniaturas */
+        grid-template-columns: 1fr;
+        /* Una columna de miniaturas */
         width: 80px;
         flex-shrink: 0;
     }

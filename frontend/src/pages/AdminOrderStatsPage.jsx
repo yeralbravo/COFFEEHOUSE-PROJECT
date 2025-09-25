@@ -4,8 +4,7 @@ import { useAlerts } from '../hooks/useAlerts';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-// --- LÍNEA CORREGIDA ---
-import { FiShoppingCart, FiXCircle, FiTruck, FiCheckCircle, FiThumbsUp } from 'react-icons/fi';
+import { FiShoppingCart, FiTruck, FiCheckCircle, FiThumbsUp } from 'react-icons/fi';
 import StatCard from '../components/admin/StatCard';
 import TimeRangeFilter from '../components/TimeRangeFilter';
 import '../style/AdminStatsPages.css';
@@ -59,7 +58,7 @@ const AdminOrderStatsPage = () => {
 
     const doughnutOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         cutout: '60%',
         plugins: {
             legend: {
@@ -116,7 +115,7 @@ const AdminOrderStatsPage = () => {
 
     const barOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- CAMBIO AÑADIDO
         plugins: {
             legend: { display: false },
         },

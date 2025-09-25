@@ -1,10 +1,19 @@
+/**
+ * ============================================
+ * ARCHIVO: Dashboard.css
+ * ============================================
+ * Estilos para un dashboard de usuario general,
+ * mostrando información de perfil y acciones
+ * como editar o eliminar cuenta.
+ */
+
 .dashboard-container {
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: var(--blanco);
+  background-color: var(--fondo-tarjetas);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--sombra-principal);
   text-align: center;
 }
 
@@ -13,20 +22,20 @@
 }
 
 .user-card h2 {
-  color: var(--verde-oscuro);
+  color: var(--color-primario);
   margin-bottom: 0.5rem;
 }
 
 .user-card p {
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
   margin-bottom: 1rem;
 }
 
 .user-card button,
-.dashboard-container > button {
+.dashboard-container>button {
   padding: 0.75rem 1.5rem;
-  background-color: var(--verde-oscuro);
-  color: var(--blanco);
+  background-color: var(--color-primario);
+  color: var(--texto-blanco);
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -36,16 +45,17 @@
 }
 
 .user-card button:hover,
-.dashboard-container > button:hover {
-  background-color: var(--hover);
+.dashboard-container>button:hover {
+  background-color: var(--color-primario-hover);
 }
 
 .delete-account-btn {
-  background-color: #dc3545;
+  background-color: var(--color-peligro);
 }
 
 .delete-account-btn:hover {
   background-color: #c82333;
+  /* Color específico para hover de peligro */
 }
 
 .form-modal-overlay {
@@ -59,10 +69,11 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 1rem;
 }
 
 .form-modal {
-  background-color: var(--blanco);
+  background-color: var(--fondo-tarjetas);
   padding: 2rem;
   border-radius: 8px;
   max-width: 400px;
@@ -70,7 +81,7 @@
 }
 
 .form-modal h2 {
-  color: var(--verde-oscuro);
+  color: var(--color-primario);
   margin-bottom: 1.5rem;
 }
 
@@ -80,7 +91,7 @@
 }
 
 .modal-form label {
-  color: var(--gris-oscuro);
+  color: var(--texto-desactivado);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
   text-align: left;
@@ -89,15 +100,15 @@
 .modal-form input {
   padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 1px solid var(--gris-medio);
+  border: 1px solid var(--borde-principal);
   border-radius: 4px;
   font-size: 1rem;
 }
 
 .modal-form button {
   padding: 0.75rem;
-  background-color: var(--verde-oscuro);
-  color: var(--blanco);
+  background-color: var(--color-primario);
+  color: var(--texto-blanco);
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -106,5 +117,19 @@
 }
 
 .modal-form button:hover {
-  background-color: var(--hover);
+  background-color: var(--color-primario-hover);
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+  .dashboard-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
 }

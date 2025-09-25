@@ -1,13 +1,20 @@
-/* Estilos para las páginas de Crear/Editar Ítems */
+/**
+ * ============================================
+ * ARCHIVO: CreateEditItemPage.css
+ * ============================================
+ * Estilos para la página de creación y edición
+ * de ítems (productos e insumos), incluyendo el
+ * selector de tipo, formulario y carga de imágenes.
+ */
 
 /* Layout General */
-.add-edit-item-page, .add-edit-product-page {
+.add-edit-item-page {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.add-edit-item-page h1, .add-edit-product-page h1 {
+.add-edit-item-page h1 {
     font-size: 2rem;
     margin-bottom: 2rem;
 }
@@ -16,12 +23,13 @@
 .item-type-selector {
     display: flex;
     gap: 0.5rem;
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
     padding: 0.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
     width: fit-content;
 }
+
 .item-type-selector button {
     background-color: transparent;
     border: none;
@@ -31,45 +39,56 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
 .item-type-selector button.active {
-    background-color: #FFFFFF;
-    color: var(--verde-oscuro);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Layout del Formulario */
-.item-form-layout, .product-form-layout {
+.item-form-layout {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
 }
 
 .form-section {
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px var(--sombra-principal);
 }
 
 .form-section h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--gris-claro);
+    border-bottom: 1px solid var(--borde-suave);
     padding-bottom: 0.8rem;
 }
 
 /* Sección de Imágenes */
 .image-uploader {
-    border: 2px dashed var(--gris-medio);
+    border: 2px dashed var(--borde-principal);
     border-radius: 8px;
     padding: 2rem;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.image-uploader:hover { background-color: var(--gris-claro); }
-.image-uploader p { margin: 0.5rem 0; }
-.image-uploader span { font-size: 0.8rem; color: var(--gris-oscuro); }
+
+.image-uploader:hover {
+    background-color: var(--fondo-desactivado);
+}
+
+.image-uploader p {
+    margin: 0.5rem 0;
+}
+
+.image-uploader span {
+    font-size: 0.8rem;
+    color: var(--texto-desactivado);
+}
 
 .image-preview-grid {
     display: grid;
@@ -77,13 +96,33 @@
     gap: 1rem;
     margin-top: 1.5rem;
 }
-.image-preview-item { position: relative; aspect-ratio: 1 / 1; }
-.image-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+
+.image-preview-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 .remove-image-btn {
-    position: absolute; top: 5px; right: 5px;
-    background-color: rgba(0,0,0,0.6); color: white;
-    border: none; border-radius: 50%; width: 24px; height: 24px;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--texto-blanco);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 /* Sección de Detalles */
@@ -93,55 +132,125 @@
     gap: 1rem;
     margin-bottom: 1rem;
 }
-.details-section input, .details-section textarea {
-    width: 100%; padding: 0.8rem; border: 1px solid var(--gris-medio);
-    border-radius: 6px; font-size: 1rem;
+
+.details-section input,
+.details-section textarea,
+.details-section select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--borde-principal);
+    border-radius: 6px;
+    font-size: 1rem;
 }
-.details-section textarea { min-height: 100px; resize: vertical; }
+
+.details-section textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
 /* Características */
-.caracteristicas-container { display: flex; flex-direction: column; gap: 0.8rem; }
-.caracteristica-item { display: flex; gap: 0.8rem; }
-.caracteristica-item input { flex: 1; }
-.caracteristica-item button { background: none; border: none; color: #cc3333; cursor: pointer; font-size: 1.2rem; }
+.caracteristicas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.caracteristica-item {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.caracteristica-item input {
+    flex: 1;
+}
+
+.caracteristica-item button {
+    background: none;
+    border: none;
+    color: var(--color-peligro);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
 .btn-add-feature {
-    align-self: flex-start; margin-top: 0.5rem; background: none;
-    border: 1px solid var(--verde-oscuro); color: var(--verde-oscuro);
-    padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;
-    display: flex; align-items: center; gap: 0.5rem;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    background: none;
+    border: 1px solid var(--color-primario);
+    color: var(--color-primario);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 /* Botones de Acción */
 .form-actions {
-    grid-column: 1 / -1; display: flex;
-    justify-content: flex-end; gap: 1rem; margin-top: 1rem;
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
 }
-.btn-cancel, .btn-save {
-    padding: 0.8rem 2rem; border-radius: 8px;
-    font-weight: 600; cursor: pointer; border: 1px solid;
+
+.btn-cancel,
+.btn-save {
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
 }
-.btn-cancel { background-color: #fff; color: var(--negro); border-color: var(--gris-medio); }
-.btn-save { background-color: var(--verde-oscuro); color: var(--blanco); border-color: var(--verde-oscuro); }
+
+.btn-cancel {
+    background-color: var(--fondo-tarjetas);
+    color: var(--texto-principal);
+    border-color: var(--borde-principal);
+}
+
+.btn-save {
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
+    border-color: var(--color-primario);
+}
+
+/* Ocultar flechas en inputs de número */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: none;
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
 
 /* Layout para pantallas grandes */
 @media (min-width: 992px) {
-    .item-form-layout, .product-form-layout {
+    .item-form-layout {
         grid-template-columns: 400px 1fr;
         align-items: flex-start;
     }
 }
 
-/* ================== CÓDIGO AÑADIDO ================== */
+/* Móviles */
+@media (max-width: 767px) {
+    .add-edit-item-page {
+        padding: 1rem;
+    }
 
-/* Oculta las flechas en los campos de tipo número para Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Oculta las flechas en los campos de tipo número para Firefox y navegadores modernos */
-input[type=number] {
-  -moz-appearance: textfield; /* Firefox */
-  appearance: none; /* Estándar moderno */
+    .form-grid {
+        grid-template-columns: 1fr;
+        /* Apila los campos del formulario */
+    }
 }

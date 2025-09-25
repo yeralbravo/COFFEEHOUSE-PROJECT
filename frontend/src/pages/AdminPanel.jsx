@@ -32,16 +32,13 @@ const AdminPanel = () => {
         const apiParams = {};
 
         if (selectedDate) {
-            // Si el usuario elige una fecha, esos son los parámetros
             apiParams.startDate = selectedDate;
             apiParams.endDate = selectedDate;
         } else {
-            // Si no, se usa el rango predefinido (mes, semana, etc.)
             apiParams.range = timeRange;
         }
 
         try {
-            // El servicio ahora sabe cómo manejar ambos casos
             const response = await getDashboardStats(apiParams);
             if (response.success) {
                 setStats(response.data);
@@ -110,22 +107,20 @@ const AdminPanel = () => {
         }],
     };
 
-    const topSuppliersOptions = {
-        indexAxis: 'y',
+    // --- OPCIONES DE GRÁFICA ACTUALIZADAS ---
+    const chartOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // <-- ¡LA CLAVE!
         plugins: {
-            legend: { display: false },
-            datalabels: {
-                color: '#ffffff',
-                font: { weight: 'bold' },
-                anchor: 'center',
-                align: 'center',
-                formatter: (value) => {
-                    if (value < 1) return null;
-                    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', notation: 'compact' }).format(value);
-                }
-            }
+            legend: { position: 'bottom' }
+        }
+    };
+
+    const barChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false, // <-- ¡LA CLAVE!
+        plugins: {
+            legend: { display: false }
         }
     };
     
@@ -156,32 +151,32 @@ const AdminPanel = () => {
                 <div className="chart-card full-width-card">
                     <h3>Evolución de Ingresos</h3>
                     <div className="chart-wrapper">
-                        <Line data={salesChartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }} />
+                        <Line data={salesChartData} options={chartOptions} />
                     </div>
                 </div>
                 <div className="charts-grid-2x2">
                     <div className="chart-card">
                         <h3>Top 5 Productos Vendidos</h3>
                         <div className="chart-wrapper">
-                            <Bar data={topProductsChartData} options={{ maintainAspectRatio: false, plugins: { legend: { display: false } } }} />
+                            <Bar data={topProductsChartData} options={barChartOptions} />
                         </div>
                     </div>
                     <div className="chart-card">
                         <h3>Top 5 Proveedores por Ingresos</h3>
                         <div className="chart-wrapper">
-                           <Bar data={topSuppliersChartData} options={topSuppliersOptions} plugins={[ChartDataLabels]} />
+                           <Bar data={topSuppliersChartData} options={barChartOptions} plugins={[ChartDataLabels]} />
                         </div>
                     </div>
                     <div className="chart-card">
                         <h3>Distribución de Usuarios</h3>
                         <div className="chart-wrapper pie-container">
-                           <Doughnut data={userChartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }} />
+                           <Doughnut data={userChartData} options={chartOptions} />
                         </div>
                     </div>
                     <div className="chart-card">
                         <h3>Estado de Pedidos</h3>
                         <div className="chart-wrapper pie-container">
-                           <Doughnut data={orderChartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }} />
+                           <Doughnut data={orderChartData} options={chartOptions} />
                         </div>
                     </div>
                 </div>

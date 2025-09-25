@@ -1,12 +1,20 @@
-/* === ESTILOS GENERALES DEL FORMULARIO === */
+/**
+ * ============================================
+ * ARCHIVO: Forms.css
+ * ============================================
+ * Estilos reutilizables para formularios a través
+ * de la aplicación, como el de creación de
+ * usuarios en el panel de administración.
+ */
+
 .form-container {
-    background-color: #ffffff;
+    background-color: var(--fondo-tarjetas);
     padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px var(--sombra-principal);
     width: 100%;
-    max-width: 600px; /* Ancho máximo del formulario */
-    border: 1px solid #e2e8f0;
+    max-width: 600px;
+    border: 1px solid var(--borde-suave);
 }
 
 .form-title {
@@ -14,31 +22,33 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 2rem;
-    color: #1f2937;
+    color: var(--texto-principal);
 }
 
-/* === GRUPOS Y FILAS DEL FORMULARIO === */
 .form-group {
     margin-bottom: 1.25rem;
 }
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
+    /* Para que se apilen si no hay espacio */
     gap: 1.5rem;
 }
 
 .form-row .form-group {
     flex: 1;
+    min-width: 150px;
+    /* Ancho mínimo para cada campo */
 }
 
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #4a5568;
+    color: var(--texto-secundario);
 }
 
-/* === INPUTS Y ELEMENTOS DEL FORMULARIO === */
 .input-with-icon {
     position: relative;
 }
@@ -48,38 +58,33 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #9ca3af;
+    color: var(--texto-desactivado);
     pointer-events: none;
 }
 
-/* --- CORRECCIÓN CLAVE AQUÍ --- */
-/* Regla unificada para TODOS los campos (input y select) que lleven ícono */
 .input-with-icon input,
 .input-with-icon select {
     width: 100%;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     font-size: 1rem;
     font-family: inherit;
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
-    padding: 10px 12px 10px 40px !important; /* Forzar el padding izquierdo para el ícono */
+    padding: 10px 12px 10px 40px !important;
 }
 
-/* Ajuste para que la flecha del select no se solape con el texto */
 .input-with-icon select {
     padding-right: 30px !important;
 }
 
-
 .input-with-icon input:focus,
 .input-with-icon select:focus {
     outline: none;
-    border-color: #24651C;
+    border-color: var(--color-primario);
     box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
 }
 
-/* === BOTÓN DE CONTRASEÑA === */
 .password-toggle-btn {
     position: absolute;
     right: 10px;
@@ -88,16 +93,15 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--texto-secundario);
     padding: 4px;
 }
 
-/* === BOTÓN PRINCIPAL DEL FORMULARIO === */
 .form-button {
     width: 100%;
     padding: 12px;
-    background-color: #24651C;
-    color: #ffffff;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     border-radius: 6px;
     font-size: 1rem;
@@ -108,12 +112,29 @@
 }
 
 .form-button:hover {
-    background-color: #1a4d2e;
+    background-color: var(--color-primario-hover);
 }
 
-/* === TEXTO DE ERROR === */
 .error-text {
-    color: #dc3545;
+    color: var(--color-peligro);
     font-size: 0.875rem;
     margin-top: 0.25rem;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        /* Apila los campos */
+        gap: 0;
+    }
 }

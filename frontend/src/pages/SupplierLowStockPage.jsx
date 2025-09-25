@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getLowStockItems } from '../services/supplierService';
-import { updateItemStock } from '../services/itemService'; // <-- Importar el nuevo servicio
-import { useAlerts } from '../hooks/useAlerts'; // <-- Importar alertas
-import { FiEdit, FiSave, FiX } from 'react-icons/fi'; // <-- Importar nuevos íconos
+import { updateItemStock } from '../services/itemService';
+import { useAlerts } from '../hooks/useAlerts';
+import { FiEdit, FiSave, FiX } from 'react-icons/fi';
 import '../style/UserList.css';
 import '../style/AdminPanel.css';
 import '../style/SupplierLowStockPage.css';
@@ -12,7 +12,6 @@ const SupplierLowStockPage = () => {
     const [loading, setLoading] = useState(true);
     const { showSuccessAlert, showErrorAlert } = useAlerts();
 
-    // Estados para manejar la edición en línea
     const [editingItemId, setEditingItemId] = useState(null);
     const [currentStock, setCurrentStock] = useState('');
 
@@ -34,8 +33,6 @@ const SupplierLowStockPage = () => {
         fetchItems();
     }, []);
 
-    // --- FUNCIONES PARA MANEJAR LA EDICIÓN ---
-
     const handleEditClick = (item) => {
         setEditingItemId(item.id);
         setCurrentStock(item.stock);
@@ -55,8 +52,8 @@ const SupplierLowStockPage = () => {
         try {
             await updateItemStock(item.type, item.id, Number(currentStock));
             showSuccessAlert('Stock actualizado correctamente.');
-            setEditingItemId(null); // Salir del modo edición
-            fetchItems(); // Recargar la lista para mostrar el dato actualizado
+            setEditingItemId(null);
+            fetchItems();
         } catch (error) {
             showErrorAlert(error.message);
         }
@@ -78,22 +75,22 @@ const SupplierLowStockPage = () => {
                                 <th>Nombre del Ítem</th>
                                 <th>Tipo</th>
                                 <th>Stock Restante</th>
-                                <th>Acciones</th> {/* <-- Nueva columna */}
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {items.length > 0 ? items.map(item => (
                                 <tr key={`${item.type}-${item.id}`}>
-                                    <td>
+                                    <td data-label="Imagen">
                                         <img 
                                             src={item.image ? `http://localhost:5000/${item.image}` : 'https://placehold.co/60x60'} 
                                             alt={item.nombre} 
                                             className="product-image-thumbnail" 
                                         />
                                     </td>
-                                    <td>{item.nombre}</td>
-                                    <td>{item.type}</td>
-                                    <td>
+                                    <td data-label="Nombre">{item.nombre}</td>
+                                    <td data-label="Tipo">{item.type}</td>
+                                    <td data-label="Stock">
                                         {editingItemId === item.id ? (
                                             <input
                                                 type="number"
@@ -108,7 +105,7 @@ const SupplierLowStockPage = () => {
                                             </span>
                                         )}
                                     </td>
-                                    <td>
+                                    <td data-label="Acciones">
                                         <div className="action-buttons">
                                             {editingItemId === item.id ? (
                                                 <>

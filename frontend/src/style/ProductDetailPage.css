@@ -1,36 +1,41 @@
-/* src/style/ProductDetailPage.css */
+/**
+ * ============================================
+ * ARCHIVO: ProductDetailPage.css
+ * ============================================
+ * Estilos para la página de detalle de producto,
+ * que muestra la galería de imágenes, información,
+ * descripción, especificaciones y reseñas.
+ */
+
 .product-detail-page {
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
 }
 
 .detail-main-content {
     max-width: 1200px;
     margin: 2rem auto;
-    padding: 0 1rem; /* Padding para móviles */
+    padding: 0 1rem;
 }
 
 .product-layout-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Una columna por defecto para móviles */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
-/* Estilos para los contenedores de cada sección */
 .image-gallery-container,
 .basic-info-container,
 .description-container,
 .specs-container,
 .reviews-container-section {
-    background-color: var(--blanco);
-    border: 1px solid var(--gris-medio);
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-principal);
     border-radius: 8px;
-    padding: 0;
     overflow: hidden;
-    display: flex; /* Añadido para que el contenido flex ocupe toda la altura */
-    flex-direction: column; /* Añadido */
+    display: flex;
+    flex-direction: column;
 }
 
-/* Estilo para los encabezados verdes */
 .basic-info-container h3,
 .description-container h3,
 .specs-container h3,
@@ -38,25 +43,27 @@
     margin: 0;
     padding: 0.8rem 1.5rem;
     font-size: 1.1rem;
-    color: var(--blanco);
-    background-color: rgb(88, 149, 88);
+    color: var(--texto-blanco);
+    background-color: var(--color-navegacion);
+    /* Usando el verde de navegación */
 }
 
-/* --- AJUSTE CLAVE --- */
 .section-content {
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Permite que el contenedor crezca */
-    justify-content: space-between; /* Separa el contenido de los botones */
+    flex-grow: 1;
+    justify-content: space-between;
 }
 
 /* Información Básica */
 .basic-info-container .info-line {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    /* Apilar en móvil */
     align-items: flex-start;
     margin-bottom: 0.5rem;
+    gap: 0.5rem;
 }
 
 .basic-info-container h2 {
@@ -69,11 +76,11 @@
     margin: 0;
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--negro);
+    color: var(--texto-principal);
 }
 
 .basic-info-container .meta-info {
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     margin: 0.25rem 0;
 }
 
@@ -83,20 +90,20 @@
     gap: 0.3rem;
     margin: 1rem 0;
     font-size: 1rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .rating-line svg {
     font-size: 1.1rem;
+    color: var(--color-secundario);
 }
 
 .rating-line .rating-count {
     font-size: 0.9rem;
 }
 
-/* ESTILOS PARA GRUPO DE BOTONES */
 .product-actions-group {
-    margin-top: 1.5rem; /* Mantiene un espacio si el contenido es corto */
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -108,29 +115,29 @@
     padding: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
-    border: 2px solid var(--verde-oscuro);
+    border: 2px solid var(--color-primario);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .buy-now-btn {
-    background-color: var(--verde-oscuro);
-    color: var(--blanco);
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
 }
 
 .add-to-cart-btn {
-    background-color: var(--blanco);
-    color: var(--verde-oscuro);
+    background-color: var(--fondo-tarjetas);
+    color: var(--color-primario);
 }
 
 .buy-now-btn:hover {
-    background-color: var(--hover);
-    border-color: var(--hover);
+    background-color: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
 }
 
 .add-to-cart-btn:hover {
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
 }
 
 .page-message {
@@ -138,14 +145,20 @@
     padding: 4rem 1rem;
     font-size: 1.2rem;
 }
+
 .page-message.error {
-    color: #D32F2F;
+    color: var(--color-peligro);
 }
 
-/* --- Media Queries para Responsividad --- */
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
 @media (min-width: 768px) {
     .detail-main-content {
-        padding: 0 2rem;
+        padding: 2rem;
     }
 
     .product-layout-grid {
@@ -155,8 +168,16 @@
     .image-gallery-container {
         grid-column: 1 / 2;
     }
+
     .basic-info-container {
         grid-column: 2 / 3;
+    }
+
+    .basic-info-container .info-line {
+        flex-direction: row;
+        /* Restaurar a fila */
+        justify-content: space-between;
+        align-items: flex-start;
     }
 
     .description-container,

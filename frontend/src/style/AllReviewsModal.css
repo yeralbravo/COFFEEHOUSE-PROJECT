@@ -1,3 +1,11 @@
+/**
+ * ============================================
+ * ARCHIVO: AllReviewsModal.css
+ * ============================================
+ * Estilos para la ventana modal que muestra la
+ * lista completa de reseñas de un producto.
+ */
+
 .modal-overlay-reviews {
     position: fixed;
     top: 0;
@@ -13,7 +21,7 @@
 }
 
 .modal-content-reviews {
-    background: white;
+    background: var(--fondo-tarjetas);
     border-radius: 12px;
     width: 100%;
     max-width: 600px;
@@ -28,7 +36,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--gris-claro);
+    border-bottom: 1px solid var(--borde-suave);
     flex-shrink: 0;
 }
 
@@ -42,7 +50,7 @@
     border: none;
     cursor: pointer;
     font-size: 1.5rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .modal-body-reviews {
@@ -52,7 +60,7 @@
 }
 
 .review-item-modal {
-    border-bottom: 1px solid var(--gris-claro);
+    border-bottom: 1px solid var(--borde-suave);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
 }
@@ -70,7 +78,7 @@
 
 .review-date-modal {
     font-size: 0.8rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     text-align: right;
     margin: 0.5rem 0 0 0;
 }

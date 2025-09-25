@@ -1,25 +1,35 @@
+/**
+ * ARCHIVO: SupportPage.css
+ *
+ * MODIFICACIÓN:
+ * - Se añadieron estilos para el botón `.back-to-list-btn` dentro
+ * del media query para que sea visible y funcional en móviles.
+ */
+
 .support-page-layout {
     display: grid;
     grid-template-columns: 350px 1fr;
-    gap: 2rem;
-    height: calc(100vh - 4rem); /* Altura completa menos el padding */
+    height: calc(100vh - 4rem);
     padding: 0;
-    margin: -2rem; /* Anula el padding del .admin-content */
+    margin: -2rem;
 }
 
-.message-list-panel, .message-detail-panel {
-    background-color: #FFFFFF;
+.message-list-panel,
+.message-detail-panel {
+    background-color: var(--fondo-tarjetas);
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 .message-list-panel {
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid var(--borde-principal);
 }
 
 .panel-header {
     padding: 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--borde-principal);
     flex-shrink: 0;
 }
 
@@ -30,7 +40,7 @@
 
 .panel-header p {
     margin: 0;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .message-list {
@@ -40,23 +50,22 @@
 
 .message-item {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--borde-principal);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .message-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
 }
 
 .message-item.active {
-    background-color: var(--azul-claro-fondo);
-    border-right: 3px solid var(--verde-oscuro);
+    background-color: var(--fondo-secundario);
 }
 
 .message-item.unread .sender-name {
     font-weight: 700;
-    color: var(--negro);
+    color: var(--texto-principal);
 }
 
 .sender-info {
@@ -72,13 +81,13 @@
 
 .message-date {
     font-size: 0.8rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .message-preview {
     margin: 0;
     font-size: 0.9rem;
-    color: #555;
+    color: var(--texto-secundario);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -96,29 +105,27 @@
 }
 
 .detail-header .sender-email {
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     text-decoration: none;
     font-size: 0.9rem;
 }
+
 .detail-header .sender-phone {
     margin: 0.25rem 0 0 0;
     font-size: 0.9rem;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
 
 .message-timestamp {
-    font-size: 0.8rem;
-    color: var(--gris-oscuro);
-    white-space: nowrap;
+    font-size: 0.85rem;
+    color: var(--texto-desactivado);
 }
 
 .message-body {
     padding: 1.5rem;
-    font-size: 1rem;
-    line-height: 1.7;
-    white-space: pre-wrap; /* Respeta saltos de línea y espacios */
     overflow-y: auto;
     flex-grow: 1;
+    line-height: 1.7;
 }
 
 .no-message-selected {
@@ -127,11 +134,55 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
     text-align: center;
 }
 
-.no-message-selected svg {
-    margin-bottom: 1rem;
-    color: var(--gris-medio);
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 1024px) {
+    .support-page-layout {
+        grid-template-columns: 280px 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .support-page-layout {
+        grid-template-columns: 1fr;
+        margin: -1.5rem;
+        height: calc(100vh - 3rem);
+    }
+
+    .support-page-layout.show-detail .message-list-panel {
+        display: none;
+    }
+
+    .support-page-layout:not(.show-detail) .message-detail-panel {
+        display: none;
+    }
+
+    /* --- ESTILOS AÑADIDOS PARA EL BOTÓN 'VOLVER' --- */
+    .back-to-list-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: none;
+        color: var(--color-primario);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        margin-bottom: 1rem;
+        /* Espacio debajo del botón */
+    }
+
+    .message-detail-panel .detail-header {
+        flex-direction: column;
+        /* Apila los elementos del header */
+        align-items: flex-start;
+    }
 }

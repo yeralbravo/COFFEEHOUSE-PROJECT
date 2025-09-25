@@ -1,17 +1,26 @@
+/**
+ * ============================================
+ * ARCHIVO: ProfilePage.css
+ * ============================================
+ * Estilos para la página de perfil del usuario,
+ * donde puede editar sus datos personales y
+ * administrar sus direcciones de envío.
+ */
+
 .profile-page-main {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 3rem 1rem;
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     min-height: calc(100vh - 100px);
 }
 
 .profile-form-container {
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 25px var(--sombra-principal);
     width: 100%;
     max-width: 700px;
 }
@@ -33,15 +42,15 @@
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--verde-oscuro);
+    border: 3px solid var(--color-primario);
 }
 
 .avatar-edit-button {
     position: absolute;
     bottom: 0;
     right: 0;
-    background-color: #fff;
-    border: 1px solid var(--gris-medio);
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-principal);
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -49,24 +58,24 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s;
 }
 
 .avatar-edit-button:hover {
-    background-color: var(--gris-claro);
+    background-color: var(--fondo-desactivado);
 }
 
 .avatar-edit-button svg {
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
 }
 
 .avatar-delete-button {
     position: absolute;
     top: 0;
     right: 0;
-    background-color: #dc3545; /* Rojo */
-    border: 1px solid #fff;
+    background-color: var(--color-peligro);
+    border: 1px solid var(--fondo-tarjetas);
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -74,16 +83,16 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s;
 }
 
 .avatar-delete-button:hover {
-    background-color: #c82333; /* Rojo más oscuro */
+    background-color: #c82333;
 }
 
 .avatar-delete-button svg {
-    color: #fff;
+    color: var(--texto-blanco);
     font-size: 0.9rem;
 }
 
@@ -94,7 +103,7 @@
 }
 
 .profile-email {
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     margin: 0.25rem 0 0 0;
 }
 
@@ -117,22 +126,21 @@
 
 .form-group input {
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     font-size: 1rem;
 }
 
 input:disabled {
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     cursor: not-allowed;
 }
 
-/* ================== ESTILOS PARA DIRECCIONES ================== */
-
+/* --- Direcciones --- */
 .profile-addresses-section {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--borde-suave);
 }
 
 .addresses-header {
@@ -148,8 +156,8 @@ input:disabled {
     font-weight: 600;
 }
 
-/* Estilos base compartidos por ambos botones */
-.btn-add-address, .btn-cancel-address {
+.btn-add-address,
+.btn-cancel-address {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     cursor: pointer;
@@ -160,32 +168,30 @@ input:disabled {
     transition: all 0.2s ease;
 }
 
-/* Estilo específico para "Añadir Dirección" */
 .btn-add-address {
-    background-color: var(--verde-oscuro);
-    color: #fff;
-    border: 1px solid var(--verde-oscuro);
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
+    border: 1px solid var(--color-primario);
 }
 
 .btn-add-address:hover {
-    background-color: #3E7B27;
-    border-color: #3E7B27;
+    background-color: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
 }
 
-/* --- ESTILO CORREGIDO PARA "CANCELAR" --- */
 .btn-cancel-address {
     background-color: transparent;
-    color: #cc3333;
-    border: 1px solid #cc3333;
+    color: var(--color-peligro);
+    border: 1px solid var(--color-peligro);
 }
 
 .btn-cancel-address:hover {
-    background-color: #cc3333;
-    color: #fff;
+    background-color: var(--color-peligro);
+    color: var(--texto-blanco);
 }
 
 .address-form {
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
@@ -207,22 +213,17 @@ input:disabled {
     grid-column: 1 / -1;
 }
 
-.address-form input, .address-form textarea {
+.address-form input {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     font-size: 0.9rem;
 }
 
-.address-form textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
 .btn-save-address {
-    background-color: var(--verde-oscuro);
-    color: #fff;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.7rem 1.5rem;
     border-radius: 8px;
@@ -241,15 +242,15 @@ input:disabled {
     display: flex;
     align-items: center;
     gap: 1rem;
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     padding: 1.25rem;
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
 }
 
 .address-icon {
     font-size: 1.5rem;
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     flex-shrink: 0;
 }
 
@@ -257,7 +258,8 @@ input:disabled {
     flex-grow: 1;
 }
 
-.address-details p, .address-details strong {
+.address-details p,
+.address-details strong {
     margin: 0;
     line-height: 1.5;
     font-size: 0.9rem;
@@ -268,7 +270,7 @@ input:disabled {
 }
 
 .address-details p {
-    color: #6c757d;
+    color: var(--texto-desactivado);
 }
 
 .address-actions {
@@ -278,19 +280,16 @@ input:disabled {
 
 .address-edit-btn {
     background: #e9f5e7;
-    color: var(--verde-oscuro);
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.5rem;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    color: var(--color-primario);
 }
 
 .address-delete-btn {
     background: #fce8e8;
-    color: #cc3333;
+    color: var(--color-peligro);
+}
+
+.address-edit-btn,
+.address-delete-btn {
     border: none;
     cursor: pointer;
     font-size: 1.1rem;
@@ -301,27 +300,26 @@ input:disabled {
 }
 
 .no-addresses-message {
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     text-align: center;
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     border-radius: 8px;
 }
 
-/* ================== FIN DE ESTILOS PARA DIRECCIONES ================== */
-
+/* --- Acciones de Perfil --- */
 .profile-actions {
     margin-top: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--gris-claro);
+    border-top: 1px solid var(--borde-suave);
     padding-top: 1.5rem;
 }
 
 .btn-save-profile {
-    background-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    color: var(--texto-blanco);
     border: none;
     padding: 0.8rem 2rem;
     border-radius: 8px;
@@ -332,8 +330,35 @@ input:disabled {
 .btn-delete-account {
     background: none;
     border: none;
-    color: #cc3333;
+    color: var(--color-peligro);
     text-decoration: underline;
     cursor: pointer;
     font-weight: 500;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+    .profile-page-main {
+        padding: 1rem;
+    }
+
+    .profile-form-container {
+        padding: 1.5rem;
+    }
+
+    .profile-form-grid,
+    .address-form .form-grid {
+        grid-template-columns: 1fr;
+        /* Apila todos los campos */
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
 }

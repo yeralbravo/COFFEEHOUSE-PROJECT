@@ -1,28 +1,62 @@
+/**
+ * ============================================
+ * ARCHIVO: index.css
+ * ============================================
+ * Define los estilos globales de la aplicación,
+ * incluyendo la paleta de colores en :root,
+ * las fuentes y los estilos base para el body.
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@700&display=swap');
 
+/**
+ * Paleta de Colores Global - COFFEE HOUSE
+ */
 :root {
-    --negro: #000000;
-    --blanco: #FFFFFF;
-    --verde-oscuro: #24651C;
-    --hover: #3E7B27;
-    --gris-claro: #EFEFEF;
-    --gris-medio: #D9D9D9;
-    --gris-oscuro: #8B8B8B;
-    --azul-claro-fondo: #F0F8FF;
+  /* --- Colores de Marca --- */
+  --color-primario: #24651C;                 /* Verde oscuro principal para botones, logos, etc. */
+  --color-primario-hover: #3E7B27;            /* Verde más claro para interacciones */
+  --color-navegacion: rgb(95, 151, 95);       /* Verde del header y footer */
+  --color-secundario: #ffc107;                /* Amarillo para estrellas, roles de proveedor, etc. */
+
+  /* --- Colores de Texto --- */
+  --texto-principal: #1f2937;                 /* Negro suave para la mayoría del texto */
+  --texto-secundario: #4a5568;                /* Gris oscuro para descripciones y subtítulos */
+  --texto-desactivado: #8B8B8B;               /* Gris más claro para texto menos importante */
+  --texto-blanco: #FFFFFF;
+  --texto-enlace: var(--color-primario-hover);
+
+  /* --- Colores de Fondo --- */
+  --fondo-principal: #f8f9fa;                 /* Gris muy claro, para el fondo general de páginas */
+  --fondo-tarjetas: #FFFFFF;                  /* Blanco para tarjetas, modales y secciones */
+  --fondo-secundario: #F0F8FF;                /* Azul muy claro usado en el carrito y otras vistas */
+  --fondo-input: #fdfdfd;                     /* Fondo para campos de formulario */
+  --fondo-desactivado: #EFEFEF;               /* Gris claro para elementos deshabilitados o decorativos */
+
+  /* --- Colores Semánticos (Estados y Alertas) --- */
+  --color-exito: #28a745;                     /* Verde para éxito, confirmaciones, rol de admin */
+  --color-advertencia: #f5a623;               /* Naranja para estados "Pendiente", avisos */
+  --color-peligro: #dc3545;                   /* Rojo para errores, eliminar, cancelar */
+  --color-info: #4a90e2;                      /* Azul para estados "Enviado", información */
+
+  /* --- Colores de UI (Bordes, Sombras, etc.) --- */
+  --borde-principal: #D9D9D9;                 /* Gris medio para bordes de inputs y tarjetas */
+  --borde-suave: #EFEFEF;                     /* Gris claro para separadores sutiles */
+  --sombra-principal: rgba(0, 0, 0, 0.08);    /* Sombra estándar para dar profundidad a las tarjetas */
 }
 
-/* 1. Importa ambas fuentes */
-
-/* 2. Aplica la fuente base al body */
+/* --- Estilos Base --- */
 body {
     font-family: 'Inter', sans-serif;
-    /* ... otros estilos del body ... */
+    margin: 0;
+    background-color: var(--fondo-principal);
 }
 
-/* 3. Aplica la fuente especial solo a los títulos */
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
     font-family: 'Lora', serif;
 }

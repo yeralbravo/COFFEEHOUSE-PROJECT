@@ -1,18 +1,26 @@
-/* src/style/StatCard.css */
+/**
+ * ============================================
+ * ARCHIVO: StatCard.css
+ * ============================================
+ * Estilos para la tarjeta de estadística (StatCard)
+ * reutilizable, que muestra un indicador clave (KPI)
+ * con un ícono, título, valor y enlace opcional.
+ */
+
 .stat-card-container {
-    background-color: #FFFFFF; /* --blanco */
-    border: 1px solid #EFEFEF; /* --gris-claro */
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 12px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px var(--sombra-principal);
     transition: all 0.3s ease;
 }
 
 .stat-card-container:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px var(--sombra-principal);
 }
 
 .stat-card-header {
@@ -23,28 +31,41 @@
 
 .stat-card-icon {
     font-size: 1.5rem;
-    color: #24651C; /* --verde-oscuro */
+    color: var(--color-primario);
 }
 
 .stat-card-title {
     margin: 0;
     font-weight: 600;
-    color: #8B8B8B; /* --gris-oscuro */
+    color: var(--texto-desactivado);
 }
 
 .stat-card-value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #000000; /* --negro */
+    color: var(--texto-principal);
     margin: 1rem 0;
 }
 
 .stat-card-link {
     margin-top: auto;
     text-decoration: none;
-    color: #3E7B27; /* --hover */
+    color: var(--color-primario-hover);
     font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 480px) {
+    .stat-card-value {
+        font-size: 2rem;
+        /* Reducir el tamaño del número grande en móvil */
+    }
 }

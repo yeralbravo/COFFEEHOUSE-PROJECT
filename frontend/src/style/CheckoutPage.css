@@ -1,6 +1,14 @@
-/* src/style/CheckoutPage.css */
+/**
+ * ============================================
+ * ARCHIVO: CheckoutPage.css
+ * ============================================
+ * Estilos para el proceso de finalización de
+ * compra, incluyendo el formulario de envío,
+ * el resumen del pedido y las opciones de pago.
+ */
+
 .checkout-page-container {
-    background-color: #EFEFEF;
+    background-color: var(--borde-suave);
 }
 
 .checkout-main-content {
@@ -22,7 +30,7 @@
 }
 
 .form-section {
-    background-color: #FFFFFF;
+    background-color: var(--fondo-tarjetas);
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -31,15 +39,14 @@
 .form-section h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
     padding-bottom: 0.8rem;
     font-size: 1.2rem;
 }
 
-/* ================== ESTILOS PARA EL MENSAJE Y SELECTOR ================== */
 .address-prompt {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
+    background-color: var(--fondo-principal);
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -49,11 +56,11 @@
 .address-prompt p {
     margin: 0;
     font-size: 0.9rem;
-    color: #495057;
+    color: var(--texto-secundario);
 }
 
 .address-prompt a {
-    color: var(--verde-oscuro);
+    color: var(--color-primario);
     font-weight: 600;
     text-decoration: none;
 }
@@ -65,7 +72,7 @@
 .saved-addresses {
     margin-bottom: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #f0f0f0; /* Separador */
+    border-top: 1px solid var(--borde-suave);
 }
 
 .saved-addresses label {
@@ -78,14 +85,13 @@
 .saved-addresses select {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     font-size: 1rem;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: var(--fondo-tarjetas);
     cursor: pointer;
 }
-/* ===================================================================== */
 
 .form-grid {
     display: grid;
@@ -93,10 +99,11 @@
     gap: 1rem;
 }
 
-.form-grid input, .form-grid textarea {
+.form-grid input,
+.form-grid textarea {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -112,13 +119,15 @@
     padding: 0.8rem 0;
     font-size: 0.9rem;
 }
+
 .order-summary-box .order-item:not(:last-child) {
-    border-bottom: 1px dashed #D9D9D9;
+    border-bottom: 1px dashed var(--borde-principal);
 }
+
 .order-summary-box .order-item.total {
     font-weight: bold;
     font-size: 1.2rem;
-    border-top: 1px solid #8B8B8B;
+    border-top: 1px solid var(--texto-desactivado);
     margin-top: 0.5rem;
 }
 
@@ -127,6 +136,7 @@
     gap: 2rem;
     margin-bottom: 1.5rem;
 }
+
 .payment-options .radio-label {
     display: flex;
     align-items: center;
@@ -139,7 +149,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
-.form-actions .btn-primary, .form-actions .btn-secondary {
+
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
     padding: 1rem;
     border-radius: 8px;
     border: 1px solid;
@@ -147,13 +159,54 @@
     font-size: 1rem;
     font-weight: 600;
 }
+
 .form-actions .btn-primary {
-    background-color: #24651C;
-    border-color: #24651C;
-    color: #FFFFFF;
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: var(--texto-blanco);
 }
+
 .form-actions .btn-secondary {
-    background-color: #FFFFFF;
-    border-color: #D9D9D9;
-    color: #8B8B8B;
+    background-color: var(--fondo-tarjetas);
+    border-color: var(--borde-principal);
+    color: var(--texto-desactivado);
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .checkout-form-layout {
+        grid-template-columns: 1fr;
+        /* Apila las columnas */
+    }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+    .checkout-main-content {
+        padding: 1rem 3%;
+    }
+
+    .form-section {
+        padding: 1.5rem;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        /* Apila los campos del formulario de dirección */
+    }
+
+    .payment-options {
+        flex-direction: column;
+        /* Apila las opciones de pago */
+        gap: 1rem;
+    }
 }

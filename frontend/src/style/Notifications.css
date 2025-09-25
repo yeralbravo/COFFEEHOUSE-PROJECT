@@ -1,13 +1,21 @@
-/* src/style/Notifications.css */
+/**
+ * ARCHIVO: Notifications.css
+ *
+ * MODIFICACIÓN:
+ * - Se añadió un media query para que en pantallas de 480px o menos,
+ * el panel de notificaciones ocupe casi todo el ancho de la pantalla
+ * y tenga una altura máxima controlada, evitando desbordamientos.
+ */
+
 .notifications-dropdown-menu {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 380px; /* Un poco más de ancho para la fecha */
-    background-color: #FFFFFF;
-    border-radius: 12px; /* Bordes más suaves */
+    width: 380px;
+    background-color: var(--fondo-tarjetas);
+    border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    border: 1px solid #EFEFEF;
+    border: 1px solid var(--borde-suave);
     z-index: 100;
     overflow: hidden;
     display: flex;
@@ -19,7 +27,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
     flex-shrink: 0;
 }
 
@@ -38,11 +46,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
+
 .close-dropdown-btn:hover {
-    background-color: #EFEFEF;
-    color: var(--negro);
+    background-color: var(--fondo-desactivado);
+    color: var(--texto-principal);
 }
 
 .notifications-list {
@@ -50,19 +59,19 @@
     overflow-y: auto;
 }
 
-/* ================== NUEVOS ESTILOS PARA AGRUPACIÓN ================== */
 .notification-date-header {
-    background-color: #f8f9fa;
+    background-color: var(--fondo-principal);
     padding: 0.6rem 1.25rem;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #6c757d;
+    color: var(--texto-secundario);
     margin: 0;
-    border-top: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0;
+    border-top: 1px solid var(--borde-suave);
+    border-bottom: 1px solid var(--borde-suave);
 }
+
 .notification-date-group:first-child .notification-date-header {
-    border-top: none; /* El primer grupo no necesita borde superior */
+    border-top: none;
 }
 
 .notification-item {
@@ -75,11 +84,11 @@
 }
 
 .notification-item:not(:last-child) {
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .notification-item:hover {
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
 }
 
 .notification-item.read {
@@ -88,14 +97,14 @@
 
 .notification-item.empty {
     text-align: center;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
     padding: 2rem;
     cursor: default;
 }
 
 .notification-icon {
     font-size: 1.2rem;
-    color: #24651C;
+    color: var(--color-primario);
     margin-top: 3px;
     flex-shrink: 0;
 }
@@ -115,7 +124,7 @@
 
 .notification-time {
     font-size: 0.75rem;
-    color: #8B8B8B;
+    color: var(--texto-desactivado);
 }
 
 .notification-options {
@@ -132,21 +141,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--gris-oscuro);
+    color: var(--texto-desactivado);
 }
+
 .options-btn:hover {
-    background-color: #EFEFEF;
-    color: var(--negro);
+    background-color: var(--fondo-desactivado);
+    color: var(--texto-principal);
 }
 
 .options-menu {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #FFFFFF;
-    border: 1px solid #EFEFEF;
+    background-color: var(--fondo-tarjetas);
+    border: 1px solid var(--borde-suave);
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 101;
     overflow: hidden;
 }
@@ -163,9 +173,32 @@
     cursor: pointer;
     font-size: 0.9rem;
 }
+
 .options-menu button:hover {
-    background-color: #F0F8FF;
+    background-color: var(--fondo-secundario);
 }
+
 .options-menu button svg {
     font-size: 1rem;
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+@media (max-width: 480px) {
+    .notifications-dropdown-menu {
+        position: fixed;
+        /* Cambiamos a fixed para posicionar respecto a la pantalla */
+        top: 60px;
+        /* Un poco de espacio desde la parte superior */
+        right: 10px;
+        left: 10px;
+        width: auto;
+        /* El ancho se controla por left/right */
+        max-height: 70vh;
+        /* Altura máxima para no ocupar toda la pantalla */
+    }
 }

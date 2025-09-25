@@ -1,7 +1,14 @@
-/* src/style/Footer.css */
+/**
+ * ============================================
+ * ARCHIVO: Footer.css
+ * ============================================
+ * Estilos para el pie de página principal del
+ * sitio, visible para los clientes.
+ */
+
 .client-footer {
-   background-color:  rgb(95, 151, 95);/* Color verde claro de la imagen */
-    color: #FFFFFF; /* Texto blanco */
+    background-color: var(--color-navegacion);
+    color: var(--texto-blanco);
     padding: 2rem 5%;
 }
 
@@ -35,14 +42,17 @@
 .footer-nav {
     display: flex;
     gap: 1.5rem;
+    flex-wrap: wrap;
+    /* Para que los enlaces también se apilen si no caben */
 }
 
 .footer-nav a {
-    color: #FFFFFF;
+    color: var(--texto-blanco);
     text-decoration: none;
     font-size: 1.1rem;
     transition: opacity 0.2s;
 }
+
 .footer-nav a:hover {
     opacity: 0.8;
 }
@@ -63,8 +73,8 @@
 }
 
 .social-icons a {
-    color: #000000; /* Iconos negros */
-    background-color: #FFFFFF; /* Fondo blanco */
+    color: var(--texto-principal);
+    background-color: var(--fondo-tarjetas);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -98,10 +108,37 @@
 }
 
 .footer-bottom a {
-    color: #FFFFFF;
+    color: var(--texto-blanco);
     text-decoration: none;
 }
 
 .footer-bottom a:hover {
     text-decoration: underline;
+}
+
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 767px) {
+
+    .footer-content,
+    .footer-bottom {
+        flex-direction: column;
+        /* Apila las columnas */
+        align-items: center;
+        /* Centra el contenido */
+        text-align: center;
+    }
+
+    .footer-nav {
+        justify-content: center;
+    }
+
+    .footer-social {
+        align-items: center;
+    }
 }

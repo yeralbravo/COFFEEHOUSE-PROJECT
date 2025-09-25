@@ -1,4 +1,12 @@
-/* src/style/ReviewModal.css */
+/**
+ * ============================================
+ * ARCHIVO: ReviewModal.css
+ * ============================================
+ * Estilos para la ventana modal que permite a
+ * los usuarios dejar una calificación y reseña
+ * para un producto que han comprado.
+ */
+
 .review-modal h2 {
     text-align: center;
     margin-bottom: 1.5rem;
@@ -18,14 +26,32 @@
 .star-rating .star {
     cursor: pointer;
     transition: color 0.2s;
+    /* Los colores se asignan directamente en el componente JSX, por lo que no se usan variables aquí */
 }
 
 .review-modal textarea {
     width: 100%;
     min-height: 100px;
     padding: 0.8rem;
-    border: 1px solid #D9D9D9;
+    border: 1px solid var(--borde-principal);
     border-radius: 6px;
     resize: vertical;
     font-family: 'Inter', sans-serif;
+}
+
+/*
+ * ============================================
+ * MEDIA QUERIES (DISEÑO RESPONSIVO)
+ * ============================================
+*/
+
+@media (max-width: 480px) {
+    .review-modal h2 {
+        font-size: 1.2rem;
+    }
+
+    .star-rating .star {
+        font-size: 30px;
+        /* Reducir tamaño de las estrellas en móvil */
+    }
 }
