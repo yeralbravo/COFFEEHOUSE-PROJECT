@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Solución para __dirname que no viene por defecto con "import"
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -15,6 +21,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   ssl: {
       ca: fs.readFileSync(path.join(__dirname, '../certificate/ca-certificate.crt'))
+      //,rejectUnauthorized: false 
   }
 });
 
