@@ -12,6 +12,9 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  ssl: {
+      ca: fs.readFileSync(path.join(__dirname, '../certs/ca-certificate.crt'))
+  }
 });
 
 pool.getConnection()
