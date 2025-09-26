@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/catalog';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const API_URL = `${API_BASE_URL}/catalog`;
 
 /**
  * Obtiene todos los datos necesarios para la página de inicio del cliente.
