@@ -9,8 +9,9 @@ import '../../style/AdminSidebar.css';
 
 const AdminSidebar = ({ isOpen, onClose }) => {
     const { user, logout } = useContext(AuthContext);
-    const [isUsersMenuOpen, setUsersMenuOpen] = useState(false);
-    const [isGestionMenuOpen, setGestionMenuOpen] = useState(true);
+    const [isUsersMenuOpen, setUsersMenuOpen] = useState(false);    
+    const [isGestionMenuOpen, setGestionMenuOpen] = useState(false);  
+
     const API_BASE_URL = 'http://localhost:5000';
 
     const profilePicture = user?.profile_picture_url 

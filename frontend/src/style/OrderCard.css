@@ -1,9 +1,5 @@
 /**
- * ============================================
  * ARCHIVO: OrderCard.css
- * ============================================
- * Estilos para la tarjeta individual de pedido
- * que se muestra en la lista de "Mis Pedidos".
  */
 
 .order-card-container {
@@ -80,6 +76,8 @@
 }
 
 .view-order-btn {
+    display: inline-block;
+    /* <-- REGLA AÑADIDA Y CLAVE */
     background-color: var(--color-primario);
     color: var(--texto-blanco);
     border: none;
@@ -91,26 +89,19 @@
     text-decoration: none;
     text-align: center;
     transition: background-color 0.2s;
+    margin-top: 1rem;
 }
 
 .view-order-btn:hover {
     background-color: var(--color-primario-hover);
 }
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
-
 @media (max-width: 767px) {
     .order-card-container {
         grid-template-columns: 1fr;
-        /* Una sola columna */
         gap: 1rem;
         padding: 1rem;
         text-align: center;
-        /* Centrar todo el contenido */
     }
 
     .order-card-image-wrapper {
@@ -126,6 +117,5 @@
     .order-status,
     .tracking-info {
         justify-content: center;
-        /* Centrar elementos internos */
     }
 }

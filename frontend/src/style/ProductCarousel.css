@@ -1,9 +1,5 @@
 /**
- * ============================================
  * ARCHIVO: ProductCarousel.css
- * ============================================
- * Estilos para la sección de carrusel de productos
- * que muestra una lista horizontal de tarjetas.
  */
 
 .carousel-section {
@@ -24,23 +20,20 @@
 
 .carousel-container {
     display: grid;
-    /* Esta regla crea columnas automáticas que se ajustan. Es inherentemente responsivo. */
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
     padding: 0.5rem 5%;
 }
-
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
 
 @media (max-width: 767px) {
 
     .carousel-header,
     .carousel-container {
         padding: 0 3%;
-        /* Menos padding en los lados para móvil */
+    }
+
+    .carousel-container {
+        justify-items: center;
+        /* <-- REGLA CORREGIDA */
     }
 }

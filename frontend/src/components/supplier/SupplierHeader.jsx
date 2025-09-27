@@ -62,7 +62,8 @@ const SupplierHeader = ({ onMenuClick }) => {
         <header className="client-header-container">
             <div className="top-bar">
                 <div className="header-left">
-                    <button onClick={onMenuClick} className="icon-btn hamburger-btn">
+                    {/* --- CLASE 'always-visible' AÑADIDA --- */}
+                    <button onClick={onMenuClick} className="icon-btn hamburger-btn always-visible">
                         <FiMenu />
                     </button>
                     <Link to="/home" className="logo-container">

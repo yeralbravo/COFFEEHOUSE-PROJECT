@@ -1,10 +1,8 @@
 /**
  * ARCHIVO: SupplierSidebar.css
- * MODIFICACIONES FINALES:
- * - Se añadieron reglas para ocultar la barra de scroll vertical.
- * - Se añadió media query para ancho responsivo en móvil.
- * - Se corrigió el !important de la propiedad `left`.
+
  */
+
 .supplier-sidebar {
     position: fixed;
     top: 0;
@@ -43,6 +41,8 @@
 
 .sidebar-header {
     display: flex;
+    flex-wrap: wrap;
+    /* Para que el perfil se ajuste */
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 1.5rem;
@@ -54,6 +54,8 @@
     margin: 0;
     color: var(--color-primario);
     font-size: 1.2rem;
+    width: calc(100% - 30px);
+    /* Espacio para el botón de cerrar */
 }
 
 .close-btn {
@@ -72,14 +74,11 @@
     overflow-y: auto;
     flex-grow: 1;
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
 }
 
 .sidebar-links::-webkit-scrollbar {
     display: none;
-    /* Chrome, Safari, Opera */
 }
 
 .sidebar-link {
@@ -163,11 +162,58 @@
     border-top: 1px solid var(--borde-suave);
 }
 
+/* --- ESTILOS NUEVOS AÑADIDOS --- */
+.profile-info-supplier {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    margin-top: 1rem;
+    /* Espacio debajo del título y botón de cerrar */
+}
+
+.sidebar-profile-picture {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar-footer-supplier {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--borde-suave);
+    margin-top: auto;
+    /* Empuja el footer hacia abajo */
+}
+
+.logout-btn-supplier {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid var(--borde-principal);
+    background-color: var(--fondo-desactivado);
+    color: var(--texto-principal);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.logout-btn-supplier:hover {
+    background-color: var(--color-peligro);
+    color: var(--texto-blanco);
+    border-color: var(--color-peligro);
+}
+
+
 @media (max-width: 480px) {
     .supplier-sidebar {
         width: 85vw !important;
         max-width: 300px !important;
         left: -85vw;
-        /* Corregido: sin !important */
     }
 }

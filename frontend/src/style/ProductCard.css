@@ -1,9 +1,5 @@
 /**
- * ============================================
  * ARCHIVO: ProductCard.css
- * ============================================
- * Estilos para la tarjeta de producto individual
- * que se muestra en los catálogos y carruseles.
  */
 
 .product-card-client {
@@ -16,18 +12,20 @@
     flex-direction: column;
     box-shadow: 0 2px 8px var(--sombra-principal);
     scroll-snap-align: start;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* <-- TRANSICIÓN MOVIDA AQUÍ */
+}
+
+/* --- REGLA :hover MODIFICADA --- */
+.product-card-client:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--sombra-principal);
 }
 
 .product-card-link-wrapper {
     text-decoration: none;
     color: inherit;
     display: block;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.product-card-link-wrapper:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px var(--sombra-principal);
 }
 
 .product-card-image-wrapper {

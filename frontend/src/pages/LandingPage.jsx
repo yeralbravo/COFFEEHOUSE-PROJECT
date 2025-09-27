@@ -147,36 +147,55 @@ const LandingPage = () => {
       {/* Contact Section */}
       <section className="contact-section" id="contact-info">
         <form className="supplier-form" onSubmit={handleFormSubmit}>
-          <p className="contact-header">Contáctanos</p>
-          <p className="contact-details">Su opinión es muy importante para nosotros, contáctanos y te responderemos a la brevedad</p>
-          <input type="text" name="name" className="form-input" placeholder="Nombre" value={contactForm.name} onChange={handleFormChange} required />
-          <input type="text" name="phone" className="form-input" placeholder="Teléfono" value={contactForm.phone} onChange={handleFormChange} required />
+          <h3 className="contact-header">Contáctanos</h3>
+          <p className="contact-details">Tú opinión es muy importante para nosotros. Por favor, llene los siguientes datos y nos pondremos en contacto a la brevedad</p>
+          
+          <div className="form-row">
+            <input type="text" name="name" className="form-input" placeholder="Nombre" value={contactForm.name} onChange={handleFormChange} required />
+            <input type="text" name="phone" className="form-input" placeholder="Teléfono" value={contactForm.phone} onChange={handleFormChange} required />
+          </div>
+          
           <input type="email" name="email" className="form-input" placeholder="Correo" value={contactForm.email} onChange={handleFormChange} required />
           <textarea name="message" className="form-textarea" placeholder="Mensaje" value={contactForm.message} onChange={handleFormChange} required></textarea>
+          
+          {/* --- ESTRUCTURA DEL LABEL MODIFICADA --- */}
           <label className="form-label">
-            <input type="checkbox" name="privacy" className="form-checkbox" checked={contactForm.privacy} onChange={handleFormChange} required /> Acepto las políticas de privacidad y soy mayor de edad
+            <input type="checkbox" name="privacy" className="form-checkbox" checked={contactForm.privacy} onChange={handleFormChange} required />
+            Acepto las&nbsp;
+            <Link to="/politicas-de-privacidad" className="privacy-link">
+              políticas de privacidad
+            </Link>
           </label>
           <button type="submit" className="submit-action">ENVIAR</button>
         </form>
       </section>
 
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-section">
-          <h3 className="footer-brand">COFFEE HOUSE</h3>
-          <div className="footer-nav">
-            <a href="#about-us" className="footer-link">Nosotros</a>
-            <a href="#our-products" className="footer-link">Productos</a>
-            <a href="#suppliers" className="footer-link">Proveedores</a>
-            <a href="#contact-info" className="footer-link">Contacto</a>
-          </div>
-          <div className="social-networks">
-            <a href="https://facebook.com" className="social-link" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://instagram.com" className="social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
-          </div>
+      {/* --- FOOTER COMPLETAMENTE REDISEÑADO --- */}
+            <footer className="site-footer">
+        <div className="footer-content">
+            <div className="footer-column">
+                <h3 className="footer-brand">COFFEE HOUSE</h3>
+                <nav className="footer-nav">
+                    <a href="#about-us">Inicio</a>
+                    <a href="#about-us">Nosotros</a>
+                    <a href="#our-products">Productos</a>
+                    <a href="#suppliers">Proveedores</a>
+                    <a href="#contact-info">Contacto</a>
+                </nav>
+            </div>
+            <div className="footer-column footer-column-social">
+                <h4 className="footer-column-title">Síguenos</h4>
+                <div className="social-networks">
+                    <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
+                    <a href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
+                    <a href="https://twitter.com" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
+                </div>
+            </div>
         </div>
-        <p className="copyright-notice">© 2025 Coffee House. Todos los derechos reservados.</p>
-        <p className="platform-info">Plataforma por HomeClient</p>
+        <div className="footer-bottom">
+            <p className="copyright-notice">© 2025 Coffee House. Todos los derechos reservados.</p>
+            <Link to="/politicas-de-privacidad" className="footer-link">Política de privacidad</Link>
+        </div>
       </footer>
     </div>
   );

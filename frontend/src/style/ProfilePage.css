@@ -1,10 +1,6 @@
 /**
- * ============================================
  * ARCHIVO: ProfilePage.css
- * ============================================
- * Estilos para la página de perfil del usuario,
- * donde puede editar sus datos personales y
- * administrar sus direcciones de envío.
+
  */
 
 .profile-page-main {
@@ -124,7 +120,12 @@
     font-size: 0.9rem;
 }
 
+/* --- REGLA CORREGIDA --- */
 .form-group input {
+    width: 100%;
+    /* Asegura que el input ocupe el espacio de la columna de la rejilla */
+    box-sizing: border-box;
+    /* Asegura que el padding y borde no aumenten el tamaño */
     padding: 0.8rem;
     border: 1px solid var(--borde-principal);
     border-radius: 6px;
@@ -136,7 +137,6 @@ input:disabled {
     cursor: not-allowed;
 }
 
-/* --- Direcciones --- */
 .profile-addresses-section {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -146,8 +146,10 @@ input:disabled {
 .addresses-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .addresses-header h2 {
@@ -276,6 +278,7 @@ input:disabled {
 .address-actions {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .address-edit-btn {
@@ -307,7 +310,6 @@ input:disabled {
     border-radius: 8px;
 }
 
-/* --- Acciones de Perfil --- */
 .profile-actions {
     margin-top: 2rem;
     display: flex;
@@ -336,12 +338,6 @@ input:disabled {
     font-weight: 500;
 }
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
-
 @media (max-width: 767px) {
     .profile-page-main {
         padding: 1rem;
@@ -351,14 +347,22 @@ input:disabled {
         padding: 1.5rem;
     }
 
-    .profile-form-grid,
-    .address-form .form-grid {
-        grid-template-columns: 1fr;
-        /* Apila todos los campos */
-    }
-
     .profile-header {
         flex-direction: column;
         text-align: center;
+    }
+
+    .profile-form-grid,
+    .address-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .address-card {
+        align-items: flex-start;
+    }
+
+    .address-actions {
+        flex-direction: column;
+        gap: 0.8rem;
     }
 }

@@ -1,16 +1,16 @@
 /**
- * ============================================
  * ARCHIVO: ClientHeader.css
- * ============================================
- * Estilos para la barra de navegación principal
- * de los clientes, incluyendo el logo, menú de
- * usuario, carrito y barra de búsqueda.
  */
 
 .client-header-container {
     background-color: var(--fondo-tarjetas);
     box-shadow: 0 2px 4px var(--sombra-principal);
     border-bottom: 1px solid var(--borde-suave);
+    /* --- REGLAS AÑADIDAS --- */
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    /* Asegura que esté por encima del contenido */
 }
 
 .top-bar,
@@ -54,7 +54,6 @@
     font-family: 'Lora', serif;
 }
 
-
 .user-actions {
     display: flex;
     align-items: center;
@@ -73,8 +72,10 @@
 
 .hamburger-btn {
     font-size: 1.8rem;
-    display: none;
-    /* Oculto por defecto, se muestra en móvil */
+}
+
+.hamburger-btn.always-visible {
+    display: block !important;
 }
 
 .cart-icon-wrapper,
@@ -176,17 +177,13 @@
 }
 
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
-
-/* Tablets y Móviles */
 @media (max-width: 1024px) {
     .hamburger-btn {
-        display: block;
-        /* Mostrar el botón de hamburguesa */
+        display: block !important;
+    }
+
+    .main-nav {
+        display: none;
     }
 
     .navigation-and-search-bar {
@@ -197,16 +194,8 @@
         padding-right: 5%;
     }
 
-    .main-nav {
-        display: none;
-        /* Ocultar la navegación principal */
-        /* Nota: Necesitarás lógica en JS para que el menú de hamburguesa */
-        /* muestre un menú desplegable con estos enlaces. */
-    }
-
     .search-bar-wrapper {
         max-width: none;
-        /* Permitir que la barra de búsqueda ocupe todo el ancho */
     }
 
     .top-bar,
@@ -216,20 +205,31 @@
     }
 }
 
-/* Móviles pequeños */
 @media (max-width: 480px) {
     .logo-text {
         display: none;
-        /* Ocultar el texto del logo para ahorrar espacio */
     }
 
     .user-actions {
         gap: 0.5rem;
-        /* Reducir espacio entre íconos */
     }
 
     .icon-btn {
         font-size: 1.3rem;
-        /* Íconos un poco más pequeños */
+    }
+
+    .hamburger-btn {
+        font-size: 1.4rem;
+        padding: 0.1rem;
+    }
+
+    .header-left {
+        gap: 0.75rem;
+    }
+}
+
+@media (min-width: 1025px) {
+    .hamburger-btn {
+        display: none !important;
     }
 }
