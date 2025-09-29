@@ -19,14 +19,16 @@ const CheckoutPage = () => {
     const cartItems = passedState?.cartItems || cartContext.cartItems;
     const cartTotal = passedState?.cartTotal || cartContext.cartTotal;
     
+    const { removePurchasedItems } = cartContext;
+    
     const [paymentMethod, setPaymentMethod] = useState('online');
     const [isProcessing, setIsProcessing] = useState(false);
     
     const [shippingInfo, setShippingInfo] = useState({
-        nombre: '',
-        apellido: '',
-        telefono: '',
-        correo: '', 
+        nombre: user?.nombre || '',
+        apellido: user?.apellido || '',
+        telefono: user?.telefono || '',
+        correo: user?.correo || '', 
         direccion: '',
         departamento: '',
         ciudad: '',
@@ -73,7 +75,7 @@ const CheckoutPage = () => {
             }
         } else {
             setShippingInfo({
-                nombre: '', apellido: '', telefono: '', correo: '',
+                nombre: user?.nombre || '', apellido: user?.apellido || '', telefono: user?.telefono || '', correo: user?.correo || '',
                 direccion: '', departamento: '', ciudad: '', nota: ''
             });
         }
@@ -128,28 +130,23 @@ const CheckoutPage = () => {
 
         try {
             const newOrderResponse = await createOrder(orderPayload);
-            const newOrderId = newOrderResponse.data.id;
 
             if (paymentMethod === 'online') {
-                const paymentResponse = await createPaymentOrder({ cartItems, orderId: newOrderId });
+                const paymentResponse = await createPaymentOrder({ cartItems, orderId: newOrderResponse.data.orderId });
                 if (paymentResponse.success && paymentResponse.payment_url) {
-                    if (passedState) {
-                        cartContext.clearCart();
-                    }
-                    window.open(paymentResponse.payment_url, '_blank');
-                    navigate('/mis-pedidos'); 
+                    await removePurchasedItems(cartItems); // <-- 2. LLAMAR A LA NUEVA FUNCIÓN
+                    window.location.href = paymentResponse.payment_url; // Redirige a Mercado Pago
                 } else {
                     throw new Error('No se pudo generar el link de pago.');
                 }
             } else {
                 showSuccessAlert('¡Pedido creado con éxito!');
-                if (passedState) {
-                    cartContext.clearCart();
-                }
+                await removePurchasedItems(cartItems); // <-- 2. LLAMAR A LA NUEVA FUNCIÓN
                 navigate('/mis-pedidos');
             }
         } catch (error) {
             showErrorAlert(`Error al procesar la orden: ${error.message}`);
+        } finally {
             setIsProcessing(false);
         }
     };
@@ -161,16 +158,14 @@ const CheckoutPage = () => {
                 <div className="form-column">
                     <section className="form-section">
                         <h3>Información de envío</h3>
-                        
                         <div className="address-prompt">
                             <p>Puedes administrar tus direcciones o añadir una nueva en <Link to="/profile">tu perfil</Link>.</p>
                         </div>
-
                         {savedAddresses.length > 0 && (
                             <div className="form-group saved-addresses">
                                 <label htmlFor="saved-address-select">O usa una dirección guardada:</label>
                                 <select id="saved-address-select" value={selectedAddressId} onChange={handleAddressSelect}>
-                                    <option value="">Elige una dirección</option>
+                                    <option value="">-- Elige una dirección --</option>
                                     {savedAddresses.map(addr => (
                                         <option key={addr.id} value={addr.id}>
                                             {addr.direccion}, {addr.ciudad}
@@ -179,7 +174,6 @@ const CheckoutPage = () => {
                                 </select>
                             </div>
                         )}
-
                         <div className="form-grid">
                             <div className="form-group">
                                 <input type="text" name="nombre" value={shippingInfo.nombre} placeholder="Nombre *" onChange={handleShippingChange} className={shippingErrors.nombre ? 'input-error' : ''} />
@@ -210,7 +204,7 @@ const CheckoutPage = () => {
                                 {shippingErrors.ciudad && <p className="error-text">{shippingErrors.ciudad}</p>}
                             </div>
                             <div className="form-group full-width">
-                                <textarea name="nota" value={shippingInfo.nota} placeholder="Nota adicional (opcional)" onChange={handleShippingChange}></textarea>
+                                <textarea name="nota" value={shippingInfo.nota} placeholder="Nota adicional para la entrega (opcional)" onChange={handleShippingChange}></textarea>
                             </div>
                         </div>
                     </section>
@@ -220,7 +214,7 @@ const CheckoutPage = () => {
                         <h3>Tu pedido</h3>
                         <div className="order-summary-box">
                             {cartItems.map(item => (
-                                <div className="order-item" key={item.id}>
+                                <div className="order-item" key={item.cartItemId}>
                                     <span>{item.nombre} x{item.quantity}</span>
                                     <span>${new Intl.NumberFormat('es-CO').format(item.precio * item.quantity)}</span>
                                 </div>
@@ -229,19 +223,20 @@ const CheckoutPage = () => {
                         </div>
                     </section>
                     <section className="form-section">
+                        <h3>Método de pago</h3>
                         <div className="payment-options">
                             <label className="radio-label">
-                                <input type="radio" name="payment" value="contra_entrega" onChange={e => setPaymentMethod(e.target.value)} />
+                                <input type="radio" name="payment" value="contra_entrega" checked={paymentMethod === 'contra_entrega'} onChange={e => setPaymentMethod(e.target.value)} />
                                 Contra entrega
                             </label>
                             <label className="radio-label">
-                                <input type="radio" name="payment" value="online" defaultChecked onChange={e => setPaymentMethod(e.target.value)} />
+                                <input type="radio" name="payment" value="online" checked={paymentMethod === 'online'} onChange={e => setPaymentMethod(e.target.value)} />
                                 Pago en línea con Mercado Pago
                             </label>
                         </div>
                         <div className="form-actions">
                             <button type="submit" className="btn-primary" disabled={isProcessing}>
-                                {isProcessing ? 'Procesando...' : 'Continuar'}
+                                {isProcessing ? 'Procesando...' : 'Finalizar Pedido'}
                             </button>
                             <button type="button" className="btn-secondary" onClick={() => navigate('/cart')}>Cancelar</button>
                         </div>

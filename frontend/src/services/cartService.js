@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.PROD 
-    ? '/api' 
-    : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
-
-const API_URL = `${API_BASE_URL}/cart`;
+const API_URL = 'http://localhost:5000/api/cart';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -62,5 +58,14 @@ export const clearCart = async () => {
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Error al vaciar el carrito.');
+    }
+};
+
+export const removeMultipleItems = async (itemIds) => {
+    try {
+        const response = await api.post('/remove-items', { itemIds });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.error || 'Error al eliminar ítems del carrito.');
     }
 };

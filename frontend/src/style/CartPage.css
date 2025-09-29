@@ -18,6 +18,8 @@
     gap: 2rem;
     max-width: 1400px;
     margin: 0 auto;
+    align-items: flex-start;
+    /* Clave para que el sticky funcione bien */
 }
 
 .cart-items-section {
@@ -117,13 +119,15 @@
     font-size: 1.1rem;
 }
 
+/* --- REGLA MODIFICADA --- */
 .order-summary-section .summary-card {
     background-color: var(--fondo-tarjetas);
     border: 1px solid var(--borde-suave);
     border-radius: 8px;
     padding: 1.5rem;
     position: sticky;
-    top: 2rem;
+    top: 150px;
+    /* Distancia desde arriba (ajustar según la altura de tu navbar) */
 }
 
 .summary-card h3 {
@@ -167,21 +171,18 @@
     pointer-events: none;
 }
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
-
-/* Tablets y pantallas medianas */
 @media (max-width: 1024px) {
     .cart-layout {
         grid-template-columns: 1fr;
-        /* Apila las columnas */
+    }
+
+    .order-summary-section .summary-card {
+        position: static;
+        /* En móvil, el resumen ya no es fijo */
+        top: auto;
     }
 }
 
-/* Móviles */
 @media (max-width: 767px) {
     .cart-main-content {
         padding: 1rem 3%;
@@ -189,7 +190,6 @@
 
     .cart-item {
         grid-template-columns: auto 1fr;
-        /* Imagen a la izquierda, resto abajo */
         grid-template-rows: auto auto auto;
         gap: 0.5rem 1rem;
     }
@@ -206,14 +206,12 @@
         grid-column: 2 / 3;
         grid-row: 2 / 3;
         justify-self: flex-start;
-        /* Alinear a la izquierda */
     }
 
     .cart-item-price {
         grid-column: 2 / 3;
         grid-row: 3 / 4;
         text-align: left;
-        /* Alinear a la izquierda */
         margin-top: 0.5rem;
     }
 }

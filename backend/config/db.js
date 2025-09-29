@@ -21,7 +21,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   ssl: {
       ca: fs.readFileSync(path.join(__dirname, '../certs/ca-certificate.crt'))
-      //,rejectUnauthorized: false 
+      ,rejectUnauthorized: false 
   }
 });
 

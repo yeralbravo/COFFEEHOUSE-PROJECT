@@ -14,8 +14,6 @@ export const getCartByUserId = async (userId) => {
                 CASE WHEN ci.product_id IS NOT NULL THEN p.precio ELSE i.precio END AS precio,
                 CASE WHEN ci.product_id IS NOT NULL THEN p.stock ELSE i.stock END AS stock,
                 
-                -- ================== CORRECCIÓN ==================
-                -- Seleccionamos 'tipo' y 'categoria' en sus propias columnas para no mezclarlas.
                 p.tipo,
                 i.categoria,
                 
@@ -35,7 +33,7 @@ export const getCartByUserId = async (userId) => {
         return rows.map(row => ({
             ...row,
             images: row.images ? row.images.split(',') : [],
-            isProduct: !!row.product_id // Este flag es ahora nuestra fuente de verdad
+            isProduct: !!row.product_id
         }));
     } catch (error) {
         console.error("Error al obtener el carrito por ID de usuario:", error);
@@ -43,33 +41,10 @@ export const getCartByUserId = async (userId) => {
     }
 };
 
-export const addItemToCart = async (userId, itemId, quantity) => {
+export const addItemToCart = async (userId, itemId, quantity, isProduct) => {
     try {
-        let itemTypeColumn = null;
+        const itemTypeColumn = isProduct ? "product_id" : "insumo_id";
 
-        // Buscar en products
-        const [productExists] = await db.query(
-            `SELECT id FROM products WHERE id = ?`,
-            [itemId]
-        );
-
-        if (productExists.length > 0) {
-            itemTypeColumn = "product_id";
-        } else {
-            // Si no existe en products, buscar en insumos
-            const [insumoExists] = await db.query(
-                `SELECT id FROM insumos WHERE id = ?`,
-                [itemId]
-            );
-
-            if (insumoExists.length > 0) {
-                itemTypeColumn = "insumo_id";
-            } else {
-                throw new Error(`El item con id ${itemId} no existe ni en products ni en insumos`);
-            }
-        }
-
-        // Revisar si ya existe en el carrito
         const [existingItem] = await db.query(
             `SELECT * FROM cart_items WHERE user_id = ? AND ${itemTypeColumn} = ?`,
             [userId, itemId]
@@ -132,6 +107,23 @@ export const clearCartByUserId = async (userId) => {
         return result;
     } catch (error) {
         console.error("Error al vaciar el carrito:", error);
+        throw error;
+    }
+};
+
+// --- NUEVA FUNCIÓN AÑADIDA ---
+export const removeMultipleItemsFromCart = async (userId, itemIds) => {
+    if (!itemIds || itemIds.length === 0) {
+        return { affectedRows: 0 };
+    }
+    try {
+        const [result] = await db.query(
+            'DELETE FROM cart_items WHERE user_id = ? AND id IN (?)',
+            [userId, itemIds]
+        );
+        return result;
+    } catch (error) {
+        console.error("Error al eliminar múltiples ítems del carrito:", error);
         throw error;
     }
 };

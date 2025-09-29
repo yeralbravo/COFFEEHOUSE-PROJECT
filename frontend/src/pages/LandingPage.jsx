@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react'; // <-- LA LÍNEA IMPORTANTE ES ESTA
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAlerts } from '../hooks/useAlerts';
 import { sendContactMessage } from '../services/contactService';
 import axios from 'axios';
 import '../style/LandingPage.css';
 import logo from '../assets/logo.png';
-import { FiCoffee, FiPackage, FiTruck, FiCreditCard } from 'react-icons/fi';
+import { FiCoffee, FiPackage, FiTruck, FiCreditCard, FiMenu, FiX } from 'react-icons/fi';
 import { FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const LandingPage = () => {
     const navigate = useNavigate();
     const { showSuccessAlert, showErrorAlert } = useAlerts();
     const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '', privacy: false });
-    
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isMenuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -32,9 +32,7 @@ const LandingPage = () => {
         fetchProducts();
     }, []);
 
-    const handleRedirectToRegister = () => {
-        navigate('/register');
-    };
+    const handleRedirectToRegister = () => navigate('/register');
 
     const handleFormChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -48,7 +46,6 @@ const LandingPage = () => {
             return;
         }
         try {
-            // eslint-disable-next-line no-unused-vars
             const { privacy, ...formData } = contactForm;
             const response = await sendContactMessage(formData);
             showSuccessAlert(response.message);
@@ -58,24 +55,58 @@ const LandingPage = () => {
         }
     };
 
+    const scrollToSection = (sectionId) => {
+        setMenuOpen(false);
+        setTimeout(() => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // Si la sección es 'home', hacemos scroll al inicio de la página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }, 100);
+    };
+
   return (
     <div className="main-container">
-      {/* Header */}
       <header className="top-header">
+        <button className="hamburger-btn-landing" onClick={() => setMenuOpen(true)}>
+            <FiMenu />
+        </button>
         <div className="brand-logo">
           <img src={logo} alt="Coffee House Logo" className="logo-image" />
           <h1 className="brand-name">COFFEE HOUSE</h1>
         </div>
         <nav className="navigation-menu">
-          <a href="#about-us" className="menu-item">Nosotros</a>
-          <a href="#our-products" className="menu-item">Productos</a>
-          <a href="#suppliers" className="menu-item">Proveedores</a>
-          <a href="#contact-info" className="menu-item">Contacto</a>
+          {/* --- ENLACE AÑADIDO --- */}
+          <a onClick={() => scrollToSection('home')}>Inicio</a>
+          <a onClick={() => scrollToSection('about-us')}>Nosotros</a>
+          <a onClick={() => scrollToSection('our-products')}>Productos</a>
+          <a onClick={() => scrollToSection('suppliers')}>Proveedores</a>
+          <a onClick={() => scrollToSection('contact-info')}>Contacto</a>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="hero-banner">
+      <div className={`mobile-menu-overlay ${isMenuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(false)}></div>
+      <aside className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-header">
+            <h3>Menú</h3>
+            <button className="mobile-menu-close" onClick={() => setMenuOpen(false)}>
+                <FiX />
+            </button>
+        </div>
+        <nav className="mobile-nav-links">
+            {/* --- ENLACE AÑADIDO --- */}
+            <a onClick={() => scrollToSection('home')}>Inicio</a>
+            <a onClick={() => scrollToSection('about-us')}>Nosotros</a>
+            <a onClick={() => scrollToSection('our-products')}>Productos</a>
+            <a onClick={() => scrollToSection('suppliers')}>Proveedores</a>
+            <a onClick={() => scrollToSection('contact-info')}>Contacto</a>
+        </nav>
+      </aside>
+
+      <section className="hero-banner" id="home">
         <div className="banner-content">
           <h2 className="banner-heading">El mejor café, directamente en tu hogar</h2>
           <p className="banner-text">Explora nuestra selección de cafés premium y disfruta de entregas rápidas.</p>
@@ -86,7 +117,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="features-section" id="about-us">
         <div className="feature-item">
           <div className="feature-icon"><FiCoffee /></div>
@@ -110,7 +140,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Productos Section */}
       <section className="product-showcase" id="our-products">
         <h2 className="product-heading">Descubre nuestros productos</h2>
         <div className="product-layout">
@@ -137,18 +166,16 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Suppliers Section */}
       <section className="suppliers-section" id="suppliers">
         <h2>¿Eres proveedor de cafés especiales?</h2>
         <p>Únete a nuestra plataforma y llega a más clientes.</p>
         <Link to="/supplier-request" className="btn btn-supplier-form">FORMULARIO PROVEEDOR</Link>
       </section>
 
-      {/* Contact Section */}
       <section className="contact-section" id="contact-info">
         <form className="supplier-form" onSubmit={handleFormSubmit}>
           <h3 className="contact-header">Contáctanos</h3>
-          <p className="contact-details">Tú opinión es muy importante para nosotros. Por favor, llene los siguientes datos y nos pondremos en contacto a la brevedad</p>
+          <p className="contact-details">Su opinión es muy importante para nosotros, por favor llene los siguientes datos y nos pondremos en contacto a la brevedad</p>
           
           <div className="form-row">
             <input type="text" name="name" className="form-input" placeholder="Nombre" value={contactForm.name} onChange={handleFormChange} required />
@@ -158,7 +185,6 @@ const LandingPage = () => {
           <input type="email" name="email" className="form-input" placeholder="Correo" value={contactForm.email} onChange={handleFormChange} required />
           <textarea name="message" className="form-textarea" placeholder="Mensaje" value={contactForm.message} onChange={handleFormChange} required></textarea>
           
-          {/* --- ESTRUCTURA DEL LABEL MODIFICADA --- */}
           <label className="form-label">
             <input type="checkbox" name="privacy" className="form-checkbox" checked={contactForm.privacy} onChange={handleFormChange} required />
             Acepto las&nbsp;
@@ -170,25 +196,26 @@ const LandingPage = () => {
         </form>
       </section>
 
-      {/* --- FOOTER COMPLETAMENTE REDISEÑADO --- */}
-            <footer className="site-footer">
+      <footer className="site-footer">
         <div className="footer-content">
             <div className="footer-column">
                 <h3 className="footer-brand">COFFEE HOUSE</h3>
                 <nav className="footer-nav">
-                    <a href="#about-us">Inicio</a>
-                    <a href="#about-us">Nosotros</a>
-                    <a href="#our-products">Productos</a>
-                    <a href="#suppliers">Proveedores</a>
-                    <a href="#contact-info">Contacto</a>
+                    <a onClick={() => scrollToSection('home')}>Inicio</a>
+                    <a onClick={() => scrollToSection('about-us')}>Nosotros</a>
+                    <a onClick={() => scrollToSection('our-products')}>Productos</a>
+                    <a onClick={() => scrollToSection('suppliers')}>Proveedores</a>
+                    <a onClick={() => scrollToSection('contact-info')}>Contacto</a>
                 </nav>
             </div>
             <div className="footer-column footer-column-social">
-                <h4 className="footer-column-title">Síguenos</h4>
-                <div className="social-networks">
-                    <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
-                    <a href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
-                    <a href="https://twitter.com" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
+                <div className="social-block">
+                    <h4 className="footer-column-title">Síguenos</h4>
+                    <div className="social-networks">
+                        <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
+                        <a href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
+                        <a href="https://twitter.com" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
+                    </div>
                 </div>
             </div>
         </div>

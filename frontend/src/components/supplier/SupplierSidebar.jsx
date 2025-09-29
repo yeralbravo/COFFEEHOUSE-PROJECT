@@ -1,15 +1,15 @@
-import React, { useState, useContext } from 'react'; // Se importa useContext
+import React, { useState, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import AuthContext from '../../context/AuthContext'; // Se importa AuthContext
+import AuthContext from '../../context/AuthContext';
 import {
-    FiGrid, FiPlus, FiBox, FiCoffee, FiShoppingBag,
+    FiHome, FiGrid, FiPlus, FiBox, FiCoffee, FiShoppingBag,
     FiFileText, FiBarChart2, FiChevronDown, FiX, FiShoppingCart,
     FiTrendingUp, FiPackage, FiAlertTriangle, FiLogOut
 } from 'react-icons/fi';
 import '../../style/SupplierSidebar.css';
 
 const SupplierSidebar = ({ isOpen, onClose }) => {
-    const { user, logout } = useContext(AuthContext); // Se obtienen user y logout
+    const { user, logout } = useContext(AuthContext);
     const [isProductsOpen, setProductsOpen] = useState(false);
     const [isStatsOpen, setStatsOpen] = useState(false);
     const [isStoreOpen, setStoreOpen] = useState(false);
@@ -26,15 +26,15 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                 <div className="sidebar-header">
                     <h3>Panel Proveedor</h3>
                     <button onClick={onClose} className="close-btn"><FiX /></button>
-                    {/* SECCIÓN DE PERFIL AÑADIDA */}
                     <div className="profile-info-supplier">
                         <img src={profilePicture} alt="Perfil" className="sidebar-profile-picture" />
                         <span>{user?.nombre} {user?.apellido}</span>
                     </div>
                 </div>
                 <div className="sidebar-links">
-                    {/* ... (enlaces del menú sin cambios) ... */}
+                    <NavLink to="/home" className="sidebar-link" onClick={onClose}><FiHome /> Inicio</NavLink>
                     <NavLink to="/supplier/dashboard" className="sidebar-link" onClick={onClose}><FiGrid /> Dashboard</NavLink>
+                    
                     <div className="submenu-container">
                         <button className="sidebar-link submenu-toggle" onClick={() => setStoreOpen(!isStoreOpen)}>
                             <span><FiShoppingCart /> Ver Tienda</span>
@@ -48,8 +48,10 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                             </div>
                         )}
                     </div>
+
                     <NavLink to="/supplier/item/create?type=product" className="sidebar-link" onClick={onClose}><FiPlus /> Crear producto</NavLink>
                     <NavLink to="/supplier/orders" className="sidebar-link" onClick={onClose}><FiFileText /> Pedidos</NavLink>
+                    
                     <div className="submenu-container">
                         <button className="sidebar-link submenu-toggle" onClick={() => setProductsOpen(!isProductsOpen)}>
                             <span><FiBox /> Mis productos</span>
@@ -62,6 +64,7 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                             </div>
                         )}
                     </div>
+
                     <div className="submenu-container">
                         <button className="sidebar-link submenu-toggle" onClick={() => setStatsOpen(!isStatsOpen)}>
                             <span><FiBarChart2 /> Estadísticas</span>
@@ -77,7 +80,6 @@ const SupplierSidebar = ({ isOpen, onClose }) => {
                         )}
                     </div>
                 </div>
-                {/* FOOTER CON BOTÓN DE LOGOUT AÑADIDO */}
                 <div className="sidebar-footer-supplier">
                     <button onClick={logout} className="logout-btn-supplier">
                         <FiLogOut /> Cerrar sesión

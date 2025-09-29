@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../middleware/authMiddleware.js';
-import { getCartByUserId, addItemToCart, updateCartItemQuantity, removeItemFromCart, clearCartByUserId } from '../models/Cart.js';
+import { getCartByUserId, addItemToCart, updateCartItemQuantity, removeItemFromCart, clearCartByUserId, removeMultipleItemsFromCart } from '../models/Cart.js';
 
 const router = express.Router();
 
@@ -49,6 +49,20 @@ router.delete('/clear', verifyToken, async (req, res) => {
         res.status(200).json({ success: true, message: 'Carrito vaciado.' });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Error al vaciar el carrito.' });
+    }
+});
+
+// --- NUEVA RUTA AÑADIDA ---
+router.post('/remove-items', verifyToken, async (req, res) => {
+    try {
+        const { itemIds } = req.body; // Esperamos un array de IDs de cart_items
+        if (!Array.isArray(itemIds)) {
+            return res.status(400).json({ success: false, error: 'Se esperaba un array de IDs.' });
+        }
+        await removeMultipleItemsFromCart(req.user.id, itemIds);
+        res.status(200).json({ success: true, message: 'Ítems comprados eliminados del carrito.' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error al limpiar ítems del carrito.' });
     }
 });
 

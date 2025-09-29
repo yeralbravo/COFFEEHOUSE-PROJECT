@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import AuthContext from './AuthContext';
 import { useAlerts } from '../hooks/useAlerts';
-import { getCart, addItem, updateItemQuantity, removeItem, clearCart as clearCartApi } from '../services/cartService';
+import { getCart, addItem, updateItemQuantity, removeItem, clearCart as clearCartApi, removeMultipleItems } from '../services/cartService';
 
 const CartContext = createContext();
 
@@ -38,7 +38,6 @@ export const CartProvider = ({ children }) => {
         fetchCart();
     }, [fetchCart]);
 
-    // Parámetro corregido de 'product' a 'item' para consistencia
     const addToCart = async (item, quantity = 1) => {
         if (!user) {
             showErrorAlert("Debes iniciar sesión para agregar productos al carrito.");
@@ -56,8 +55,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const isProduct = !!item.tipo;
-            await addItem(item.id, quantity, isProduct);
+            await addItem(item.id, quantity, item.isProduct);
             await fetchCart();
             return true;
         } catch (error) {
@@ -72,7 +70,6 @@ export const CartProvider = ({ children }) => {
             return;
         }
         
-        // Lógica modificada para no eliminar en cero
         if (newQuantity <= 0) {
             showErrorAlert("La cantidad mínima es 1. Para eliminar, usa el botón 'Eliminar'.");
             return;
@@ -93,10 +90,7 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeFromCart = async (itemId, isProduct) => {
-        if (!user) {
-            showErrorAlert("Debes iniciar sesión para modificar el carrito.");
-            return;
-        }
+        if (!user) return;
         try {
             await removeItem(itemId, isProduct);
             await fetchCart();
@@ -115,6 +109,17 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    const removePurchasedItems = async (purchasedItems) => {
+        if (!user || !purchasedItems || purchasedItems.length === 0) return;
+        try {
+            const itemIdsToRemove = purchasedItems.map(item => item.cartItemId);
+            await removeMultipleItems(itemIdsToRemove);
+            await fetchCart();
+        } catch (error) {
+            showErrorAlert(error.message);
+        }
+    };
+
     const cartTotal = cartItems.reduce((total, item) => total + item.quantity * item.precio, 0);
     const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -124,6 +129,7 @@ export const CartProvider = ({ children }) => {
         updateQuantity,
         removeFromCart,
         clearCart,
+        removePurchasedItems, 
         cartTotal,
         itemCount,
         loading
@@ -136,5 +142,4 @@ export const CartProvider = ({ children }) => {
     );
 };
 
-// Aseguramos que el export default esté presente si es necesario en tu estructura
 export default CartContext;

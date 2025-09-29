@@ -28,7 +28,6 @@ const SupplierHeader = ({ onMenuClick }) => {
                     setNotifications(response.data);
                     setUnreadCount(response.data.filter(n => !n.is_read).length);
                 }
-            // eslint-disable-next-line no-unused-vars
             } catch (error) { console.error("Error al obtener notificaciones"); }
         }
     };
@@ -62,7 +61,6 @@ const SupplierHeader = ({ onMenuClick }) => {
         <header className="client-header-container">
             <div className="top-bar">
                 <div className="header-left">
-                    {/* --- CLASE 'always-visible' AÑADIDA --- */}
                     <button onClick={onMenuClick} className="icon-btn hamburger-btn always-visible">
                         <FiMenu />
                     </button>
