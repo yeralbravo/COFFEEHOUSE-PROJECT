@@ -1,9 +1,5 @@
 /**
  * ARCHIVO: AdminPanel.css
- *
- * MODIFICACIÓN FINAL:
- * - Se añadió `overflow-x: hidden;` a `.chart-card` para forzar a las
- * gráficas a ser responsivas y no desbordar su contenedor.
  */
 .admin-header {
     display: flex;

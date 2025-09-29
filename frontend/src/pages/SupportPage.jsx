@@ -1,81 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { fetchAllMessages, markAsRead } from '../services/contactService';
-import { FiMail, FiArrowLeft } from 'react-icons/fi';
+import React, { useState, useEffect, useCallback } from 'react';
+import { fetchAllMessages, replyToMessage } from '../services/contactService';
+import { useAlerts } from '../hooks/useAlerts';
+import { FiMail, FiSend, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import '../style/SupportPage.css';
 
 const SupportPage = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
-    const [isDetailView, setIsDetailView] = useState(false); // Nuevo estado para vista móvil
+    const [replyText, setReplyText] = useState('');
+    const [isReplying, setIsReplying] = useState(false);
+    const [filter, setFilter] = useState('pending');
+    const { showSuccessAlert, showErrorAlert } = useAlerts();
+    const [showDetailView, setShowDetailView] = useState(false);
 
-    // Detectar si estamos en una pantalla móvil
-    const isMobile = () => window.innerWidth <= 767;
-
-    const loadMessages = async () => {
+    const loadMessages = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetchAllMessages();
+            const response = await fetchAllMessages(filter);
             if (response.success) {
                 setMessages(response.data);
             }
         } catch (error) {
-            console.error(error);
+            showErrorAlert(error.message);
         } finally {
             setLoading(false);
         }
-    };
+    }, [filter, showErrorAlert]);
 
     useEffect(() => {
         loadMessages();
-    }, []);
+    }, [loadMessages]);
 
-    // Efecto para manejar el cambio de tamaño de la ventana
     useEffect(() => {
-        const handleResize = () => {
-            if (!isMobile() && isDetailView) {
-                setIsDetailView(false); // Si la pantalla se agranda, salimos de la vista de detalle móvil
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [isDetailView]);
+        setSelectedMessage(null);
+    }, [filter]);
 
-
-    const handleSelectMessage = async (message) => {
+    const handleSelectMessage = (message) => {
         setSelectedMessage(message);
-        if (isMobile()) {
-            setIsDetailView(true); // Entrar en modo detalle en móvil
-        }
-        if (!message.is_read) {
-            try {
-                await markAsRead(message.id);
-                const updatedMessages = messages.map(m =>
-                    m.id === message.id ? { ...m, is_read: true } : m
-                );
-                setMessages(updatedMessages);
-            } catch (error) {
-                console.error("Error al marcar como leído:", error);
-            }
+        setReplyText('');
+        setShowDetailView(true);
+    };
+
+    const handleReplySubmit = async (e) => {
+        e.preventDefault();
+        if (!replyText.trim() || !selectedMessage) return;
+        
+        setIsReplying(true);
+        try {
+            const response = await replyToMessage(selectedMessage.id, replyText);
+            showSuccessAlert(response.message);
+            setReplyText('');
+            loadMessages();
+        } catch (error) {
+            showErrorAlert(error.message);
+        } finally {
+            setIsReplying(false);
         }
     };
 
-    const handleBackToList = () => {
-        setIsDetailView(false);
-    };
+    const unreadCount = messages.filter(m => m.status === 'pending').length;
 
     return (
-        <div className={`support-page-layout ${isDetailView ? 'show-detail' : ''}`}>
+        <div className={`support-page-layout ${showDetailView ? 'show-detail' : ''}`}>
             <div className="message-list-panel">
                 <header className="panel-header">
                     <h1>Bandeja de Entrada</h1>
-                    <p>{messages.filter(m => !m.is_read).length} mensajes nuevos</p>
+                    {filter === 'pending' && <p>{unreadCount} mensajes nuevos</p>}
                 </header>
+                <div className="filter-tabs">
+                    <button onClick={() => setFilter('pending')} className={filter === 'pending' ? 'active' : ''}>Pendientes</button>
+                    <button onClick={() => setFilter('replied')} className={filter === 'replied' ? 'active' : ''}>Respondidos</button>
+                </div>
                 <div className="message-list">
                     {loading ? <p>Cargando mensajes...</p> : messages.map(msg => (
                         <div
                             key={msg.id}
-                            className={`message-item ${selectedMessage?.id === msg.id ? 'active' : ''} ${!msg.is_read ? 'unread' : ''}`}
+                            className={`message-item ${selectedMessage?.id === msg.id ? 'active' : ''}`}
                             onClick={() => handleSelectMessage(msg)}
                         >
                             <div className="sender-info">
@@ -92,12 +93,9 @@ const SupportPage = () => {
                 {selectedMessage ? (
                     <>
                         <header className="panel-header detail-header">
-                            {/* Botón de volver para móvil */}
-                            {isDetailView && (
-                                <button onClick={handleBackToList} className="back-to-list-btn">
-                                    <FiArrowLeft /> Volver
-                                </button>
-                            )}
+                            <button className="back-to-list-btn" onClick={() => setShowDetailView(false)}>
+                                <FiArrowLeft /> Volver
+                            </button>
                             <div>
                                 <h2>{selectedMessage.name}</h2>
                                 <a href={`mailto:${selectedMessage.email}`} className="sender-email">{selectedMessage.email}</a>
@@ -108,13 +106,46 @@ const SupportPage = () => {
                             </span>
                         </header>
                         <div className="message-body">
-                            {selectedMessage.message}
+                            <p>{selectedMessage.message}</p>
                         </div>
+                        
+                        {selectedMessage.status === 'replied' ? (
+                            <div className="replied-section">
+                                <div className="replied-header">
+                                    <FiCheckCircle />
+                                    <h4>Respuesta Enviada</h4>
+                                </div>
+                                <p className="replied-meta">
+                                    Respondido por <strong>{selectedMessage.admin_name || 'Admin'}</strong> el {new Date(selectedMessage.replied_at).toLocaleString('es-CO')}
+                                </p>
+                                <div className="replied-message">
+                                    {selectedMessage.reply_message}
+                                </div>
+                            </div>
+                        ) : (
+                            <footer className="reply-footer">
+                                {/* --- ESTRUCTURA MODIFICADA --- */}
+                                <form onSubmit={handleReplySubmit} className="reply-form">
+                                    <textarea
+                                        value={replyText}
+                                        onChange={(e) => setReplyText(e.target.value)}
+                                        placeholder={`Responder a ${selectedMessage.name}...`}
+                                        className="reply-textarea"
+                                        disabled={isReplying}
+                                    />
+                                    <div className="reply-actions">
+                                        <button type="submit" className="reply-button" disabled={isReplying || !replyText.trim()}>
+                                            {isReplying ? 'Enviando...' : <><FiSend /> Responder</>}
+                                        </button>
+                                    </div>
+                                </form>
+                            </footer>
+                        )}
                     </>
                 ) : (
                     <div className="no-message-selected">
                         <FiMail size={50} />
-                        <p>Selecciona un mensaje para leerlo</p>
+                        <p>Selecciona un mensaje para leerlo y responder</p>
                     </div>
                 )}
             </div>

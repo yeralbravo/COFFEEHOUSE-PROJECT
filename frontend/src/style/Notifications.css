@@ -202,3 +202,11 @@
         /* Altura máxima para no ocupar toda la pantalla */
     }
 }
+
+/* --- AJUSTE PARA RESPONSIVIDAD EN PANTALLAS PEQUEÑAS --- */
+@media (max-width: 400px) {
+    .notification-content p {
+        white-space: normal; /* Permite que el texto del mensaje se divida en varias líneas */
+        word-break: break-word; /* Rompe palabras largas si es necesario */
+    }
+}

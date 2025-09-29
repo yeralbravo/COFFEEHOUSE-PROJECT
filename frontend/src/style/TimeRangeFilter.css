@@ -4,11 +4,6 @@
  * ============================================
  * Estilos para el componente de filtro por rango
  * de tiempo, usado en varios dashboards y reportes.
- *
- * MODIFICACIÓN:
- * - Se añadió un media query para reorganizar
- * completamente el componente en pantallas pequeñas,
- * apilando los elementos y ajustando tamaños.
  */
 
 .time-filters-container {
@@ -70,16 +65,13 @@
 @media (max-width: 767px) {
     .time-filters-container {
         flex-direction: column;
-        /* Apila el grupo de botones y el input de fecha */
         align-items: stretch;
-        /* Hace que ambos ocupen el ancho completo */
         padding: 0.5rem;
     }
 
     .time-range-buttons {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        /* 4 botones en una fila uniforme */
+        grid-template-columns: repeat(4, 1fr); /* Para tablets */
         width: 100%;
         gap: 0.3rem;
         padding: 0.3rem;
@@ -88,12 +80,9 @@
 
     .time-range-buttons button {
         padding: 0.6rem 0.2rem;
-        /* Más padding vertical, menos horizontal */
         font-size: 0.8rem;
-        /* Fuente más pequeña */
         text-align: center;
         white-space: nowrap;
-        /* Evita que el texto se parta en dos líneas */
     }
 
     .date-input-wrapper {
@@ -103,7 +92,20 @@
     .date-filter-input {
         width: 100%;
         box-sizing: border-box;
-        /* Asegura que el padding no desborde el contenedor */
         text-align: center;
+    }
+}
+
+/* --- CORRECCIÓN AÑADIDA PARA PANTALLAS PEQUEÑAS (320px) --- */
+@media (max-width: 400px) {
+    .time-range-buttons {
+        /* Hacemos que los botones se muestren en una cuadrícula de 2x2 */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem; /* Un poco más de espacio */
+    }
+
+    .time-range-buttons button {
+        font-size: 0.85rem; /* Letra un poco más grande */
+        padding: 0.6rem;
     }
 }

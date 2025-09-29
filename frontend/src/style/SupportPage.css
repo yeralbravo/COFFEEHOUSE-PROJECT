@@ -1,9 +1,8 @@
 /**
  * ARCHIVO: SupportPage.css
- *
  * MODIFICACIÓN:
- * - Se añadieron estilos para el botón `.back-to-list-btn` dentro
- * del media query para que sea visible y funcional en móviles.
+ * - Se ajustaron los estilos de .reply-form, .reply-textarea
+ * - Se añadió la clase .reply-actions para posicionar el botón.
  */
 
 .support-page-layout {
@@ -43,6 +42,28 @@
     color: var(--texto-desactivado);
 }
 
+.filter-tabs {
+    display: flex;
+    padding: 0.5rem 1.5rem;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--borde-principal);
+}
+
+.filter-tabs button {
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-tabs button.active {
+    background-color: var(--fondo-secundario);
+    color: var(--verde-oscuro);
+}
+
 .message-list {
     overflow-y: auto;
     flex-grow: 1;
@@ -61,11 +82,6 @@
 
 .message-item.active {
     background-color: var(--fondo-secundario);
-}
-
-.message-item.unread .sender-name {
-    font-weight: 700;
-    color: var(--texto-principal);
 }
 
 .sender-info {
@@ -138,11 +154,112 @@
     text-align: center;
 }
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
+.reply-footer {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+}
+
+/* --- ESTILOS MODIFICADOS --- */
+.reply-form {
+    display: flex;
+    flex-direction: column; /* Cambiado a columna */
+    gap: 1rem;
+}
+
+.reply-textarea {
+    width: 100%; /* Ocupa todo el ancho */
+    min-height: 100px; /* Un poco más alto */
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    border-color: #24651C;
+    box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
+}
+
+/* Nuevo contenedor para el botón */
+.reply-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea el botón a la derecha */
+}
+
+.reply-button {
+    background-color: #24651C;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem; /* Ligeramente más pequeño */
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.reply-button:hover {
+    background-color: #1a4d2e;
+}
+
+.reply-button:disabled {
+    background-color: #a7d7b9;
+    cursor: not-allowed;
+}
+
+/* --- SECCIÓN DE RESPUESTAS --- */
+.replied-section {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+}
+
+.replied-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #24651C;
+}
+
+.replied-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.replied-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.replied-message {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1rem;
+    white-space: pre-wrap;
+    color: #333;
+}
+
+
+/* --- ESTILOS RESPONSIVOS --- */
+
+.back-to-list-btn {
+    display: none;
+}
+
 @media (max-width: 1024px) {
     .support-page-layout {
         grid-template-columns: 280px 1fr;
@@ -164,7 +281,6 @@
         display: none;
     }
 
-    /* --- ESTILOS AÑADIDOS PARA EL BOTÓN 'VOLVER' --- */
     .back-to-list-btn {
         display: flex;
         align-items: center;
@@ -177,12 +293,10 @@
         cursor: pointer;
         padding: 0;
         margin-bottom: 1rem;
-        /* Espacio debajo del botón */
     }
 
     .message-detail-panel .detail-header {
         flex-direction: column;
-        /* Apila los elementos del header */
         align-items: flex-start;
     }
 }

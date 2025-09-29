@@ -324,6 +324,15 @@
   background-color: var(--fondo-desactivado);
 }
 
+.contact-details{
+  padding-top: 4%;
+  padding-bottom: 7%;
+}
+
+.contact-header{
+  font-size: 1.6rem;
+}
+
 .supplier-form {
   background-color: var(--fondo-tarjetas);
   padding: 2rem;
