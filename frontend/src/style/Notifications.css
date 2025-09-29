@@ -1,10 +1,6 @@
 /**
  * ARCHIVO: Notifications.css
- *
- * MODIFICACIÓN:
- * - Se añadió un media query para que en pantallas de 480px o menos,
- * el panel de notificaciones ocupe casi todo el ancho de la pantalla
- * y tenga una altura máxima controlada, evitando desbordamientos.
+
  */
 
 .notifications-dropdown-menu {
