@@ -155,3 +155,24 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+@media (max-width: 768px) {
+
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .filter-tabs {
+        display: flex;
+        flex-direction: column;
+        width: 100%; 
+        gap: 0.5rem; 
+    }
+
+    .filter-tabs button {
+        width: 100%;
+        text-align: center;
+    }
+}
