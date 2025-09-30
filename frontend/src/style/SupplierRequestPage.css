@@ -7,128 +7,142 @@
  * enviar su solicitud de registro.
  */
 
-.supplier-request-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--fondo-principal);
+.supplier-requests-container {
+  padding: 2rem;
 }
 
-.supplier-request-main {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 2rem 1rem;
-}
-
-.form-container-supplier {
-  width: 100%;
-  max-width: 650px;
-}
-
-.supplier-box {
-  background: var(--fondo-tarjetas);
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px var(--sombra-principal);
-  width: 100%;
-  text-align: center;
-}
-
-.supplier-box h2 {
-  margin-bottom: 1rem;
+.page-title {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--texto-principal);
+  margin-bottom: 2rem;
   font-family: 'Lora', serif;
 }
 
-.supplier-box .form-description {
-  font-size: 1rem;
-  color: var(--texto-desactivado);
-  text-align: center;
-  margin-bottom: 2rem;
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--fondo-secundario);
+  /* <-- CAMBIO DE COLOR DE FONDO */
+  padding: 0.5rem;
+  border-radius: 12px;
+  align-self: flex-start;
 }
 
-.form-fieldset {
-  border: 1px solid var(--borde-principal);
+.filter-tabs button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
   border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: var(--texto-desactivado);
+  /* <-- CAMBIO DE COLOR DE TEXTO */
+}
+
+.filter-tabs button.active {
+  background-color: var(--fondo-tarjetas);
+  color: var(--color-primario);
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--sombra-principal);
+}
+
+.requests-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.fieldset-legend {
-  padding: 0 0.5rem;
-  margin-left: 1rem;
-  font-weight: 600;
-  color: var(--color-primario);
-}
-
-.supplier-box input,
-.supplier-box textarea {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--borde-principal);
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: var(--fondo-input);
-  transition: all 0.2s ease-in-out;
-  font-family: 'Inter', sans-serif;
-}
-
-.supplier-box input:focus,
-.supplier-box textarea:focus {
-  outline: none;
-  border-color: var(--color-primario);
+.no-requests-card {
   background-color: var(--fondo-tarjetas);
-  box-shadow: 0 0 0 3px rgba(36, 101, 28, 0.15);
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  color: var(--texto-desactivado);
+  border: 1px dashed var(--borde-principal);
 }
 
-.supplier-box textarea {
-  resize: vertical;
+.request-card {
+  background-color: var(--fondo-tarjetas);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--sombra-principal);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
 }
 
-.validation-error-text {
-  color: var(--color-peligro);
-  font-size: 0.875rem;
-  text-align: left;
-  margin-top: 0.25rem;
+.request-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.submit-button {
-  width: 100%;
-  padding: 1rem;
+.request-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--fondo-principal);
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.company-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.request-date {
+  font-size: 0.9rem;
+  color: var(--texto-desactivado);
+}
+
+.request-card-body {
+  padding: 1.5rem;
+  line-height: 1.7;
+}
+
+.request-card-body p {
+  margin: 0 0 0.5rem 0;
+}
+
+.request-card-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.request-card-actions button {
+  flex-grow: 1;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-approve {
   background-color: var(--color-primario);
   color: var(--texto-blanco);
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
-.submit-button:hover {
+.btn-approve:hover {
   background-color: var(--color-primario-hover);
 }
 
-/*
- * ============================================
- * MEDIA QUERIES (DISEÑO RESPONSIVO)
- * ============================================
-*/
+.btn-reject {
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro);
+}
+
+.btn-reject:hover {
+  background-color: var(--color-peligro);
+  color: var(--texto-blanco);
+}
 
 @media (max-width: 480px) {
-  .supplier-box {
-    padding: 1.5rem;
-  }
-
-  .supplier-box h2 {
-    font-size: 1.5rem;
+  .filter-tabs {
+    flex-direction: column;
+    align-self: stretch;
   }
 }

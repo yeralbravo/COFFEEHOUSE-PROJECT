@@ -208,6 +208,12 @@
     color: var(--texto-principal);
 }
 
+.gratis-detalle{
+    color: var(--color-primario);
+    font-weight: bold;
+    margin-left: 15rem;
+}
+
 /*
  * ============================================
  * MEDIA QUERIES (DISEÑO RESPONSIVO)
@@ -230,5 +236,9 @@
 
     .odm-total-summary span {
         font-size: 1.25rem;
+    }
+
+    .gratis-detalle{
+        margin-left: 10rem;
     }
 }

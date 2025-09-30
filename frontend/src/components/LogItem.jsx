@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiUserPlus, FiUserMinus, FiEdit, FiFileText, FiCheckSquare, FiTrash2 } from 'react-icons/fi';
+import { FiUserPlus, FiUserMinus, FiEdit, FiFileText, FiCheckSquare, FiTrash2, FiMessageSquare } from 'react-icons/fi';
 import '../style/ActivityLog.css';
 
 const actionInfo = {
@@ -32,6 +32,12 @@ const actionInfo = {
         icon: <FiCheckSquare />,
         colorClass: 'color-purple',
         title: 'gestionó una solicitud de proveedor'
+    },
+    // --- NUEVO TIPO DE ACCIÓN AÑADIDO ---
+    SUPPORT_MESSAGE_REPLIED: {
+        icon: <FiMessageSquare />,
+        colorClass: 'color-orange',
+        title: 'respondió un mensaje de soporte'
     }
 };
 
@@ -69,6 +75,10 @@ const LogItem = ({ log }) => {
                     return `Eliminó el pedido <strong>#${detailsObj.orderId}</strong> del cliente <strong>${detailsObj.customerName}</strong> (Total: $${new Intl.NumberFormat('es-CO').format(detailsObj.totalAmount)}).`;
                 case 'SUPPLIER_REQUEST_UPDATED':
                     return `Se <strong>${detailsObj.action}</strong> la solicitud de la empresa <strong>${detailsObj.companyName}</strong>.`;
+
+                // --- NUEVO FORMATO DE MENSAJE ---
+                case 'SUPPORT_MESSAGE_REPLIED':
+                    return `Respondió al mensaje de <strong>${detailsObj.repliedTo}</strong> (<code>${detailsObj.email}</code>).`;
 
                 default:
                     return log.details;

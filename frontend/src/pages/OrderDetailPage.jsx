@@ -112,7 +112,10 @@ const OrderDetailPage = () => {
                         <div className="summary-card">
                             <h3>Detalle de la compra</h3>
                             <div className="summary-line"><span>Productos ({order.items.length})</span><span>${new Intl.NumberFormat('es-CO').format(order.total_amount)}</span></div>
-                            {/* La línea de "Envío" ha sido eliminada */}
+                            <div className="order-item">
+                                <span>Envío</span>
+                                <span className='gratis-detalle'>Gratis</span>
+                            </div>
                             <div className="summary-line total">
                                 <span>Total</span>
                                 {/* El total ahora es solo el total de los productos */}

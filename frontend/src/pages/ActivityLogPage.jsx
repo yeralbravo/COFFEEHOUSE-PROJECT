@@ -75,6 +75,7 @@ const ActivityLogPage = () => {
                     <option value="ORDER_STATUS_UPDATED">Pedido Actualizado</option>
                     <option value="ORDER_DELETED">Pedido Eliminado</option>
                     <option value="SUPPLIER_REQUEST_UPDATED">Solicitud Gestionada</option>
+                    <option value="SUPPORT_MESSAGE_REPLIED">Soporte Respondido</option>
                 </select>
                 <input 
                     type="date" 

@@ -172,6 +172,11 @@
     color: var(--texto-desactivado);
 }
 
+.gratis{
+    color: var(--color-primario);
+    font-weight: bold;
+}
+
 /*
  * ============================================
  * MEDIA QUERIES (DISEÑO RESPONSIVO)

@@ -134,14 +134,14 @@ const CheckoutPage = () => {
             if (paymentMethod === 'online') {
                 const paymentResponse = await createPaymentOrder({ cartItems, orderId: newOrderResponse.data.orderId });
                 if (paymentResponse.success && paymentResponse.payment_url) {
-                    await removePurchasedItems(cartItems); // <-- 2. LLAMAR A LA NUEVA FUNCIÓN
-                    window.location.href = paymentResponse.payment_url; // Redirige a Mercado Pago
+                    await removePurchasedItems(cartItems);
+                    window.location.href = paymentResponse.payment_url;
                 } else {
                     throw new Error('No se pudo generar el link de pago.');
                 }
             } else {
                 showSuccessAlert('¡Pedido creado con éxito!');
-                await removePurchasedItems(cartItems); // <-- 2. LLAMAR A LA NUEVA FUNCIÓN
+                await removePurchasedItems(cartItems);
                 navigate('/mis-pedidos');
             }
         } catch (error) {
@@ -219,7 +219,15 @@ const CheckoutPage = () => {
                                     <span>${new Intl.NumberFormat('es-CO').format(item.precio * item.quantity)}</span>
                                 </div>
                             ))}
-                            <div className="order-item total"><span>Valor total</span><span>${new Intl.NumberFormat('es-CO').format(cartTotal)}</span></div>
+                            {/* --- LÍNEAS AÑADIDAS --- */}
+                            <div className="order-item">
+                                <span>Envío</span>
+                                <span className='gratis'>Gratis</span>
+                            </div>
+                            <div className="order-item total">
+                                <span>Valor total</span>
+                                <span>${new Intl.NumberFormat('es-CO').format(cartTotal)}</span>
+                            </div>
                         </div>
                     </section>
                     <section className="form-section">
