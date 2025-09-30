@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllRequests, updateRequestStatus } from '../services/supplierRequestService';
 import { useAlerts } from '../hooks/useAlerts';
-import { FiCheck, FiX } from 'react-icons/fi';
+import { FiCheck, FiX, FiEye } from 'react-icons/fi';
+import RequestDetailsModal from '../components/admin/RequestDetailsModal';
 import '../style/UserList.css';
 import '../style/AdminPanel.css';
 
@@ -10,11 +11,11 @@ const SupplierRequestsPage = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     const { showSuccessAlert, showErrorAlert, showConfirmDialog } = useAlerts();
+    const [viewingRequest, setViewingRequest] = useState(null);
 
     const fetchRequests = useCallback(async () => {
         try {
             setLoading(true);
-            // La función se llama getAllRequests
             const response = await getAllRequests(filter);
             if (response.success) {
                 setRequests(response.data);
@@ -30,11 +31,15 @@ const SupplierRequestsPage = () => {
         fetchRequests();
     }, [fetchRequests]);
 
+    // --- FUNCIÓN MODIFICADA ---
     const handleUpdateStatus = (request, newStatus) => {
         const action = newStatus === 'approved' ? 'aprobar' : 'rechazar';
+        const confirmButtonText = newStatus === 'approved' ? 'Sí, aprobar' : 'Cancelar';
+
         showConfirmDialog({
             title: `¿Estás seguro?`,
-            text: `Vas a ${action} la solicitud de ${request.company_name}.`
+            text: `Vas a ${action} la solicitud de ${request.company_name}.`,
+            confirmButtonText: confirmButtonText // <-- Pasamos el texto correcto
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -69,31 +74,36 @@ const SupplierRequestsPage = () => {
                                 <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Fecha de Solicitud</th>
-                                {filter === 'pending' && <th>Acciones</th>}
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {requests.length > 0 ? (
                                 requests.map(req => (
                                     <tr key={req.id}>
-                                        <td>{req.company_name}</td>
-                                        <td>{req.contact_person}</td>
-                                        <td>{req.email}</td>
-                                        <td>{req.phone}</td>
-                                        <td>{new Date(req.created_at).toLocaleDateString()}</td>
-                                        {filter === 'pending' && (
-                                            <td>
-                                                <div className="action-buttons">
-                                                    <button onClick={() => handleUpdateStatus(req, 'approved')} className="action-btn approve-btn" title="Aprobar"><FiCheck /></button>
-                                                    <button onClick={() => handleUpdateStatus(req, 'rejected')} className="action-btn delete-btn" title="Rechazar"><FiX /></button>
-                                                </div>
-                                            </td>
-                                        )}
+                                        <td data-label="Empresa">{req.company_name}</td>
+                                        <td data-label="Contacto">{req.contact_person}</td>
+                                        <td data-label="Email">{req.email}</td>
+                                        <td data-label="Teléfono">{req.phone}</td>
+                                        <td data-label="Fecha de Solicitud">{new Date(req.created_at).toLocaleDateString()}</td>
+                                        <td data-label="Acciones">
+                                            <div className="action-buttons">
+                                                <button onClick={() => setViewingRequest(req)} className="action-btn view-btn" title="Ver Detalles">
+                                                    <FiEye />
+                                                </button>
+                                                {filter === 'pending' && (
+                                                    <>
+                                                        <button onClick={() => handleUpdateStatus(req, 'approved')} className="action-btn approve-btn" title="Aprobar"><FiCheck /></button>
+                                                        <button onClick={() => handleUpdateStatus(req, 'rejected')} className="action-btn delete-btn" title="Rechazar"><FiX /></button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={filter === 'pending' ? 6 : 5} style={{ textAlign: 'center', padding: '2rem' }}>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
                                         No hay solicitudes en la bandeja de "{filter}".
                                     </td>
                                 </tr>
@@ -101,6 +111,13 @@ const SupplierRequestsPage = () => {
                         </tbody>
                     </table>
                 </div>
+            )}
+            
+            {viewingRequest && (
+                <RequestDetailsModal 
+                    request={viewingRequest}
+                    onClose={() => setViewingRequest(null)}
+                />
             )}
         </>
     );

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'; // <-- 1. Importar useCallback
+import { useCallback } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -6,7 +6,6 @@ const MySwal = withReactContent(Swal);
 
 export const useAlerts = () => {
 
-    // 2. Envolver cada función con useCallback
     const showSuccessAlert = useCallback((title) => {
         MySwal.fire({
             title: <p>{title}</p>,
@@ -23,7 +22,8 @@ export const useAlerts = () => {
         });
     }, []);
 
-    const showConfirmDialog = useCallback(({ title, text }) => {
+    // --- FUNCIÓN MODIFICADA ---
+    const showConfirmDialog = useCallback(({ title, text, confirmButtonText = 'Sí, confirmar' }) => {
         return MySwal.fire({
             title: <p>{title}</p>,
             text: text,
@@ -31,7 +31,7 @@ export const useAlerts = () => {
             showCancelButton: true,
             confirmButtonColor: '#1a4d2e',
             cancelButtonColor: '#dc3545',
-            confirmButtonText: 'Sí, ¡eliminar!',
+            confirmButtonText: confirmButtonText, // Usamos el texto dinámico
             cancelButtonText: 'Cancelar'
         });
     }, []);
