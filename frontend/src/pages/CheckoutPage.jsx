@@ -135,7 +135,7 @@ const CheckoutPage = () => {
                 const paymentResponse = await createPaymentOrder({ cartItems, orderId: newOrderResponse.data.orderId });
                 if (paymentResponse.success && paymentResponse.payment_url) {
                     await removePurchasedItems(cartItems);
-                    window.location.href = paymentResponse.payment_url;
+                    window.open(paymentResponse.payment_url, '_blank');
                 } else {
                     throw new Error('No se pudo generar el link de pago.');
                 }

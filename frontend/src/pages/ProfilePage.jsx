@@ -17,7 +17,9 @@ const ProfilePage = () => {
 
     const [addresses, setAddresses] = useState([]);
     const [showAddressForm, setShowAddressForm] = useState(false);
-    const [addressFormData, setAddressFormData] = useState({});
+    const [addressFormData, setAddressFormData] = useState({
+        nombre: '', apellido: '', telefono: '', correo: '', direccion: '', departamento: '', ciudad: '', nota: ''
+    });
     const [editingAddressId, setEditingAddressId] = useState(null);
     const [addressErrors, setAddressErrors] = useState({});
 
@@ -86,16 +88,23 @@ const ProfilePage = () => {
         e.preventDefault();
         if (!validateAddressForm()) return;
         try {
+            const dataToSave = { 
+                ...addressFormData, 
+                // Asegurar que nota existe, aunque sea vacía
+                nota: addressFormData.nota || '' 
+            };
+            
             if (editingAddressId) {
-                await updateAddress(editingAddressId, addressFormData);
+                await updateAddress(editingAddressId, dataToSave);
                 showSuccessAlert('Dirección actualizada con éxito.');
             } else {
-                await createAddress(addressFormData);
+                await createAddress(dataToSave);
                 showSuccessAlert('Dirección guardada con éxito.');
             }
             fetchAddresses();
             setShowAddressForm(false);
             setEditingAddressId(null);
+            setAddressFormData({ nombre: '', apellido: '', telefono: '', correo: '', direccion: '', departamento: '', ciudad: '', nota: '' });
         } catch (error) {
             showErrorAlert(error.message);
         }
@@ -103,14 +112,23 @@ const ProfilePage = () => {
 
     const handleEditAddress = (address) => {
         setEditingAddressId(address.id);
-        setAddressFormData(address);
+        setAddressFormData({
+            nombre: address.nombre || '',
+            apellido: address.apellido || '',
+            telefono: address.telefono || '',
+            correo: address.correo || '',
+            direccion: address.direccion || '',
+            departamento: address.departamento || '',
+            ciudad: address.ciudad || '',
+            nota: address.nota || ''
+        });
         setShowAddressForm(true);
         setAddressErrors({});
     };
 
     const handleAddNewAddressClick = () => {
         setEditingAddressId(null);
-        setAddressFormData({ nombre: '', apellido: '', telefono: '', correo: '', direccion: '', departamento: '', ciudad: '', });
+        setAddressFormData({ nombre: '', apellido: '', telefono: '', correo: '', direccion: '', departamento: '', ciudad: '', nota: '' });
         setShowAddressForm(true);
         setAddressErrors({});
     };
@@ -119,6 +137,7 @@ const ProfilePage = () => {
         setShowAddressForm(false);
         setEditingAddressId(null);
         setAddressErrors({});
+        setAddressFormData({ nombre: '', apellido: '', telefono: '', correo: '', direccion: '', departamento: '', ciudad: '', nota: '' });
     };
 
     const handleDeleteAddress = (addressId) => {
@@ -238,7 +257,6 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* --- CONDICIÓN AÑADIDA AQUÍ --- */}
                     {user?.role !== 'admin' && (
                         <div className="profile-addresses-section">
                             <div className="addresses-header">
@@ -257,7 +275,92 @@ const ProfilePage = () => {
                                 <div className="address-form">
                                     <h4>{editingAddressId ? 'Editar Dirección' : 'Nueva Dirección'}</h4>
                                     <div className="address-form-grid">
-                                        {/* ... campos del formulario de dirección ... */}
+                                        
+                                        <div className="form-group">
+                                            <label>Nombre *</label>
+                                            <input 
+                                                type="text" 
+                                                name="nombre" 
+                                                value={addressFormData.nombre || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.nombre ? 'input-error' : ''}
+                                                placeholder="Nombre"
+                                            />
+                                            {addressErrors.nombre && <p className="error-text">{addressErrors.nombre}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Apellido *</label>
+                                            <input 
+                                                type="text" 
+                                                name="apellido" 
+                                                value={addressFormData.apellido || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.apellido ? 'input-error' : ''}
+                                                placeholder="Apellido"
+                                            />
+                                            {addressErrors.apellido && <p className="error-text">{addressErrors.apellido}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Teléfono *</label>
+                                            <input 
+                                                type="tel" 
+                                                name="telefono" 
+                                                value={addressFormData.telefono || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.telefono ? 'input-error' : ''}
+                                                placeholder="Teléfono"
+                                            />
+                                            {addressErrors.telefono && <p className="error-text">{addressErrors.telefono}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Correo electrónico *</label>
+                                            <input 
+                                                type="email" 
+                                                name="correo" 
+                                                value={addressFormData.correo || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.correo ? 'input-error' : ''}
+                                                placeholder="Correo"
+                                            />
+                                            {addressErrors.correo && <p className="error-text">{addressErrors.correo}</p>}
+                                        </div>
+                                        <div className="form-group full-width">
+                                            <label>Dirección (Calle, Número, Barrio) *</label>
+                                            <input 
+                                                type="text" 
+                                                name="direccion" 
+                                                value={addressFormData.direccion || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.direccion ? 'input-error' : ''}
+                                                placeholder="Dirección"
+                                            />
+                                            {addressErrors.direccion && <p className="error-text">{addressErrors.direccion}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Departamento *</label>
+                                            <input 
+                                                type="text" 
+                                                name="departamento" 
+                                                value={addressFormData.departamento || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.departamento ? 'input-error' : ''}
+                                                placeholder="Departamento"
+                                            />
+                                            {addressErrors.departamento && <p className="error-text">{addressErrors.departamento}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Ciudad *</label>
+                                            <input 
+                                                type="text" 
+                                                name="ciudad" 
+                                                value={addressFormData.ciudad || ''} 
+                                                onChange={handleAddressChange} 
+                                                className={addressErrors.ciudad ? 'input-error' : ''}
+                                                placeholder="Ciudad"
+                                            />
+                                            {addressErrors.ciudad && <p className="error-text">{addressErrors.ciudad}</p>}
+                                        </div>
+
                                     </div>
                                     <button type="button" onClick={handleSaveAddress} className="btn-save-address">
                                         {editingAddressId ? 'Actualizar Dirección' : 'Guardar Dirección'}
