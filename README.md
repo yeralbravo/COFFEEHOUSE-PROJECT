@@ -1,14 +1,20 @@
 # Coffee House - Sistema de E-commerce
 
-Sistema completo de e-commerce para una cafetería con funcionalidades para clientes, proveedores y administradores.
+Sistema completo de e-commerce que funciona como plataforma intermediaria entre proveedores de cafés especiales e insumos para preparación de café, y los consumidores finales.
 
 ## Descripción
 
-Coffee House es una aplicación web full-stack que permite la gestión integral de una cafetería en línea. El sistema incluye:
+Coffee House es una aplicación web full-stack que opera como marketplace especializado en café. El sistema conecta:
 
-- **Portal de Clientes**: Navegación de productos, carrito de compras, proceso de checkout y seguimiento de pedidos
-- **Panel de Proveedores**: Gestión de inventario, productos e insumos
-- **Panel de Administración**: Gestión completa de usuarios, pedidos, estadísticas y soporte
+- **Proveedores de Cafés Especiales**: Pueden ofrecer sus productos premium
+- **Proveedores de Insumos**: Ofrecen equipamiento y herramientas para preparación de café (prensas, cafeteras, molinillos, etc.)
+- **Consumidores Finales**: Pueden explorar, comparar y comprar productos de diferentes proveedores
+
+### Características del Sistema
+
+- **Portal de Clientes**: Navegación de productos de múltiples proveedores, carrito de compras, proceso de checkout y seguimiento de pedidos
+- **Panel de Proveedores**: Gestión de inventario, productos e insumos propios
+- **Panel de Administración**: Gestión completa de usuarios, pedidos, estadísticas y soporte de la plataforma
 - **Sistema de Pagos**: Integración con Mercado Pago
 - **Sistema de Notificaciones**: Notificaciones en tiempo real para usuarios
 - **Sistema de Reviews**: Valoraciones y comentarios de productos
@@ -172,34 +178,39 @@ COFFEEHOUSE-PROJECT/
 
 ## Características Principales
 
-### Para Clientes
+### Para Clientes (Consumidores Finales)
 - Registro e inicio de sesión
-- Exploración del catálogo de productos
-- Carrito de compras
+- Exploración del catálogo de productos de múltiples proveedores
+- Comparación de productos y precios
+- Carrito de compras multi-proveedor
 - Proceso de checkout con múltiples direcciones
-- Pagos con Mercado Pago
-- Seguimiento de pedidos
-- Sistema de reviews y calificaciones
-- Búsqueda de productos
-- Gestión de perfil
+- Pagos seguros con Mercado Pago
+- Seguimiento de pedidos en tiempo real
+- Sistema de reviews y calificaciones de productos
+- Búsqueda y filtrado avanzado de productos
+- Gestión de perfil y preferencias
 - Recuperación de contraseña
 
 ### Para Proveedores
-- Dashboard con estadísticas
-- Gestión de productos e insumos
-- Control de inventario
+- Dashboard con estadísticas de ventas
+- Gestión de productos propios (cafés especiales o insumos)
+- Control de inventario en tiempo real
 - Alertas de stock bajo
-- Reportes de ventas
-- Gestión de pedidos
+- Reportes de ventas y análisis
+- Gestión de pedidos recibidos
+- Configuración de precios
+- Carga de imágenes y descripciones de productos
 
-### Para Administradores
-- Panel de administración completo
+### Para Administradores (Plataforma)
+- Panel de administración completo del marketplace
 - Gestión de usuarios (clientes, proveedores, admins)
-- Gestión de pedidos
-- Estadísticas y reportes
+- Aprobación y verificación de nuevos proveedores
+- Gestión y moderación de pedidos
+- Estadísticas globales y reportes de la plataforma
 - Sistema de soporte y mensajes de contacto
 - Gestión de solicitudes de proveedores
-- Registro de actividades (logs)
+- Registro de actividades y auditoría para Admin (logs)
+- Moderación de reviews y contenido
 
 ## Scripts Disponibles
 
@@ -233,7 +244,7 @@ npm run lint     # Ejecutar ESLint
 - `POST /api/auth/forgot-password` - Recuperar contraseña
 
 ### Productos
-- `GET /api/products` - Listar productos
+- `GET /api/products` - Listar productos de todos los proveedores
 - `GET /api/products/:id` - Detalle de producto
 - `POST /api/products` - Crear producto (Proveedor/Admin)
 - `PUT /api/products/:id` - Actualizar producto
@@ -253,10 +264,9 @@ npm run lint     # Ejecutar ESLint
 
 ## Roles de Usuario
 
-1. **Cliente**: Usuario regular que puede comprar productos
-2. **Proveedor**: Puede gestionar productos e insumos
-3. **Administrador**: Acceso completo al sistema
-
+1. **Cliente**: Consumidor final que puede comprar productos de diferentes proveedores
+2. **Proveedor**: Puede gestionar y vender sus propios productos (cafés especiales o insumos)
+3. **Administrador**: Gestiona la plataforma y modera la actividad del marketplace
 
 ## Licencia
 
@@ -264,4 +274,4 @@ Este proyecto está bajo la Licencia ISC.
 
 ---
 
-Desarrollado para Coffee House
+Marketplace de Café Especial
