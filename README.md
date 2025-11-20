@@ -89,10 +89,19 @@ EMAIL_PORT=587
 EMAIL_USER=tu_email@gmail.com
 EMAIL_PASSWORD=tu_contraseña_app
 
+# Email del Administrador
+ADMIN_EMAIL=admin@coffeehouse.com
+
 # Mercado Pago
 MERCADOPAGO_ACCESS_TOKEN=tu_access_token
 MERCADOPAGO_PUBLIC_KEY=tu_public_key
 ```
+
+**Nota importante sobre el administrador:**
+El email configurado en `ADMIN_EMAIL` será asignado automáticamente como administrador al registrarse. Para obtener acceso de administrador:
+1. Configura el `ADMIN_EMAIL` en el archivo `.env` con el correo que deseas usar
+2. Regístrate en la aplicación usando ese mismo correo
+3. El sistema automáticamente te asignará privilegios de administrador
 
 ### 3. Configurar el Frontend
 
